@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnisTools — AI-Powered Smart Utilities</title>
+  
+  <!-- Fonts & Libraries -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Effects -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-content">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Anis<span class="gradient-text">Tools</span></span>
+        <span class="ai-badge">AI 2.0</span>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Language Switcher -->
+        <div class="lang-selector-wrap">
+          <span class="lang-icon">🌐</span>
+          <select id="langSelect" onchange="changeLanguage(this.value)">
+            <option value="en">English (US)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+          </select>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="icon-btn" title="Toggle Theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-tag" data-i18n="hero_tag">✨ AI-Powered & 100% Client-Side Private Suite</div>
+    <h1 class="hero-title" data-i18n="hero_title">Supercharge Daily Tasks with <span class="gradient-text">Smart Tools</span></h1>
+    <p class="hero-subtitle" data-i18n="hero_desc">No sign-up required, zero ads, ultra-secure. Pick your utility below:</p>
+    
+    <!-- Tab Navigation -->
+    <div class="tool-tabs">
+      <button class="tab-btn active" onclick="switchTool('qr')">📱 <span data-i18n="tab_qr">QR Code</span></button>
+      <button class="tab-btn" onclick="switchTool('password')">🔐 <span data-i18n="tab_pass">Password</span></button>
+      <button class="tab-btn" onclick="switchTool('word')">📝 <span data-i18n="tab_word">AI Word Counter</span></button>
+      <button class="tab-btn" onclick="switchTool('compressor')">🖼️ <span data-i18n="tab_compress">Compressor</span></button>
+      <button class="tab-btn" onclick="switchTool('calculator')">🧮 <span data-i18n="tab_calc">Calculator</span></button>
+    </div>
+  </section>
+
+  <!-- Main Tools Workspace -->
+  <main class="main-container">
+
+    <!-- TOOL 1: QR Generator -->
+    <div class="tool-panel active" id="panel-qr">
+      <div class="panel-header">
+        <h2 data-i18n="qr_heading">⚡ Smart QR Code Generator</h2>
+        <p data-i18n="qr_sub">Generate high-resolution, customized QR codes in real-time.</p>
+      </div>
+      <div class="grid-2">
+        <div class="control-box">
+          <div class="input-group">
+            <label data-i18n="qr_label_input">Enter Link or Text:</label>
+            <input type="text" id="qrInput" placeholder="https://yourwebsite.com" value="https://google.com">
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <label data-i18n="qr_label_fg">QR Color:</label>
+              <input type="color" id="qrColor" value="#6366f1">
+            </div>
+            <div class="input-group">
+              <label data-i18n="qr_label_bg">Background:</label>
+              <input type="color" id="qrBgColor" value="#ffffff">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="generateQRCode()" data-i18n="qr_btn_generate">🚀 Generate QR Code</button>
+        </div>
+        <div class="display-box qr-result">
+          <div id="qrcode"></div>
+          <a id="downloadQrBtn" class="btn-secondary" style="display: none;" download="qrcode.png" data-i18n="qr_btn_dl">⬇️ Download QR (PNG)</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOL 2: Password Generator -->
+    <div class="tool-panel" id="panel-password">
+      <div class="panel-header">
+        <h2 data-i18n="pass_heading">🔐 AI Cryptographic Password Generator</h2>
+        <p data-i18n="pass_sub">Create brute-force resilient passwords with live crack-time AI analysis.</p>
+      </div>
+      <div class="glass-card">
+        <div class="pass-display-group">
+          <input type="text" id="passOutput" readonly placeholder="Generated Password">
+          <button class="btn-copy" onclick="copyPassword()" data-i18n="btn_copy">📋 Copy</button>
+        </div>
+
+        <div class="strength-bar-wrap">
+          <div class="strength-bar" id="strengthBar"></div>
+        </div>
+        <div class="crack-time-display">
+          <span data-i18n="pass_ai_crack">AI Estimated Crack Time:</span> <strong id="crackTimeText" class="highlight-cyan">Calculating...</strong>
+        </div>
+
+        <div class="pass-controls">
+          <div class="slider-group">
+            <label><span data-i18n="pass_len">Length:</span> <span id="passLengthVal">16</span></label>
+            <input type="range" id="passLength" min="6" max="32" value="16" oninput="updatePassLength(this.value)">
+          </div>
+          <div class="check-grid">
+            <label class="custom-check"><input type="checkbox" id="chkUpper" checked><span data-i18n="pass_chk_up">Uppercase (A-Z)</span></label>
+            <label class="custom-check"><input type="checkbox" id="chkLower" checked><span data-i18n="pass_chk_low">Lowercase (a-z)</span></label>
+            <label class="custom-check"><input type="checkbox" id="chkNum" checked><span data-i18n="pass_chk_num">Numbers (0-9)</span></label>
+            <label class="custom-check"><input type="checkbox" id="chkSym" checked><span data-i18n="pass_chk_sym">Symbols (@#$)</span></label>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="generateNewPassword()" style="margin-top: 1.5rem;" data-i18n="pass_btn_gen">⚡ Generate Secure Password</button>
+      </div>
+    </div>
+
+    <!-- TOOL 3: AI Word Counter & Analyzer -->
+    <div class="tool-panel" id="panel-word">
+      <div class="panel-header">
+        <h2 data-i18n="word_heading">📝 AI Smart Text Analyzer & Word Counter</h2>
+        <p data-i18n="word_sub">Live text analysis, sentiment scoring, and readability insights.</p>
+      </div>
+      <div class="glass-card">
+        <div class="stat-badges">
+          <div class="badge-card"><span class="badge-num" id="wcWords">0</span> <span data-i18n="w_words">Words</span></div>
+          <div class="badge-card"><span class="badge-num" id="wcChars">0</span> <span data-i18n="w_chars">Characters</span></div>
+          <div class="badge-card"><span class="badge-num" id="wcNoSpace">0</span> <span data-i18n="w_nospace">No Spaces</span></div>
+          <div class="badge-card"><span class="badge-num" id="wcReadTime">0</span> <span data-i18n="w_readtime">Min Read</span></div>
+        </div>
+        <textarea id="wordInput" rows="8" placeholder="Type or paste your content here..." oninput="analyzeText()"></textarea>
+        
+        <!-- AI Intelligence Bar -->
+        <div class="ai-intel-box" id="aiIntelBox">
+          <div class="ai-chip">🤖 <strong>AI Sentiment:</strong> <span id="aiSentiment">Neutral</span></div>
+          <div class="ai-chip">📊 <strong>Readability:</strong> <span id="aiReadingLevel">Standard</span></div>
+        </div>
+
+        <div class="text-actions">
+          <button class="btn-secondary" onclick="transformText('upper')">UPPERCASE</button>
+          <button class="btn-secondary" onclick="transformText('lower')">lowercase</button>
+          <button class="btn-ai" onclick="aiSummarizeMock()">✨ <span data-i18n="btn_ai_clean">AI Format & Polish</span></button>
+          <button class="btn-secondary" onclick="clearText()" data-i18n="btn_clear">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOL 4: Image Compressor -->
+    <div class="tool-panel" id="panel-compressor">
+      <div class="panel-header">
+        <h2 data-i18n="comp_heading">🖼️ Neural Image Compressor</h2>
+        <p data-i18n="comp_sub">Smart compression preserving maximum visual fidelity 100% offline.</p>
+      </div>
+      <div class="glass-card">
+        <div class="dropzone" onclick="document.getElementById('imgUpload').click()">
+          <input type="file" id="imgUpload" accept="image/*" style="display: none;" onchange="handleImage(event)">
+          <div class="drop-content">
+            <span class="drop-icon">📤</span>
+            <p data-i18n="comp_drop">Click to upload image or drag and drop here</p>
+            <small>Supports PNG, JPG, WebP</small>
+          </div>
+        </div>
+
+        <div id="imgSettings" style="display: none; margin-top: 1.5rem;">
+          <div class="slider-group">
+            <label><span data-i18n="comp_quality">Compression Quality:</span> <span id="qLabel">75%</span></label>
+            <input type="range" id="imgQuality" min="10" max="95" value="75" oninput="updateQuality(this.value)">
+          </div>
+          
+          <div class="img-preview-grid">
+            <div class="preview-item">
+              <h4><span data-i18n="comp_orig">Original:</span> <span id="originalSize">0 KB</span></h4>
+              <img id="origImgPreview">
+            </div>
+            <div class="preview-item">
+              <h4><span data-i18n="comp_comp">Compressed:</span> <span id="compressedSize" class="highlight-cyan">0 KB</span></h4>
+              <img id="compImgPreview">
+            </div>
+          </div>
+          <a id="downloadImgBtn" class="btn-primary" download="compressed-anistools.jpg" style="text-align: center; margin-top: 1.5rem;" data-i18n="comp_btn_dl">⬇️ Download Compressed Image</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOL 5: Calculator -->
+    <div class="tool-panel" id="panel-calculator">
+      <div class="panel-header">
+        <h2 data-i18n="calc_heading">🧮 Smart Glass Calculator</h2>
+        <p data-i18n="calc_sub">Instant mathematical expression evaluation with memory buffer.</p>
+      </div>
+      <div class="calc-wrapper">
+        <div class="calc-screen-box">
+          <div class="calc-history" id="calcHistory"></div>
+          <div class="calc-main-screen" id="calcScreen">0</div>
+        </div>
+        <div class="calc-keypad">
+          <button class="key action" onclick="calcClear()">AC</button>
+          <button class="key action" onclick="calcDelete()">⌫</button>
+          <button class="key action" onclick="calcInput('%')">%</button>
+          <button class="key op" onclick="calcInput('/')">÷</button>
+
+          <button class="key" onclick="calcInput('7')">7</button>
+          <button class="key" onclick="calcInput('8')">8</button>
+          <button class="key" onclick="calcInput('9')">9</button>
+          <button class="key op" onclick="calcInput('*')">×</button>
+
+          <button class="key" onclick="calcInput('4')">4</button>
+          <button class="key" onclick="calcInput('5')">5</button>
+          <button class="key" onclick="calcInput('6')">6</button>
+          <button class="key op" onclick="calcInput('-')">-</button>
+
+          <button class="key" onclick="calcInput('1')">1</button>
+          <button class="key" onclick="calcInput('2')">2</button>
+          <button class="key" onclick="calcInput('3')">3</button>
+          <button class="key op" onclick="calcInput('+')">+</button>
+
+          <button class="key span-2" onclick="calcInput('0')">0</button>
+          <button class="key" onclick="calcInput('.')">.</button>
+          <button class="key equals" onclick="calcSolve()">=</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Floating Anis AI Copilot -->
+  <div class="ai-widget-toggle" onclick="toggleAIChat()">🤖 <span class="pulse-dot"></span></div>
+  <div class="ai-chat-drawer" id="aiChatDrawer">
+    <div class="ai-chat-header">
+      <div class="ai-header-info">
+        <span>✨ Anis AI Copilot</span>
+        <small>Smart Assistant</small>
+      </div>
+      <button class="close-ai" onclick="toggleAIChat()">✕</button>
+    </div>
+    <div class="ai-chat-body" id="aiChatBody">
+      <div class="ai-msg bot">Hello! I am Anis AI. Need ideas, text polishing, or calculation help? Ask me anything!</div>
+    </div>
+    <div class="ai-chat-input-area">
+      <input type="text" id="aiUserPrompt" placeholder="Ask Anis AI anything..." onkeypress="if(event.key==='Enter') sendAIPrompt()">
+      <button onclick="sendAIPrompt()">➤</button>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">Copied to clipboard! ✨</div>
+
+  <footer>
+    <p>Powered by <strong>AnisTools AI Suite</strong> &copy; 2026. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
