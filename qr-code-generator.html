@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free QR Code Generator – Create and Download PNG | AnisTools</title>
+  <meta name="description" content="Create a free QR code for any link or text in seconds. Pick your colors and download a sharp PNG. No sign-up, nothing is uploaded.">
+  <meta name="theme-color" content="#090d16">
+  <link rel="canonical" href="https://anisur-ai.github.io/Anistools/qr-code-generator.html">
+  <meta property="og:title" content="Free QR Code Generator | AnisTools">
+  <meta property="og:description" content="Create a QR code for any link or text and download it as PNG. Free, private, no sign-up.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://anisur-ai.github.io/Anistools/qr-code-generator.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <script>
+    try {
+      var t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LRL9NLYQDY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LRL9NLYQDY');
+  </script>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebApplication","name":"QR Code Generator – AnisTools","url":"https://anisur-ai.github.io/Anistools/qr-code-generator.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":["en","bn"],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"AnisTools","item":"https://anisur-ai.github.io/Anistools/"},
+      {"@type":"ListItem","position":2,"name":"QR Code Generator","item":"https://anisur-ai.github.io/Anistools/qr-code-generator.html"}
+    ]}
+  ]}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body data-tool="qr">
+  <a class="skip-link" href="#tool">Skip to tool</a>
+  <div class="glow-orb orb-1" aria-hidden="true"></div>
+  <div class="glow-orb orb-2" aria-hidden="true"></div>
+
+  <header class="navbar">
+    <div class="nav-content">
+      <a class="logo" href="./" aria-label="AnisTools home">
+        <span>⚡</span><span>Anis<span class="gradient-text">Tools</span></span>
+      </a>
+      <div class="nav-actions">
+        <label class="lang-wrap">
+          <span aria-hidden="true">🌐</span>
+          <select id="langSelect" aria-label="Language">
+            <option value="en">English</option>
+            <option value="bn">বাংলা</option>
+          </select>
+        </label>
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="./">AnisTools</a> ›
+      <span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span>
+    </nav>
+    <h1 class="hero-title">
+      <span data-lang-block="en">Free <span class="gradient-text">QR Code Generator</span></span>
+      <span data-lang-block="bn">ফ্রি <span class="gradient-text">QR কোড জেনারেটর</span></span>
+    </h1>
+    <p class="hero-subtitle" data-lang-block="en">Create a QR code for any link or text in seconds. Pick your colors and download a sharp PNG — free, with no sign-up, and nothing is uploaded.</p>
+    <p class="hero-subtitle" data-lang-block="bn">যেকোনো লিংক বা লেখার QR কোড মুহূর্তেই বানান। রং বেছে নিয়ে স্পষ্ট PNG ডাউনলোড করুন — ফ্রি, সাইনআপ ছাড়াই, আর কিছুই আপলোড হয় না।</p>
+  </section>
+
+  <main class="main-container" id="tool">
+
+    <section class="tool-panel active" id="panel-qr">
+      <div class="grid-2">
+        <div class="control-box">
+          <div class="input-group">
+            <label for="qrInput" data-i18n="qr_in">Link or text</label>
+            <input type="text" id="qrInput" value="https://anisur-ai.github.io/Anistools/" placeholder="https://example.com" autocomplete="off">
+          </div>
+          <div class="input-row">
+            <div class="input-group">
+              <label for="qrColor" data-i18n="qr_fg">QR color</label>
+              <input type="color" id="qrColor" value="#000000">
+            </div>
+            <div class="input-group">
+              <label for="qrBgColor" data-i18n="qr_bg">Background</label>
+              <input type="color" id="qrBgColor" value="#ffffff">
+            </div>
+          </div>
+          <button class="btn-primary" type="button" id="qrGenerate" data-i18n="qr_gen">Generate QR code</button>
+        </div>
+        <div class="qr-result">
+          <div id="qrcode"></div>
+          <a id="downloadQrBtn" class="btn-secondary" download="qrcode.png" hidden data-i18n="qr_dl">Download PNG</a>
+        </div>
+      </div>
+    </section>
+
+    <article class="content">
+
+      <section class="content-card">
+        <h2 data-lang-block="en">How to make a QR code</h2>
+        <h2 data-lang-block="bn">QR কোড বানানোর নিয়ম</h2>
+        <ol data-lang-block="en">
+          <li>Type or paste your link, text, email address (mailto:…) or phone number (tel:…) into the box.</li>
+          <li>Choose the QR color and background. Dark code on a light background scans best.</li>
+          <li>The QR code updates as you type. You can also press "Generate QR code".</li>
+          <li>Press "Download PNG". The image is a 512 × 512 pixel PNG.</li>
+        </ol>
+        <ol data-lang-block="bn">
+          <li>আপনার লিংক, লেখা, ইমেইল (mailto:…) বা ফোন নম্বর (tel:…) ঘরে লিখুন বা পেস্ট করুন।</li>
+          <li>QR-এর রং আর ব্যাকগ্রাউন্ডের রং বেছে নিন। হালকা ব্যাকগ্রাউন্ডে গাঢ় রংের কোড সবচেয়ে ভালো স্ক্যান হয়।</li>
+          <li>টাইপ করার সাথে সাথেই QR কোড আপডেট হয়। চাইলে "QR কোড তৈরি করুন" বাটনও চাপতে পারেন।</li>
+          <li>"PNG ডাউনলোড" চাপুন। ছবিটি ৫১২×৫১২ পিক্সেলের PNG।</li>
+        </ol>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Tips for a QR code that scans reliably</h2>
+        <h2 data-lang-block="bn">যেভাবে QR কোড সহজে স্ক্যান হবে</h2>
+        <ul data-lang-block="en">
+          <li>Keep strong contrast between the code and the background. Don't invert the colors (light code on a dark background), because many scanners can't read it.</li>
+          <li>Shorter text makes a simpler code that is easier to scan. For websites, use a short full address starting with https://.</li>
+          <li>Test the code with your phone before printing or sharing it.</li>
+          <li>Leave a blank margin around the code and don't print it too small.</li>
+          <li>This tool makes static QR codes: the data is stored in the image itself, so the code never expires and doesn't track scans.</li>
+        </ul>
+        <ul data-lang-block="bn">
+          <li>কোড আর ব্যাকগ্রাউন্ডের মধ্যে রঙের পার্থক্য স্পষ্ট রাখুন। রং উল্টে দেবেন না (গাঢ় ব্যাকগ্রাউন্ডে হালকা কোড), কারণ অনেক স্ক্যানার সেটা পড়তে পারে না।</li>
+          <li>লেখা যত ছোট, কোড তত সহজ আর স্ক্যান করা তত সুবিধাজনক। ওয়েবসাইটের জন্য https:// দিয়ে শুরু করা ছোট পূর্ণ ঠিকানা দিন।</li>
+          <li>ছাপানো বা শেয়ার করার আগে নিজের ফোনে স্ক্যান করে দেখুন।</li>
+          <li>কোডের চারপাশে ফাঁকা জায়গা রাখুন, আর খুব ছোট করে ছাপবেন না।</li>
+          <li>এই টুল স্ট্যাটিক QR কোড বানায়: তথ্য ছবির ভেতরেই থাকে, তাই কোডের মেয়াদ শেষ হয় না আর কে স্ক্যান করল তা ট্র্যাক হয় না।</li>
+        </ul>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Frequently asked questions</h2>
+        <h2 data-lang-block="bn">সচরাচর জিজ্ঞাসা</h2>
+        <div class="faq" data-lang-block="en">
+          <details><summary>Is this QR code generator really free?</summary>
+            <p>Yes. There is no sign-up, no watermark and no limit on how many codes you create.</p></details>
+          <details><summary>Do the QR codes expire?</summary>
+            <p>No. The link or text is encoded directly in the image, so the code keeps working as long as the destination itself (such as your website) is online.</p></details>
+          <details><summary>Is my link or text uploaded anywhere?</summary>
+            <p>No. The code is generated in your browser, and what you type is not sent anywhere.</p></details>
+          <details><summary>Why won't my QR code scan?</summary>
+            <p>The usual reasons are low contrast between the code and the background, inverted colors, very long text, or printing it too small. Use a dark code on a light background and test it with your phone.</p></details>
+          <details><summary>What image size do I get?</summary>
+            <p>A 512 × 512 pixel PNG, which is sharp enough for websites, documents and small prints.</p></details>
+        </div>
+        <div class="faq" data-lang-block="bn">
+          <details><summary>এই QR কোড জেনারেটর কি সত্যিই ফ্রি?</summary>
+            <p>হ্যাঁ। সাইনআপ লাগে না, ছবিতে ওয়াটারমার্ক নেই, আর যত খুশি কোড বানাতে পারবেন।</p></details>
+          <details><summary>QR কোডের কি মেয়াদ শেষ হয়?</summary>
+            <p>না। লিংক বা লেখা সরাসরি ছবির ভেতরেই থাকে, তাই গন্তব্য (যেমন আপনার ওয়েবসাইট) চালু থাকলে কোডও কাজ করবে।</p></details>
+          <details><summary>আমার লিংক বা লেখা কি কোথাও আপলোড হয়?</summary>
+            <p>না। কোডটি আপনার ব্রাউজারেই তৈরি হয়, আপনি যা লেখেন তা কোথাও পাঠানো হয় না।</p></details>
+          <details><summary>আমার QR কোড স্ক্যান হচ্ছে না কেন?</summary>
+            <p>সাধারণ কারণ হলো কোড আর ব্যাকগ্রাউন্ডের রঙের পার্থক্য কম, রং উল্টানো, লেখা অনেক বড়, বা খুব ছোট করে ছাপা। হালকা ব্যাকগ্রাউন্ডে গাঢ় কোড ব্যবহার করুন আর ফোনে স্ক্যান করে দেখুন।</p></details>
+          <details><summary>ডাউনলোড করা ছবির সাইজ কত?</summary>
+            <p>৫১২×৫১২ পিক্সেলের PNG, যা ওয়েবসাইট, ডকুমেন্ট আর ছোট প্রিন্টের জন্য যথেষ্ট স্পষ্ট।</p></details>
+        </div>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">More free tools</h2>
+        <h2 data-lang-block="bn">আরও ফ্রি টুলস</h2>
+        <div class="related-grid">
+          <a class="related-link" href="password-generator.html">🔐 <span data-i18n="tab_pass">Password</span></a>
+          <a class="related-link" href="word-counter.html">📝 <span data-i18n="tab_word">Word Counter</span></a>
+          <a class="related-link" href="image-compressor.html">🖼️ <span data-i18n="tab_img">Image Compressor</span></a>
+          <a class="related-link" href="calculator.html">🧮 <span data-i18n="tab_calc">Calculator</span></a>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <footer>
+    <p data-i18n="f_copy">© 2026 AnisTools. All rights reserved.</p>
+    <p class="footer-links">
+      <a href="privacy.html" data-i18n="f_priv">Privacy Policy</a> ·
+      <a href="terms.html" data-i18n="f_terms">Terms of Use</a> ·
+      <a href="contact.html" data-i18n="f_contact">Contact</a>
+    </p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
