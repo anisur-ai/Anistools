@@ -150,7 +150,7 @@ let activeTool = document.body.dataset.tool || 'qr';
 const tabs = document.querySelectorAll('.tab-btn');
 
 function switchTool(key, updateHash = true) {
-  const panel = $('panel-' + key);
+  const panel = document.getElementById('panel-' + key);
   if (!panel) return;
   activeTool = key;
   tabs.forEach(b => {
