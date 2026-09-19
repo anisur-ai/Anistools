@@ -146,7 +146,7 @@ async function copyText(text, msgKey) {
 }
 
 /* ================= Tabs ================= */
-let activeTool = 'qr';
+let activeTool = document.body.dataset.tool || 'qr';
 const tabs = document.querySelectorAll('.tab-btn');
 
 function switchTool(key, updateHash = true) {
