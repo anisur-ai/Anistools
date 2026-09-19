@@ -273,3 +273,35 @@ footer { text-align: center; padding: 2rem 1rem; font-size: .9rem; color: var(--
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+/* ===== Part 2: tool pages ===== */
+html[lang="bn"] [data-lang-block="en"],
+html:not([lang="bn"]) [data-lang-block="bn"] { display: none; }
+
+.breadcrumb { font-size: .85rem; color: var(--muted); margin-bottom: 1rem; }
+.breadcrumb a { color: var(--primary); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+.content { margin-top: 2rem; }
+.content-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.6rem; margin-bottom: 1.2rem;
+}
+.content-card h2 { font-size: 1.3rem; margin-bottom: .8rem; }
+.content-card p, .content-card li { color: var(--muted); line-height: 1.75; }
+.content-card ol, .content-card ul { padding-left: 1.3rem; }
+.content-card li { margin-bottom: .45rem; }
+
+.faq details { border-top: 1px solid var(--border); padding: .85rem 0; }
+.faq details:first-child { border-top: none; }
+.faq summary { cursor: pointer; font-weight: 600; }
+.faq details[open] summary { color: var(--primary); }
+.faq details p { margin-top: .5rem; }
+
+.related-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .7rem; }
+.related-link {
+  display: flex; align-items: center; gap: .5rem; padding: .8rem 1rem; font-weight: 600;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; text-decoration: none;
+}
+@media (hover: hover) { .related-link:hover { border-color: var(--primary); } }
+
+@media (max-width: 768px) { .content-card { padding: 1.1rem; } }
