@@ -1,7 +1,7 @@
 'use strict';
 
 /* ================= Helpers ================= */
-const $ = id => document.getElementById(id);
+const $ = id => document.getElementById(id) || document.createElement('div');
 const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
