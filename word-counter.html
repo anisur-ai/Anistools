@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free Word Counter – Words, Characters & Reading Time | AnisTools</title>
+  <meta name="description" content="Count words, characters, sentences and paragraphs as you type, with reading time, a character limit checker, top keywords and a case converter. Free, private and works in Bengali too.">
+  <meta name="theme-color" content="#0a0e1a">
+  <link rel="canonical" href="https://anisur-ai.github.io/Anistools/word-counter.html">
+  <meta property="og:title" content="Free Word Counter | AnisTools">
+  <meta property="og:description" content="Count words, characters, sentences and reading time. Free, private, no sign-up.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://anisur-ai.github.io/Anistools/word-counter.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <script>
+    try {
+      var d = document.documentElement;
+      d.dataset.theme = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      if (localStorage.getItem('lang') === 'bn') d.lang = 'bn';
+    } catch (e) {}
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LRL9NLYQDY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LRL9NLYQDY');
+  </script>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebApplication","name":"Word Counter – AnisTools","url":"https://anisur-ai.github.io/Anistools/word-counter.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":["en","bn"],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"AnisTools","item":"https://anisur-ai.github.io/Anistools/"},
+      {"@type":"ListItem","position":2,"name":"Word Counter","item":"https://anisur-ai.github.io/Anistools/word-counter.html"}
+    ]}
+  ]}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #070b16;
+      --bg-alt: rgba(11, 17, 32, 0.62);
+      --header-bg: rgba(7, 11, 22, 0.78);
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.07);
+      --card: rgba(15, 23, 42, 0.72);
+      --field: rgba(0, 0, 0, 0.28);
+      --border: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.3);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --link: #818cf8;
+      --primary: #6366f1;
+      --primary-2: #8b5cf6;
+      --accent: #ec4899;
+      --success: #10b981;
+      --danger: #ef4444;
+      --glow: rgba(99, 102, 241, 0.35);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --header-h: 64px;
+      --font: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color-scheme: dark;
+    }
+    [data-theme="light"] {
+      --bg: #f6f8fc;
+      --bg-alt: rgba(238, 242, 249, 0.75);
+      --header-bg: rgba(246, 248, 252, 0.82);
+      --surface: rgba(15, 23, 42, 0.04);
+      --surface-2: rgba(15, 23, 42, 0.07);
+      --card: rgba(255, 255, 255, 0.94);
+      --field: #ffffff;
+      --border: rgba(15, 23, 42, 0.1);
+      --border-strong: rgba(15, 23, 42, 0.22);
+      --text: #0f172a;
+      --muted: #475569;
+      --link: #4f46e5;
+      --danger: #dc2626;
+      --glow: rgba(99, 102, 241, 0.22);
+      --shadow: 0 18px 44px rgba(15, 23, 42, 0.1);
+      color-scheme: light;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
+      transition: background-color .3s, color .3s;
+    }
+    main { flex: 1; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    ul, ol { list-style: none; }
+    [hidden] { display: none !important; }
+    ::selection { background: var(--primary); color: #fff; }
+    :focus-visible { outline: 2px solid #22d3ee; outline-offset: 3px; border-radius: 6px; }
+
+    html[lang="bn"] [data-lang-block="en"],
+    html:not([lang="bn"]) [data-lang-block="bn"] { display: none; }
+    html[lang="bn"] h1, html[lang="bn"] h2, html[lang="bn"] .brand-name { letter-spacing: 0; }
+
+    .container { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+    .container-narrow { width: min(860px, 100% - 2.5rem); }
+
+    .skip-link {
+      position: absolute; left: 12px; top: -64px; z-index: 3000; padding: .6rem 1rem;
+      font-weight: 600; color: #fff; background: var(--primary); border-radius: 10px;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .bg-glow { position: fixed; z-index: -1; width: 600px; height: 600px; border-radius: 50%; pointer-events: none; opacity: .34; }
+    .bg-glow-1 { top: -260px; left: -200px; background: radial-gradient(circle, var(--primary) 0, transparent 68%); }
+    .bg-glow-2 { bottom: -280px; right: -220px; background: radial-gradient(circle, var(--accent) 0, transparent 68%); opacity: .18; }
+    [data-theme="light"] .bg-glow { opacity: .15; }
+    [data-theme="light"] .bg-glow-2 { opacity: .09; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky; top: 0; z-index: 100; height: var(--header-h);
+      background: var(--header-bg);
+      -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { display: inline-flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.3rem; letter-spacing: -.01em; }
+    .brand-mark {
+      display: grid; place-items: center; width: 36px; height: 36px; font-size: 1.1rem; border-radius: 11px;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 6px 18px var(--glow);
+    }
+    .grad {
+      background-image: linear-gradient(135deg, #818cf8, #a78bfa 45%, #f472b6);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+    }
+    [data-theme="light"] .grad { background-image: linear-gradient(135deg, #4f46e5, #7c3aed 50%, #db2777); }
+    .header-actions { display: flex; align-items: center; gap: .6rem; }
+    .nav-link { padding: .5rem .85rem; font-weight: 600; font-size: .95rem; color: var(--muted); border-radius: 10px; transition: color .2s, background-color .2s; }
+    .nav-link:hover { color: var(--text); background: var(--surface-2); }
+    .lang-switch { display: flex; align-items: center; gap: .4rem; height: 40px; padding: 0 .7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; }
+    .lang-switch select { background: transparent; border: 0; outline: 0; font-weight: 600; cursor: pointer; }
+    .icon-btn { display: grid; place-items: center; width: 40px; height: 40px; font-size: 1.05rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; transition: background-color .2s; }
+    .icon-btn:hover { background: var(--surface-2); }
+    select option { background: var(--bg); color: var(--text); }
+
+    /* ---------- Page hero ---------- */
+    .page-hero { padding: clamp(2rem, 5vw, 3.5rem) 0 1.6rem; text-align: center; }
+    .breadcrumb { margin-bottom: 1rem; font-size: .85rem; color: var(--muted); }
+    .breadcrumb a { color: var(--link); }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .page-hero h1 { margin-bottom: .8rem; font-size: clamp(2rem, 5.5vw, 3.2rem); font-weight: 800; line-height: 1.15; letter-spacing: -.02em; text-wrap: balance; }
+    .page-hero .lead { max-width: 680px; margin: 0 auto; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.15rem); }
+
+    /* ---------- Word counter tool ---------- */
+    .tool-shell {
+      max-width: 900px; margin-inline: auto; padding: clamp(1.1rem, 3vw, 2rem);
+      background: var(--card); border: 1px solid var(--border); border-radius: 28px; box-shadow: var(--shadow);
+    }
+
+    .wc-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .7rem; margin-bottom: 1.2rem; }
+    .wc-stat { padding: .9rem .6rem; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+    .wc-num {
+      display: block; font-size: clamp(1.2rem, 3.4vw, 1.7rem); font-weight: 800; line-height: 1.25;
+      color: var(--link); font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+    }
+    .wc-label { display: block; margin-top: .15rem; font-size: .78rem; font-weight: 600; color: var(--muted); }
+
+    .editor textarea {
+      display: block; width: 100%; min-height: 280px; padding: 1.1rem 1.2rem; resize: vertical; outline: 0;
+      font-size: 1.05rem; line-height: 1.7;
+      background: var(--field); border: 1px solid var(--border-strong); border-radius: 18px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .editor textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--glow); }
+    .editor textarea::placeholder { color: var(--muted); }
+
+    .limit-box { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .6rem 1rem; margin-top: 1rem; }
+    .limit-box label { font-size: .88rem; font-weight: 600; color: var(--muted); }
+    .limit-box select {
+      width: 100%; padding: .65rem .9rem; font-size: .95rem; outline: 0;
+      background: var(--field); border: 1px solid var(--border-strong); border-radius: 12px;
+    }
+    .limit-box select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--glow); }
+    .limit-meter { grid-column: 1 / -1; }
+    .limit-bar { height: 8px; overflow: hidden; background: var(--surface-2); border-radius: 999px; }
+    .limit-fill { height: 100%; width: 0; background: var(--success); border-radius: 999px; transition: width .2s, background-color .2s; }
+    .limit-fill.warn { background: #f59e0b; }
+    .limit-fill.over { background: var(--danger); }
+    .limit-text { margin-top: .4rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
+    .limit-text.over { color: var(--danger); }
+
+    .wc-tools { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.2rem; }
+    .tb-btn {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .55rem 1rem;
+      font-weight: 600; font-size: .92rem; background: var(--surface); border: 1px solid var(--border-strong);
+      border-radius: 12px; transition: transform .15s, background-color .2s, border-color .2s;
+    }
+    .tb-btn:active { transform: scale(.97); }
+    .tb-btn-primary { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: 0 8px 20px var(--glow); }
+    @media (hover: hover) {
+      .tb-btn:hover { border-color: var(--primary); }
+      .tb-btn-primary:hover { border-color: transparent; }
+      .tb-btn-danger:hover { color: var(--danger); border-color: var(--danger); }
+    }
+
+    .kw { margin-top: 1.6rem; padding: 1.2rem; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; }
+    .kw h2 { margin-bottom: .2rem; font-size: 1.05rem; font-weight: 800; }
+    .kw-hint { margin-bottom: .9rem; font-size: .85rem; color: var(--muted); }
+    .kw-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+    .kw-item {
+      position: relative; display: flex; justify-content: space-between; gap: .8rem; padding: .55rem .8rem; overflow: hidden;
+      font-size: .92rem; background: var(--field); border: 1px solid var(--border); border-radius: 10px;
+    }
+    .kw-item::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w, 0%); background: var(--glow); opacity: .5; }
+    .kw-item > * { position: relative; }
+    .kw-word { font-weight: 600; overflow-wrap: anywhere; }
+    .kw-count { flex: none; font-weight: 800; color: var(--link); }
+    .kw-empty { font-size: .92rem; color: var(--muted); }
+
+    /* ---------- Content ---------- */
+    .content { display: grid; gap: 1.2rem; padding: 2.5rem 0 3rem; }
+    .content-card { padding: clamp(1.3rem, 3vw, 2rem); background: var(--card); border: 1px solid var(--border); border-radius: 20px; }
+    .content-card h2 { margin-bottom: .9rem; font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+    .content-card p, .content-card li { color: var(--muted); line-height: 1.75; }
+    .content-card strong { color: var(--text); }
+    .content-card ol { display: grid; gap: .8rem; counter-reset: step; }
+    .content-card ol li { position: relative; padding-left: 2.6rem; counter-increment: step; }
+    .content-card ol li::before {
+      content: counter(step); position: absolute; left: 0; top: .1rem; display: grid; place-items: center;
+      width: 1.9rem; height: 1.9rem; font-weight: 800; font-size: .85rem; color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%;
+    }
+    .content-card ul { display: grid; gap: .6rem; padding-left: 1.2rem; list-style: disc; }
+    .content-card ul li::marker { color: var(--primary); }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; }
+    .table-wrap table { width: 100%; min-width: 380px; border-collapse: collapse; font-size: .95rem; }
+    .table-wrap th, .table-wrap td { padding: .75rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    .table-wrap th { font-size: .85rem; color: var(--text); background: var(--surface); }
+    .table-wrap td { color: var(--muted); }
+    .table-wrap tr:last-child td { border-bottom: 0; }
+
+    .faq { display: grid; gap: .7rem; }
+    .faq details { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; transition: border-color .2s; }
+    .faq details[open] { border-color: var(--border-strong); }
+    .faq summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1rem 1.2rem; font-weight: 700; cursor: pointer; list-style: none;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+      content: "+"; flex: none; display: grid; place-items: center; width: 26px; height: 26px; font-size: 1.15rem; font-weight: 500;
+      color: var(--link); background: var(--surface-2); border-radius: 50%; transition: transform .2s;
+    }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq details p { padding: 0 1.2rem 1.1rem; }
+
+    .related-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+    .related-link {
+      display: flex; align-items: center; gap: .6rem; padding: .9rem 1.1rem; font-weight: 600;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      transition: border-color .2s, transform .2s;
+    }
+    @media (hover: hover) { .related-link:hover { border-color: var(--primary); transform: translateY(-2px); } }
+
+    /* ---------- Footer & toast ---------- */
+    .site-footer { padding: 1.8rem 0; text-align: center; font-size: .9rem; color: var(--muted); background: var(--bg-alt); border-top: 1px solid var(--border); }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.3rem; margin-bottom: .6rem; }
+    .footer-links a:hover { color: var(--text); }
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; z-index: 1000; max-width: 90vw; padding: .8rem 1.4rem; text-align: center;
+      font-weight: 600; color: #fff; background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 999px; box-shadow: 0 10px 25px var(--glow);
+      transform: translate(-50%, 120px); opacity: 0; pointer-events: none; transition: transform .3s, opacity .3s;
+    }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 560px) {
+      .brand-name { font-size: 1.1rem; }
+      .lang-switch { padding: 0 .5rem; }
+      .lang-switch > span { display: none; }
+      .nav-link { display: none; }
+      .tool-shell { border-radius: 22px; }
+      .wc-stats { grid-template-columns: 1fr 1fr; }
+      .editor textarea { min-height: 220px; }
+      .limit-box { grid-template-columns: 1fr; }
+      .tb-btn { flex: 1 1 calc(50% - .6rem); }
+      .kw-list { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#tool">Skip to tool</a>
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="AnisTools home">
+        <span class="brand-mark" aria-hidden="true">⚡</span>
+        <span class="brand-name">Anis<span class="grad">Tools</span></span>
+      </a>
+      <div class="header-actions">
+        <a class="nav-link" href="./#tools"><span data-lang-block="en">All tools</span><span data-lang-block="bn">সব টুলস</span></a>
+        <label class="lang-switch">
+          <span aria-hidden="true">🌐</span>
+          <select id="langSelect" aria-label="Language">
+            <option value="en">English</option>
+            <option value="bn">বাংলা</option>
+          </select>
+        </label>
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="./">AnisTools</a> ›
+          <span data-lang-block="en">Word Counter</span><span data-lang-block="bn">শব্দ গণনা</span>
+        </nav>
+        <h1>
+          <span data-lang-block="en">Free <span class="grad">Word Counter</span></span>
+          <span data-lang-block="bn">ফ্রি <span class="grad">শব্দ গণনা</span></span>
+        </h1>
+        <p class="lead">
+          <span data-lang-block="en">Count words, characters, sentences and paragraphs as you type. See the reading time, check character limits and find your most-used words. Works with English and Bengali, runs in your browser, and nothing is uploaded.</span>
+          <span data-lang-block="bn">লেখার সাথে সাথেই শব্দ, অক্ষর, বাক্য আর অনুচ্ছেদ গুনুন। পড়ার সময় দেখুন, অক্ষরের সীমা মেলান আর সবচেয়ে বেশি ব্যবহৃত শব্দ খুঁজে নিন। ইংরেজি ও বাংলা দুটোতেই চলে, ব্রাউজারেই কাজ করে, আর কিছুই আপলোড হয় না।</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ TOOL ============ -->
+    <section class="container" id="tool" aria-label="Word counter">
+      <div class="tool-shell">
+
+        <div class="wc-stats" role="group" aria-label="Text statistics">
+          <div class="wc-stat">
+            <span class="wc-num" id="stWords">0</span>
+            <span class="wc-label"><span data-lang-block="en">Words</span><span data-lang-block="bn">শব্দ</span></span>
+          </div>
+          <div class="wc-stat">
+            <span class="wc-num" id="stChars">0</span>
+            <span class="wc-label"><span data-lang-block="en">Characters</span><span data-lang-block="bn">অক্ষর</span></span>
+          </div>
+          <div class="wc-stat">
+            <span class="wc-num" id="stNoSpace">0</span>
+            <span class="wc-label"><span data-lang-block="en">No spaces</span><span data-lang-block="bn">স্পেস ছাড়া অক্ষর</span></span>
+          </div>
+          <div class="wc-stat">
+            <span class="wc-num" id="stSent">0</span>
+            <span class="wc-label"><span data-lang-block="en">Sentences</span><span data-lang-block="bn">বাক্য</span></span>
+          </div>
+          <div class="wc-stat">
+            <span class="wc-num" id="stPara">0</span>
+            <span class="wc-label"><span data-lang-block="en">Paragraphs</span><span data-lang-block="bn">অনুচ্ছেদ</span></span>
+          </div>
+          <div class="wc-stat">
+            <span class="wc-num" id="stLines">0</span>
+            <span class="wc-label"><span data-lang-block="en">Lines</span><span data-lang-block="bn">লাইন</span></span>
+          </div>
+          <div class="wc-stat">
+            <span class="wc-num" id="stRead">0</span>
+            <span class="wc-label"><span data-lang-block="en">Reading time</span><span data-lang-block="bn">পড়ার সময়</span></span>
+          </div>
+          <div class="wc-stat">
+            <span class="wc-num" id="stSpeak">0</span>
+            <span class="wc-label"><span data-lang-block="en">Speaking time</span><span data-lang-block="bn">বলার সময়</span></span>
+          </div>
+        </div>
+
+        <div class="editor">
+          <textarea id="wcInput" spellcheck="false" aria-label="Your text"
+            data-ph-en="Type or paste your text here…"
+            data-ph-bn="এখানে লিখুন বা আপনার লেখা পেস্ট করুন…"></textarea>
+        </div>
+
+        <div class="limit-box">
+          <label for="limitSelect"><span data-lang-block="en">Character limit</span><span data-lang-block="bn">অক্ষরের সীমা</span></label>
+          <select id="limitSelect">
+            <option value="0" data-en="No limit" data-bn="কোনো সীমা নেই" selected>No limit</option>
+            <option value="280" data-en="X (Twitter) post – 280" data-bn="X (টুইটার) পোস্ট – ২৮০">X (Twitter) post – 280</option>
+            <option value="160" data-en="SMS, one message – 160" data-bn="এসএমএস, একটি বার্তা – ১৬০">SMS, one message – 160</option>
+            <option value="60" data-en="SEO title – about 60" data-bn="SEO টাইটেল – প্রায় ৬০">SEO title – about 60</option>
+            <option value="160" data-en="Meta description – about 160" data-bn="মেটা ডেসক্রিপশন – প্রায় ১৬০">Meta description – about 160</option>
+            <option value="100" data-en="YouTube title – 100" data-bn="YouTube টাইটেল – ১০০">YouTube title – 100</option>
+            <option value="2200" data-en="Instagram caption – 2,200" data-bn="Instagram ক্যাপশন – ২,২০০">Instagram caption – 2,200</option>
+          </select>
+          <div class="limit-meter" id="limitMeter" hidden>
+            <div class="limit-bar"><div class="limit-fill" id="limitFill"></div></div>
+            <p class="limit-text" id="limitText"></p>
+          </div>
+        </div>
+
+        <div class="wc-tools">
+          <button class="tb-btn tb-btn-primary" type="button" data-act="copy"><span data-lang-block="en">Copy text</span><span data-lang-block="bn">লেখা কপি</span></button>
+          <button class="tb-btn" type="button" data-act="upper">UPPERCASE</button>
+          <button class="tb-btn" type="button" data-act="lower">lowercase</button>
+          <button class="tb-btn" type="button" data-act="title">Title Case</button>
+          <button class="tb-btn" type="button" data-act="sentence">Sentence case</button>
+          <button class="tb-btn" type="button" data-act="clean"><span data-lang-block="en">Remove extra spaces</span><span data-lang-block="bn">বাড়তি স্পেস মুছুন</span></button>
+          <button class="tb-btn" type="button" data-act="undo" hidden><span data-lang-block="en">Undo</span><span data-lang-block="bn">আগের অবস্থায় ফেরান</span></button>
+          <button class="tb-btn tb-btn-danger" type="button" data-act="clear"><span data-lang-block="en">Clear</span><span data-lang-block="bn">মুছে ফেলুন</span></button>
+        </div>
+
+        <div class="kw">
+          <h2><span data-lang-block="en">Most-used words</span><span data-lang-block="bn">সবচেয়ে বেশি ব্যবহৃত শব্দ</span></h2>
+          <p class="kw-hint">
+            <span data-lang-block="en">Words with 3 or more characters. Common English words such as "the" and "and" are ignored.</span>
+            <span data-lang-block="bn">৩ বা তার বেশি অক্ষরের শব্দ। "the" ও "and"-এর মতো সাধারণ ইংরেজি শব্দ বাদ দেওয়া হয়।</span>
+          </p>
+          <div class="kw-list" id="kwList"></div>
+          <p class="kw-empty" id="kwEmpty">
+            <span data-lang-block="en">Type some text to see your most-used words.</span>
+            <span data-lang-block="bn">সবচেয়ে বেশি ব্যবহৃত শব্দ দেখতে কিছু লিখুন।</span>
+          </p>
+        </div>
+
+      </div>
+    </section>
+<!-- ============ GUIDE ============ -->
+    <article class="container container-narrow content">
+
+      <section class="content-card">
+        <h2 data-lang-block="en">How to use the word counter</h2>
+        <h2 data-lang-block="bn">শব্দ গণনা ব্যবহারের নিয়ম</h2>
+        <ol data-lang-block="en">
+          <li>Type or paste your text into the box. The numbers above it update as you write.</li>
+          <li>Read the counts for words, characters, sentences, paragraphs and lines, along with the estimated reading and speaking time.</li>
+          <li>If you are writing for a platform with a limit, pick it under "Character limit". The bar turns orange when you are close and red when you go over.</li>
+          <li>Use the buttons below the box to change the case, remove extra spaces or copy the text. Press "Undo" if you don't like a change.</li>
+          <li>Scroll down to "Most-used words" to spot words you repeat too often.</li>
+        </ol>
+        <ol data-lang-block="bn">
+          <li>লেখার ঘরে আপনার লেখা টাইপ করুন বা পেস্ট করুন। লেখার সাথে সাথে ওপরের সংখ্যাগুলো বদলাতে থাকে।</li>
+          <li>শব্দ, অক্ষর, বাক্য, অনুচ্ছেদ আর লাইনের সংখ্যা দেখুন, সাথে পড়া ও বলার আনুমানিক সময়।</li>
+          <li>কোনো প্ল্যাটফর্মের সীমা মেনে লিখতে চাইলে "অক্ষরের সীমা" থেকে সেটা বেছে নিন। সীমার কাছাকাছি গেলে বারটা কমলা আর ছাড়িয়ে গেলে লাল হয়।</li>
+          <li>ঘরের নিচের বাটন দিয়ে অক্ষরের ধরন বদলান, বাড়তি স্পেস মুছুন বা লেখা কপি করুন। কোনো বদল পছন্দ না হলে "আগের অবস্থায় ফেরান" চাপুন।</li>
+          <li>একই শব্দ বেশি বেশি ব্যবহার করছেন কি না দেখতে নিচে "সবচেয়ে বেশি ব্যবহৃত শব্দ" অংশটা দেখুন।</li>
+        </ol>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">How each number is calculated</h2>
+        <h2 data-lang-block="bn">প্রতিটা সংখ্যা কীভাবে হিসাব হয়</h2>
+        <div class="table-wrap" data-lang-block="en">
+          <table>
+            <thead><tr><th scope="col">Count</th><th scope="col">How it is measured</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Words</strong></td><td>Groups of characters separated by spaces or line breaks.</td></tr>
+              <tr><td><strong>Characters</strong></td><td>Every character, including spaces and line breaks.</td></tr>
+              <tr><td><strong>No spaces</strong></td><td>Characters left after removing all spaces, tabs and line breaks.</td></tr>
+              <tr><td><strong>Sentences</strong></td><td>Pieces of text ending in . ! ? or the Bengali danda ।. A last piece without punctuation also counts.</td></tr>
+              <tr><td><strong>Paragraphs</strong></td><td>Blocks of text separated by a blank line.</td></tr>
+              <tr><td><strong>Lines</strong></td><td>Lines that contain some text.</td></tr>
+              <tr><td><strong>Reading time</strong></td><td>Words divided by 200 words per minute.</td></tr>
+              <tr><td><strong>Speaking time</strong></td><td>Words divided by 130 words per minute.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap" data-lang-block="bn">
+          <table>
+            <thead><tr><th scope="col">সংখ্যা</th><th scope="col">কীভাবে মাপা হয়</th></tr></thead>
+            <tbody>
+              <tr><td><strong>শব্দ</strong></td><td>স্পেস বা লাইন-ব্রেক দিয়ে আলাদা করা অক্ষরের গুচ্ছ।</td></tr>
+              <tr><td><strong>অক্ষর</strong></td><td>স্পেস ও লাইন-ব্রেকসহ প্রতিটা অক্ষর।</td></tr>
+              <tr><td><strong>স্পেস ছাড়া অক্ষর</strong></td><td>সব স্পেস, ট্যাব ও লাইন-ব্রেক বাদ দিলে যত অক্ষর থাকে।</td></tr>
+              <tr><td><strong>বাক্য</strong></td><td>. ! ? বা দাঁড়ি (।) দিয়ে শেষ হওয়া লেখার টুকরো। শেষে চিহ্নহীন টুকরো থাকলে সেটাও গোনা হয়।</td></tr>
+              <tr><td><strong>অনুচ্ছেদ</strong></td><td>ফাঁকা লাইন দিয়ে আলাদা করা লেখার অংশ।</td></tr>
+              <tr><td><strong>লাইন</strong></td><td>যেসব লাইনে কিছু লেখা আছে।</td></tr>
+              <tr><td><strong>পড়ার সময়</strong></td><td>শব্দ সংখ্যা ÷ প্রতি মিনিটে ২০০ শব্দ।</td></tr>
+              <tr><td><strong>বলার সময়</strong></td><td>শব্দ সংখ্যা ÷ প্রতি মিনিটে ১৩০ শব্দ।</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top: 1rem;" data-lang-block="en">Reading and speaking times are estimates. People read and speak at different speeds, and difficult or technical text takes longer.</p>
+        <p style="margin-top: 1rem;" data-lang-block="bn">পড়া ও বলার সময় আনুমানিক। মানুষভেদে গতি আলাদা, আর কঠিন বা কারিগরি লেখা পড়তে বেশি সময় লাগে।</p>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Character limits: what to know</h2>
+        <h2 data-lang-block="bn">অক্ষরের সীমা: যা জানা দরকার</h2>
+        <ul data-lang-block="en">
+          <li><strong>X (Twitter):</strong> 280 characters per post. X counts every link as a fixed length and counts some characters, such as emoji, as two, so its own counter can differ slightly from this one.</li>
+          <li><strong>SMS:</strong> 160 characters fit in one message when the text uses plain English letters. Bengali text or emoji switch the message to Unicode, which cuts the limit to 70 characters per message. Longer messages are split into several parts.</li>
+          <li><strong>SEO title and meta description:</strong> about 60 and about 160 characters are common guidelines. Google shortens results by pixel width rather than a fixed character count, so treat these as targets, not strict rules.</li>
+          <li><strong>YouTube:</strong> a video title can be up to 100 characters.</li>
+          <li><strong>Instagram:</strong> a caption can be up to 2,200 characters.</li>
+          <li>Platforms change their limits from time to time, so check the platform itself when the exact number matters.</li>
+        </ul>
+        <ul data-lang-block="bn">
+          <li><strong>X (টুইটার):</strong> প্রতি পোস্টে ২৮০ অক্ষর। X প্রতিটা লিংককে নির্দিষ্ট দৈর্ঘ্য ধরে, আর ইমোজির মতো কিছু অক্ষরকে দুটো হিসেবে গোনে, তাই ওদের নিজস্ব কাউন্টারের সংখ্যা এখানকার থেকে সামান্য আলাদা হতে পারে।</li>
+          <li><strong>এসএমএস:</strong> সাধারণ ইংরেজি অক্ষরে একটি বার্তায় ১৬০ অক্ষর ধরে। বাংলা লেখা বা ইমোজি থাকলে বার্তাটি ইউনিকোড মোডে চলে যায়, তখন সীমা কমে প্রতি বার্তায় ৭০ অক্ষর হয়। এর চেয়ে লম্বা হলে বার্তা কয়েকটা অংশে ভেঙে যায়।</li>
+          <li><strong>SEO টাইটেল ও মেটা ডেসক্রিপশন:</strong> প্রচলিত নির্দেশনা টাইটেলে প্রায় ৬০ আর ডেসক্রিপশনে প্রায় ১৬০ অক্ষর। Google সার্চ ফলাফল কাটে পিক্সেল-প্রস্থ অনুযায়ী, নির্দিষ্ট অক্ষর সংখ্যায় নয়। তাই এগুলোকে কড়া নিয়ম নয়, লক্ষ্য হিসেবে দেখুন।</li>
+          <li><strong>YouTube:</strong> ভিডিওর টাইটেল সর্বোচ্চ ১০০ অক্ষর।</li>
+          <li><strong>Instagram:</strong> ক্যাপশন সর্বোচ্চ ২,২০০ অক্ষর।</li>
+          <li>প্ল্যাটফর্মগুলো সময়ে সময়ে সীমা বদলায়, তাই সঠিক সংখ্যা জরুরি হলে সংশ্লিষ্ট প্ল্যাটফর্মে দেখে নিন।</li>
+        </ul>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Working with Bengali text</h2>
+        <h2 data-lang-block="bn">বাংলা লেখার ক্ষেত্রে জেনে রাখুন</h2>
+        <ul data-lang-block="en">
+          <li><strong>Words:</strong> Bengali words are separated by spaces, so the word count works the same way as for English.</li>
+          <li><strong>Characters:</strong> each vowel sign and joined letter is stored as its own character in Unicode, so a Bengali text can show more characters than the number of letters you see on screen.</li>
+          <li><strong>Sentences:</strong> the danda (।) is recognised as the end of a sentence, along with . ! and ?.</li>
+          <li><strong>Case buttons:</strong> Bengali has no uppercase or lowercase, so UPPERCASE, lowercase, Title Case and Sentence case only change the English letters in your text.</li>
+          <li><strong>Most-used words:</strong> the list ignores only common English words such as "the" and "and", so Bengali connecting words may appear in it.</li>
+        </ul>
+        <ul data-lang-block="bn">
+          <li><strong>শব্দ:</strong> বাংলা শব্দ স্পেস দিয়ে আলাদা হয়, তাই ইংরেজির মতোই শব্দ গণনা কাজ করে।</li>
+          <li><strong>অক্ষর:</strong> ইউনিকোডে প্রতিটা কার-চিহ্ন আর যুক্তবর্ণের অংশ আলাদা অক্ষর হিসেবে জমা থাকে। তাই বাংলা লেখায় পর্দায় দেখা বর্ণের সংখ্যার চেয়ে অক্ষরের সংখ্যা বেশি দেখাতে পারে।</li>
+          <li><strong>বাক্য:</strong> দাঁড়ি (।) বাক্যের শেষ হিসেবে ধরা হয়, সাথে . ! আর ?-ও।</li>
+          <li><strong>অক্ষরের ধরনের বাটন:</strong> বাংলায় বড় হাতের বা ছোট হাতের বলে কিছু নেই, তাই UPPERCASE, lowercase, Title Case আর Sentence case শুধু লেখার ইংরেজি অক্ষরগুলো বদলায়।</li>
+          <li><strong>সবচেয়ে বেশি ব্যবহৃত শব্দ:</strong> তালিকা শুধু "the", "and"-এর মতো সাধারণ ইংরেজি শব্দ বাদ দেয়, তাই বাংলার সংযোগ-শব্দ তালিকায় আসতে পারে।</li>
+        </ul>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Frequently asked questions</h2>
+        <h2 data-lang-block="bn">সচরাচর জিজ্ঞাসা</h2>
+        <div class="faq" data-lang-block="en">
+          <details><summary>Is this word counter free?</summary>
+            <p>Yes. It is free, needs no sign-up and has no watermark.</p></details>
+          <details><summary>Is my text uploaded or saved?</summary>
+            <p>No. Your text is processed in your browser and is not sent to our servers or stored. We use Google Analytics to count visits, but the text you type is not part of that. Because nothing is saved, your text disappears when you close or reload the page, so copy it first if you need it.</p></details>
+          <details><summary>Is there a word limit?</summary>
+            <p>The tool does not set any limit. Very large texts, such as hundreds of thousands of words, may feel slower on an older phone, and in that case the numbers update a moment after you stop typing.</p></details>
+          <details><summary>How are words counted?</summary>
+            <p>Any group of characters separated by spaces or line breaks counts as one word. So "well-known" and "don't" each count as one word, and numbers count too. Other programs, such as Microsoft Word or Google Docs, may give slightly different totals in edge cases like symbols and hyphens.</p></details>
+          <details><summary>Does it work for Bengali?</summary>
+            <p>Yes. Words, characters, sentences and reading time all work for Bengali text. See "Working with Bengali text" above for a few details about how characters are counted.</p></details>
+          <details><summary>How is the reading time calculated?</summary>
+            <p>It divides the number of words by 200 words per minute for reading and 130 words per minute for speaking. These are typical averages, so use them as a rough guide, not an exact figure.</p></details>
+          <details><summary>Why is my count different on another site or app?</summary>
+            <p>Different tools follow different rules. They may treat line breaks, links, emoji or symbols differently. For a platform limit, use this count as a close estimate and do a final check with the platform's own counter.</p></details>
+          <details><summary>What is the difference between Title Case and Sentence case?</summary>
+            <p>Title Case capitalises the first letter of every word, including small words such as "of" and "the", so it does not follow a specific style guide. Sentence case capitalises only the first letter of each sentence and makes the rest lowercase.</p></details>
+          <details><summary>How does the Undo button work?</summary>
+            <p>It restores the text as it was before your last change made with the buttons. Press it again to go back one more step. It does not track your typing, so use your keyboard's own undo for that.</p></details>
+        </div>
+        <div class="faq" data-lang-block="bn">
+          <details><summary>এই শব্দ গণনা কি ফ্রি?</summary>
+            <p>হ্যাঁ। এটা ফ্রি, সাইনআপ লাগে না, আর ওয়াটারমার্কও নেই।</p></details>
+          <details><summary>আমার লেখা কি আপলোড বা সংরক্ষণ হয়?</summary>
+            <p>না। আপনার লেখা ব্রাউজারেই প্রসেস হয়, আমাদের সার্ভারে পাঠানো বা জমা রাখা হয় না। কতজন সাইটে আসছেন তা গুনতে আমরা Google Analytics ব্যবহার করি, কিন্তু আপনার টাইপ করা লেখা তার অংশ নয়। কিছুই সংরক্ষণ হয় না বলে পেজ বন্ধ করলে বা রিলোড দিলে লেখা মুছে যায়, তাই দরকার হলে আগে কপি করে নিন।</p></details>
+          <details><summary>শব্দের কি কোনো সীমা আছে?</summary>
+            <p>টুলে আমরা কোনো সীমা রাখিনি। খুব বড় লেখা, যেমন কয়েক লক্ষ শব্দ, পুরনো ফোনে একটু ধীর লাগতে পারে। তখন লেখা থামানোর একটু পরে সংখ্যাগুলো আপডেট হয়।</p></details>
+          <details><summary>শব্দ কীভাবে গোনা হয়?</summary>
+            <p>স্পেস বা লাইন-ব্রেক দিয়ে আলাদা করা প্রতিটা অক্ষরের গুচ্ছ একটা শব্দ হিসেবে গোনা হয়। তাই "well-known" আর "don't" প্রতিটা একটা শব্দ, আর সংখ্যাও গোনা হয়। Microsoft Word বা Google Docs-এর মতো অন্য প্রোগ্রামে চিহ্ন আর হাইফেনের মতো ক্ষেত্রে মোট সংখ্যা সামান্য আলাদা হতে পারে।</p></details>
+          <details><summary>বাংলা লেখায় কি চলে?</summary>
+            <p>হ্যাঁ। বাংলা লেখার শব্দ, অক্ষর, বাক্য আর পড়ার সময় সবই কাজ করে। অক্ষর কীভাবে গোনা হয় সে বিষয়ে কিছু তথ্যের জন্য ওপরের "বাংলা লেখার ক্ষেত্রে জেনে রাখুন" অংশ দেখুন।</p></details>
+          <details><summary>পড়ার সময় কীভাবে হিসাব হয়?</summary>
+            <p>পড়ার জন্য শব্দ সংখ্যাকে প্রতি মিনিটে ২০০ শব্দ দিয়ে আর বলার জন্য প্রতি মিনিটে ১৩০ শব্দ দিয়ে ভাগ করা হয়। এগুলো সাধারণ গড়, তাই সংখ্যাটাকে মোটামুটি ধারণা হিসেবে নিন, নিখুঁত মাপ হিসেবে নয়।</p></details>
+          <details><summary>অন্য সাইট বা অ্যাপে আমার সংখ্যা আলাদা আসছে কেন?</summary>
+            <p>বিভিন্ন টুল আলাদা নিয়ম মানে। লাইন-ব্রেক, লিংক, ইমোজি বা চিহ্ন তারা আলাদাভাবে ধরতে পারে। কোনো প্ল্যাটফর্মের সীমা মেলাতে হলে এখানকার সংখ্যাকে কাছাকাছি অনুমান হিসেবে নিন, আর শেষে সেই প্ল্যাটফর্মের নিজের কাউন্টারে যাচাই করে নিন।</p></details>
+          <details><summary>Title Case আর Sentence case-এর পার্থক্য কী?</summary>
+            <p>Title Case প্রতিটা শব্দের প্রথম অক্ষর বড় হাতের করে, "of" আর "the"-এর মতো ছোট শব্দেরও, তাই এটা কোনো নির্দিষ্ট স্টাইল গাইড মেনে চলে না। Sentence case শুধু প্রতিটা বাক্যের প্রথম অক্ষর বড় হাতের করে, বাকিটা ছোট হাতের করে।</p></details>
+          <details><summary>"আগের অবস্থায় ফেরান" বাটন কীভাবে কাজ করে?</summary>
+            <p>বাটন দিয়ে করা সর্বশেষ বদলের আগে লেখা যেমন ছিল, সেটা ফিরিয়ে আনে। আবার চাপলে আরও এক ধাপ পেছনে যায়। আপনার টাইপ করা অংশ এটা ট্র্যাক করে না, তার জন্য কিবোর্ডের নিজের undo ব্যবহার করুন।</p></details>
+        </div>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">More free tools</h2>
+        <h2 data-lang-block="bn">আরও ফ্রি টুলস</h2>
+        <div class="related-grid">
+          <a class="related-link" href="qr-code-generator.html">📱 <span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span></a>
+          <a class="related-link" href="password-generator.html">🔐 <span data-lang-block="en">Password Generator</span><span data-lang-block="bn">পাসওয়ার্ড জেনারেটর</span></a>
+          <a class="related-link" href="json-formatter.html">🧾 <span data-lang-block="en">JSON Formatter</span><span data-lang-block="bn">JSON ফরম্যাটার</span></a>
+          <a class="related-link" href="image-compressor.html">🖼️ <span data-lang-block="en">Image Compressor</span><span data-lang-block="bn">ইমেজ কম্প্রেসর</span></a>
+          <a class="related-link" href="calculator.html">🧮 <span data-lang-block="en">Calculator</span><span data-lang-block="bn">ক্যালকুলেটর</span></a>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-links">
+        <a href="./"><span data-lang-block="en">Home</span><span data-lang-block="bn">হোম</span></a>
+        <a href="privacy.html"><span data-lang-block="en">Privacy Policy</span><span data-lang-block="bn">গোপনীয়তা নীতি</span></a>
+        <a href="terms.html"><span data-lang-block="en">Terms of Use</span><span data-lang-block="bn">ব্যবহারের শর্তাবলী</span></a>
+        <a href="contact.html"><span data-lang-block="en">Contact</span><span data-lang-block="bn">যোগাযোগ</span></a>
+      </p>
+      <p>
+        <span data-lang-block="en">© 2026 AnisTools. All rights reserved.</span>
+        <span data-lang-block="bn">© ২০২৬ AnisTools। সর্বস্বত্ব সংরক্ষিত।</span>
+      </p>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
