@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Free JSON Formatter, Validator & Minifier | AnisTools</title>
+  <meta name="description" content="Format, validate and minify JSON online for free. Get the exact line and column of errors, fix common mistakes and download the result. Runs in your browser.">
+  <meta name="theme-color" content="#0a0e1a">
+  <link rel="canonical" href="https://anisur-ai.github.io/Anistools/json-formatter.html">
+  <meta property="og:title" content="Free JSON Formatter & Validator | AnisTools">
+  <meta property="og:description" content="Format, validate, minify and fix JSON. See the line and column of errors. Free, private, no sign-up.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://anisur-ai.github.io/Anistools/json-formatter.html">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <script>
+    try {
+      var d = document.documentElement;
+      d.dataset.theme = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      if (localStorage.getItem('lang') === 'bn') d.lang = 'bn';
+    } catch (e) {}
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LRL9NLYQDY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LRL9NLYQDY');
+  </script>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebApplication","name":"JSON Formatter – AnisTools","url":"https://anisur-ai.github.io/Anistools/json-formatter.html","applicationCategory":"DeveloperApplication","operatingSystem":"Any","inLanguage":["en","bn"],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+    {"@type":"BreadcrumbList","itemListElement":[
+      {"@type":"ListItem","position":1,"name":"AnisTools","item":"https://anisur-ai.github.io/Anistools/"},
+      {"@type":"ListItem","position":2,"name":"JSON Formatter","item":"https://anisur-ai.github.io/Anistools/json-formatter.html"}
+    ]}
+  ]}
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #070b16;
+      --bg-alt: rgba(11, 17, 32, 0.62);
+      --header-bg: rgba(7, 11, 22, 0.78);
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.07);
+      --card: rgba(15, 23, 42, 0.72);
+      --field: rgba(0, 0, 0, 0.28);
+      --border: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.3);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --link: #818cf8;
+      --primary: #6366f1;
+      --primary-2: #8b5cf6;
+      --accent: #ec4899;
+      --glow: rgba(99, 102, 241, 0.35);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --header-h: 64px;
+
+      /* JSON tool colours */
+      --jt-a: #14b8a6;
+      --jt-b: #0ea5e9;
+      --jt-glow: rgba(20, 184, 166, 0.3);
+      --ok: #10b981;
+      --err: #ef4444;
+      --code-bg: #0a101d;
+      --code-fg: #e2e8f0;
+      --gutter-bg: rgba(255, 255, 255, 0.03);
+      --gutter-fg: #64748b;
+      --tk-key: #7dd3fc;
+      --tk-str: #86efac;
+      --tk-num: #fdba74;
+      --tk-bool: #c4b5fd;
+      --tk-null: #fda4af;
+      --tk-punc: #94a3b8;
+      --code-fs: 14px;
+      --code-lh: 22px;
+      --jt-h: clamp(340px, 62vh, 540px);
+
+      --font: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+      color-scheme: dark;
+    }
+    [data-theme="light"] {
+      --bg: #f6f8fc;
+      --bg-alt: rgba(238, 242, 249, 0.75);
+      --header-bg: rgba(246, 248, 252, 0.82);
+      --surface: rgba(15, 23, 42, 0.04);
+      --surface-2: rgba(15, 23, 42, 0.07);
+      --card: rgba(255, 255, 255, 0.94);
+      --field: #ffffff;
+      --border: rgba(15, 23, 42, 0.1);
+      --border-strong: rgba(15, 23, 42, 0.22);
+      --text: #0f172a;
+      --muted: #475569;
+      --link: #4f46e5;
+      --glow: rgba(99, 102, 241, 0.22);
+      --shadow: 0 18px 44px rgba(15, 23, 42, 0.1);
+
+      --jt-a: #0d9488;
+      --jt-b: #0284c7;
+      --jt-glow: rgba(13, 148, 136, 0.25);
+      --ok: #059669;
+      --err: #dc2626;
+      --code-bg: #ffffff;
+      --code-fg: #0f172a;
+      --gutter-bg: #f1f5f9;
+      --gutter-fg: #94a3b8;
+      --tk-key: #0369a1;
+      --tk-str: #15803d;
+      --tk-num: #c2410c;
+      --tk-bool: #6d28d9;
+      --tk-null: #be123c;
+      --tk-punc: #64748b;
+      color-scheme: light;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
+      transition: background-color .3s, color .3s;
+    }
+    main { flex: 1; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    ul, ol { list-style: none; }
+    [hidden] { display: none !important; }
+    ::selection { background: var(--primary); color: #fff; }
+    :focus-visible { outline: 2px solid #22d3ee; outline-offset: 3px; border-radius: 6px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; white-space: nowrap; }
+
+    html[lang="bn"] [data-lang-block="en"],
+    html:not([lang="bn"]) [data-lang-block="bn"] { display: none; }
+    html[lang="bn"] h1, html[lang="bn"] h2, html[lang="bn"] .brand-name { letter-spacing: 0; }
+
+    .container { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+    .container-narrow { width: min(860px, 100% - 2.5rem); }
+
+    .skip-link {
+      position: absolute; left: 12px; top: -64px; z-index: 3000; padding: .6rem 1rem;
+      font-weight: 600; color: #fff; background: var(--primary); border-radius: 10px;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .bg-glow { position: fixed; z-index: -1; width: 600px; height: 600px; border-radius: 50%; pointer-events: none; opacity: .34; }
+    .bg-glow-1 { top: -260px; left: -200px; background: radial-gradient(circle, var(--jt-a) 0, transparent 68%); opacity: .22; }
+    .bg-glow-2 { bottom: -280px; right: -220px; background: radial-gradient(circle, var(--primary) 0, transparent 68%); opacity: .2; }
+    [data-theme="light"] .bg-glow { opacity: .12; }
+    [data-theme="light"] .bg-glow-2 { opacity: .09; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky; top: 0; z-index: 100; height: var(--header-h);
+      background: var(--header-bg);
+      -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { display: inline-flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.3rem; letter-spacing: -.01em; }
+    .brand-mark {
+      display: grid; place-items: center; width: 36px; height: 36px; font-size: 1.1rem; border-radius: 11px;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 6px 18px var(--glow);
+    }
+    .grad {
+      background-image: linear-gradient(135deg, #818cf8, #a78bfa 45%, #f472b6);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+    }
+    [data-theme="light"] .grad { background-image: linear-gradient(135deg, #4f46e5, #7c3aed 50%, #db2777); }
+    .grad-teal {
+      background-image: linear-gradient(135deg, #2dd4bf, #38bdf8);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+    }
+    [data-theme="light"] .grad-teal { background-image: linear-gradient(135deg, #0d9488, #0284c7); }
+    .header-actions { display: flex; align-items: center; gap: .6rem; }
+    .nav-link { padding: .5rem .85rem; font-weight: 600; font-size: .95rem; color: var(--muted); border-radius: 10px; transition: color .2s, background-color .2s; }
+    .nav-link:hover { color: var(--text); background: var(--surface-2); }
+    .lang-switch { display: flex; align-items: center; gap: .4rem; height: 40px; padding: 0 .7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; }
+    .lang-switch select { background: transparent; border: 0; outline: 0; font-weight: 600; cursor: pointer; }
+    .icon-btn { display: grid; place-items: center; width: 40px; height: 40px; font-size: 1.05rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; transition: background-color .2s; }
+    .icon-btn:hover { background: var(--surface-2); }
+    select option { background: var(--bg); color: var(--text); }
+
+    /* ---------- Page hero ---------- */
+    .page-hero { padding: clamp(2rem, 5vw, 3.5rem) 0 1.6rem; text-align: center; }
+    .breadcrumb { margin-bottom: 1rem; font-size: .85rem; color: var(--muted); }
+    .breadcrumb a { color: var(--link); }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .page-hero h1 { margin-bottom: .8rem; font-size: clamp(2rem, 5.5vw, 3.2rem); font-weight: 800; line-height: 1.15; letter-spacing: -.02em; text-wrap: balance; }
+    .page-hero .lead { max-width: 700px; margin: 0 auto; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.15rem); }
+/* ---------- JSON tool ---------- */
+    .tool-shell {
+      padding: clamp(1rem, 2.6vw, 1.6rem);
+      background: var(--card); border: 1px solid var(--border); border-radius: 28px; box-shadow: var(--shadow);
+    }
+
+    .jt-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1.4rem; margin-bottom: 1rem; }
+    .jt-group { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+
+    .jt-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+      min-height: 42px; padding: .5rem 1rem; font-weight: 700; font-size: .92rem; white-space: nowrap;
+      background: var(--surface); border: 1px solid var(--border-strong); border-radius: 12px;
+      transition: transform .15s, border-color .2s, background-color .2s, box-shadow .2s, color .2s;
+    }
+    .jt-btn:active { transform: scale(.97); }
+    .jt-btn[disabled] { opacity: .5; cursor: not-allowed; }
+    .jt-btn-primary {
+      color: #fff; border-color: transparent;
+      background: linear-gradient(135deg, var(--jt-a), var(--jt-b));
+      box-shadow: 0 8px 20px var(--jt-glow);
+    }
+    @media (hover: hover) {
+      .jt-btn:hover { border-color: var(--jt-a); }
+      .jt-btn-primary:hover { border-color: transparent; transform: translateY(-1px); }
+      .jt-btn-danger:hover { color: var(--err); border-color: var(--err); }
+    }
+
+    .jt-field { display: inline-flex; align-items: center; gap: .5rem; font-size: .88rem; font-weight: 600; color: var(--muted); }
+    .jt-select {
+      min-height: 42px; padding: .5rem .7rem; font-size: .92rem; outline: 0;
+      background: var(--field); border: 1px solid var(--border-strong); border-radius: 10px;
+    }
+    .jt-select:focus { border-color: var(--jt-a); box-shadow: 0 0 0 3px var(--jt-glow); }
+    .jt-check {
+      display: inline-flex; align-items: center; gap: .5rem; min-height: 42px; padding: 0 .9rem;
+      font-size: .9rem; font-weight: 600; cursor: pointer;
+      background: var(--surface); border: 1px solid var(--border-strong); border-radius: 10px;
+    }
+    .jt-check input { width: 17px; height: 17px; accent-color: var(--jt-a); }
+
+    .jt-panes { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+    .jt-pane {
+      display: flex; flex-direction: column; min-width: 0; overflow: hidden;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .jt-pane:focus-within { border-color: var(--jt-a); }
+    .jt-pane.drag { border-color: var(--jt-a); box-shadow: 0 0 0 3px var(--jt-glow); }
+    .jt-head {
+      display: flex; align-items: center; justify-content: space-between; gap: .6rem;
+      min-height: 50px; padding: .5rem .8rem .5rem 1rem; border-bottom: 1px solid var(--border);
+    }
+    .jt-title { font-size: .95rem; font-weight: 800; }
+    .jt-meta { margin-left: .5rem; font-size: .78rem; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .jt-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .4rem; }
+    .jt-mini {
+      min-height: 34px; padding: .3rem .7rem; font-size: .82rem; font-weight: 700; white-space: nowrap;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px;
+      transition: border-color .2s, background-color .2s;
+    }
+    .jt-mini[disabled] { opacity: .45; cursor: not-allowed; }
+    @media (hover: hover) { .jt-mini:not([disabled]):hover { border-color: var(--jt-a); } }
+
+    /* Input editor with line numbers */
+    .jt-editor { position: relative; display: flex; height: var(--jt-h); background: var(--code-bg); }
+    .jt-gutter {
+      flex: none; width: 3.4rem; padding: 12px 8px 24px 0; overflow: hidden; text-align: right; white-space: pre;
+      font-family: var(--mono); font-size: var(--code-fs); line-height: var(--code-lh); font-variant-numeric: tabular-nums;
+      color: var(--gutter-fg); background: var(--gutter-bg); border-right: 1px solid var(--border);
+      -webkit-user-select: none; user-select: none;
+    }
+    .jt-input {
+      flex: 1; min-width: 0; padding: 12px 14px; resize: none; outline: 0; border: 0;
+      font-family: var(--mono); font-size: var(--code-fs); line-height: var(--code-lh);
+      white-space: pre; overflow: auto; tab-size: 2; background: transparent; color: var(--code-fg);
+    }
+    .jt-input::placeholder { color: var(--gutter-fg); }
+    .jt-errmark {
+      position: absolute; left: 0; right: 0; display: none; pointer-events: none;
+      height: var(--code-lh); background: rgba(239, 68, 68, .16); border-left: 3px solid var(--err);
+    }
+
+    /* Output with syntax colours */
+    .jt-out-wrap { position: relative; height: var(--jt-h); background: var(--code-bg); }
+    .jt-out {
+      position: absolute; inset: 0; margin: 0; padding: 12px 14px; overflow: auto;
+      font-family: var(--mono); font-size: var(--code-fs); line-height: var(--code-lh);
+      white-space: pre; tab-size: 2; color: var(--code-fg);
+      -webkit-user-select: text; user-select: text;
+    }
+    .jt-empty {
+      position: absolute; inset: 0; display: grid; place-items: center; padding: 1.5rem;
+      text-align: center; font-size: .92rem; color: var(--gutter-fg); pointer-events: none;
+    }
+    .tk-key { color: var(--tk-key); }
+    .tk-str { color: var(--tk-str); }
+    .tk-num { color: var(--tk-num); }
+    .tk-bool { color: var(--tk-bool); }
+    .tk-null { color: var(--tk-null); }
+    .tk-punc { color: var(--tk-punc); }
+
+    /* Status and stats */
+    .jt-status {
+      display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .9rem; margin-top: 1rem;
+      padding: .8rem 1rem; font-size: .93rem; font-weight: 600; color: var(--muted);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    }
+    .jt-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--muted); }
+    .jt-status-text { flex: 1 1 220px; min-width: 0; line-height: 1.5; overflow-wrap: anywhere; }
+    .jt-status.ok { color: var(--ok); background: rgba(16, 185, 129, .08); border-color: rgba(16, 185, 129, .4); }
+    .jt-status.ok .jt-dot { background: var(--ok); }
+    .jt-status.err { color: var(--err); background: rgba(239, 68, 68, .08); border-color: rgba(239, 68, 68, .4); }
+    .jt-status.err .jt-dot { background: var(--err); }
+    .jt-goto {
+      flex: none; min-height: 34px; padding: .3rem .8rem; font-size: .85rem; font-weight: 700; color: var(--text);
+      background: var(--surface-2); border: 1px solid var(--border-strong); border-radius: 9px;
+    }
+    @media (hover: hover) { .jt-goto:hover { border-color: var(--err); } }
+
+    .jt-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .7rem; margin-top: 1rem; }
+    .jt-stat { padding: .8rem .6rem; text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; }
+    .jt-stat-num { display: block; font-size: 1.05rem; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+    .jt-stat-label { display: block; margin-top: .1rem; font-size: .74rem; font-weight: 600; color: var(--muted); }
+    .jt-privacy { margin-top: 1rem; font-size: .82rem; text-align: center; color: var(--muted); }
+
+    /* ---------- Content ---------- */
+    .content { display: grid; gap: 1.2rem; padding: 2.5rem 0 3rem; }
+    .content-card { padding: clamp(1.3rem, 3vw, 2rem); background: var(--card); border: 1px solid var(--border); border-radius: 20px; }
+    .content-card h2 { margin-bottom: .9rem; font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+    .content-card p, .content-card li { color: var(--muted); line-height: 1.75; }
+    .content-card strong { color: var(--text); }
+    .content-card code {
+      padding: .1rem .4rem; font-family: var(--mono); font-size: .88em; color: var(--text);
+      background: var(--surface-2); border-radius: 6px;
+    }
+    .content-card ol { display: grid; gap: .8rem; counter-reset: step; }
+    .content-card ol li { position: relative; padding-left: 2.6rem; counter-increment: step; }
+    .content-card ol li::before {
+      content: counter(step); position: absolute; left: 0; top: .1rem; display: grid; place-items: center;
+      width: 1.9rem; height: 1.9rem; font-weight: 800; font-size: .85rem; color: #fff;
+      background: linear-gradient(135deg, var(--jt-a), var(--jt-b)); border-radius: 50%;
+    }
+    .content-card ul { display: grid; gap: .6rem; padding-left: 1.2rem; list-style: disc; }
+    .content-card ul li::marker { color: var(--jt-a); }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; }
+    .table-wrap table { width: 100%; min-width: 420px; border-collapse: collapse; font-size: .95rem; }
+    .table-wrap th, .table-wrap td { padding: .75rem 1rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
+    .table-wrap th { font-size: .85rem; color: var(--text); background: var(--surface); }
+    .table-wrap td { color: var(--muted); }
+    .table-wrap tr:last-child td { border-bottom: 0; }
+
+    .faq { display: grid; gap: .7rem; }
+    .faq details { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; transition: border-color .2s; }
+    .faq details[open] { border-color: var(--border-strong); }
+    .faq summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1rem 1.2rem; font-weight: 700; cursor: pointer; list-style: none;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+      content: "+"; flex: none; display: grid; place-items: center; width: 26px; height: 26px; font-size: 1.15rem; font-weight: 500;
+      color: var(--link); background: var(--surface-2); border-radius: 50%; transition: transform .2s;
+    }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq details p { padding: 0 1.2rem 1.1rem; }
+
+    .related-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+    .related-link {
+      display: flex; align-items: center; gap: .6rem; padding: .9rem 1.1rem; font-weight: 600;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      transition: border-color .2s, transform .2s;
+    }
+    @media (hover: hover) { .related-link:hover { border-color: var(--jt-a); transform: translateY(-2px); } }
+
+    /* ---------- Footer & toast ---------- */
+    .site-footer { padding: 1.8rem 0; text-align: center; font-size: .9rem; color: var(--muted); background: var(--bg-alt); border-top: 1px solid var(--border); }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.3rem; margin-bottom: .6rem; }
+    .footer-links a:hover { color: var(--text); }
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; z-index: 1000; max-width: 90vw; padding: .8rem 1.4rem; text-align: center;
+      font-weight: 600; color: #fff; background: linear-gradient(135deg, var(--jt-a), var(--jt-b));
+      border-radius: 999px; box-shadow: 0 10px 25px var(--jt-glow);
+      transform: translate(-50%, 120px); opacity: 0; pointer-events: none; transition: transform .3s, opacity .3s;
+    }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 860px) {
+      .jt-panes { grid-template-columns: 1fr; }
+      :root { --jt-h: 320px; }
+      .jt-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      :root { --code-fs: 16px; --code-lh: 24px; }
+      .brand-name { font-size: 1.1rem; }
+      .lang-switch { padding: 0 .5rem; }
+      .lang-switch > span { display: none; }
+      .nav-link { display: none; }
+      .tool-shell { border-radius: 22px; }
+      .jt-group { width: 100%; }
+      .jt-group .jt-btn { flex: 1 1 calc(50% - .5rem); }
+      .jt-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .jt-stat:last-child { grid-column: 1 / -1; }
+      .jt-head { flex-wrap: wrap; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style></head>
+<body>
+  <a class="skip-link" href="#tool">Skip to tool</a>
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="AnisTools home">
+        <span class="brand-mark" aria-hidden="true">⚡</span>
+        <span class="brand-name">Anis<span class="grad">Tools</span></span>
+      </a>
+      <div class="header-actions">
+        <a class="nav-link" href="./#tools"><span data-lang-block="en">All tools</span><span data-lang-block="bn">সব টুলস</span></a>
+        <label class="lang-switch">
+          <span aria-hidden="true">🌐</span>
+          <select id="langSelect" aria-label="Language">
+            <option value="en">English</option>
+            <option value="bn">বাংলা</option>
+          </select>
+        </label>
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="./">AnisTools</a> ›
+          <span data-lang-block="en">JSON Formatter</span><span data-lang-block="bn">JSON ফরম্যাটার</span>
+        </nav>
+        <h1>
+          <span data-lang-block="en">Free <span class="grad-teal">JSON Formatter</span> &amp; Validator</span>
+          <span data-lang-block="bn">ফ্রি <span class="grad-teal">JSON ফরম্যাটার</span> ও ভ্যালিডেটর</span>
+        </h1>
+        <p class="lead">
+          <span data-lang-block="en">Format, validate, minify and fix JSON in seconds. When there is a mistake, you see the exact line and column. Everything runs in your browser and nothing is uploaded.</span>
+          <span data-lang-block="bn">JSON ফরম্যাট, যাচাই, মিনিফাই আর ভুল ঠিক করুন কয়েক সেকেন্ডে। ভুল থাকলে ঠিক কোন লাইন ও কলামে তা দেখতে পাবেন। সবকিছু আপনার ব্রাউজারেই চলে, কিছুই আপলোড হয় না।</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ TOOL ============ -->
+    <section class="container" id="tool" aria-label="JSON formatter">
+      <div class="tool-shell">
+
+        <!-- Toolbar -->
+        <div class="jt-bar">
+          <div class="jt-group" role="group" aria-label="Actions">
+            <button class="jt-btn jt-btn-primary" id="btnFormat" type="button"><span data-lang-block="en">Format</span><span data-lang-block="bn">ফরম্যাট</span></button>
+            <button class="jt-btn" id="btnMinify" type="button"><span data-lang-block="en">Minify</span><span data-lang-block="bn">মিনিফাই</span></button>
+            <button class="jt-btn" id="btnValidate" type="button"><span data-lang-block="en">Validate</span><span data-lang-block="bn">যাচাই করুন</span></button>
+            <button class="jt-btn" id="btnFix" type="button"><span data-lang-block="en">Fix errors</span><span data-lang-block="bn">ভুল ঠিক করুন</span></button>
+          </div>
+          <div class="jt-group" role="group" aria-label="Options">
+            <label class="jt-field">
+              <span><span data-lang-block="en">Indent</span><span data-lang-block="bn">ইনডেন্ট</span></span>
+              <select class="jt-select" id="indentSel">
+                <option value="2" data-en="2 spaces" data-bn="২ স্পেস" selected>2 spaces</option>
+                <option value="4" data-en="4 spaces" data-bn="৪ স্পেস">4 spaces</option>
+                <option value="tab" data-en="Tab" data-bn="ট্যাব">Tab</option>
+              </select>
+            </label>
+            <label class="jt-check">
+              <input type="checkbox" id="sortChk">
+              <span data-lang-block="en">Sort keys A–Z</span><span data-lang-block="bn">কী A–Z সাজান</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Two panes -->
+        <div class="jt-panes">
+
+          <!-- Input -->
+          <div class="jt-pane" id="inPane">
+            <div class="jt-head">
+              <div>
+                <label class="jt-title" for="jsonIn"><span data-lang-block="en">Input</span><span data-lang-block="bn">ইনপুট</span></label>
+                <span class="jt-meta" id="inMeta"></span>
+              </div>
+              <div class="jt-actions">
+                <button class="jt-mini" id="btnPaste" type="button"><span data-lang-block="en">Paste</span><span data-lang-block="bn">পেস্ট</span></button>
+                <button class="jt-mini" id="btnUpload" type="button"><span data-lang-block="en">Upload</span><span data-lang-block="bn">ফাইল</span></button>
+                <button class="jt-mini" id="btnSample" type="button"><span data-lang-block="en">Sample</span><span data-lang-block="bn">নমুনা</span></button>
+                <button class="jt-mini" id="btnClear" type="button"><span data-lang-block="en">Clear</span><span data-lang-block="bn">মুছুন</span></button>
+              </div>
+            </div>
+            <div class="jt-editor">
+              <div class="jt-gutter" id="gutter" aria-hidden="true">1</div>
+              <textarea class="jt-input" id="jsonIn" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"
+                aria-describedby="statusText"
+                data-ph-en='Paste your JSON here, for example {"name": "AnisTools", "free": true}'
+                data-ph-bn='আপনার JSON এখানে পেস্ট করুন, যেমন {"name": "AnisTools", "free": true}'></textarea>
+              <div class="jt-errmark" id="errMark" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <!-- Output -->
+          <div class="jt-pane">
+            <div class="jt-head">
+              <div>
+                <span class="jt-title" id="outTitle"><span data-lang-block="en">Output</span><span data-lang-block="bn">আউটপুট</span></span>
+                <span class="jt-meta" id="outMeta"></span>
+              </div>
+              <div class="jt-actions">
+                <button class="jt-mini" id="btnCopy" type="button" disabled><span data-lang-block="en">Copy</span><span data-lang-block="bn">কপি</span></button>
+                <button class="jt-mini" id="btnDownload" type="button" disabled><span data-lang-block="en">Download</span><span data-lang-block="bn">ডাউনলোড</span></button>
+                <button class="jt-mini" id="btnUseOut" type="button" disabled><span data-lang-block="en">Use as input</span><span data-lang-block="bn">ইনপুট বানান</span></button>
+              </div>
+            </div>
+            <div class="jt-out-wrap">
+              <pre class="jt-out" id="jsonOut" tabindex="0" aria-labelledby="outTitle"></pre>
+              <div class="jt-empty" id="outEmpty">
+                <span data-lang-block="en">The result will appear here.</span>
+                <span data-lang-block="bn">ফলাফল এখানে দেখা যাবে।</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <input type="file" id="fileInput" accept=".json,.txt,application/json,text/plain" hidden>
+
+        <!-- Status -->
+        <div class="jt-status" id="status" role="status" aria-live="polite">
+          <span class="jt-dot" aria-hidden="true"></span>
+          <span class="jt-status-text" id="statusText"><span data-lang-block="en">Paste or type JSON to begin.</span><span data-lang-block="bn">শুরু করতে JSON পেস্ট বা টাইপ করুন।</span></span>
+          <button class="jt-goto" id="gotoBtn" type="button" hidden><span data-lang-block="en">Go to error</span><span data-lang-block="bn">ভুলের জায়গায় যান</span></button>
+        </div>
+
+        <!-- Stats -->
+        <div class="jt-stats" role="group" aria-label="JSON statistics">
+          <div class="jt-stat">
+            <span class="jt-stat-num" id="stSize">–</span>
+            <span class="jt-stat-label"><span data-lang-block="en">Size</span><span data-lang-block="bn">সাইজ</span></span>
+          </div>
+          <div class="jt-stat">
+            <span class="jt-stat-num" id="stLines">–</span>
+            <span class="jt-stat-label"><span data-lang-block="en">Lines</span><span data-lang-block="bn">লাইন</span></span>
+          </div>
+          <div class="jt-stat">
+            <span class="jt-stat-num" id="stKeys">–</span>
+            <span class="jt-stat-label"><span data-lang-block="en">Keys</span><span data-lang-block="bn">কী</span></span>
+          </div>
+          <div class="jt-stat">
+            <span class="jt-stat-num" id="stDepth">–</span>
+            <span class="jt-stat-label"><span data-lang-block="en">Depth</span><span data-lang-block="bn">গভীরতা</span></span>
+          </div>
+          <div class="jt-stat">
+            <span class="jt-stat-num" id="stType">–</span>
+            <span class="jt-stat-label"><span data-lang-block="en">Type</span><span data-lang-block="bn">ধরন</span></span>
+          </div>
+        </div>
+
+        <p class="jt-privacy">
+          <span data-lang-block="en">Your JSON is processed in your browser. It is not uploaded or saved.</span>
+          <span data-lang-block="bn">আপনার JSON আপনার ব্রাউজারেই প্রসেস হয়। এটা আপলোড বা সংরক্ষণ করা হয় না।</span>
+        </p>
+
+      </div>
+    </section>
