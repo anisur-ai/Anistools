@@ -612,3 +612,287 @@
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+
+    const root = document.documentElement;
+    const $ = id => document.getElementById(id);
+    const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+    const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+
+    const input = $('wcInput');
+
+    /* ---------- Text: [English, বাংলা] ---------- */
+    let lang = 'en';
+    const TXT = {
+      copied:   ['Text copied!', 'লেখা কপি হয়েছে!'],
+      copyfail: ['Could not copy. Select the text and copy it manually.', 'কপি করা যায়নি। লেখা সিলেক্ট করে হাতে কপি করুন।'],
+      nothing:  ['There is no text to copy.', 'কপি করার মতো কোনো লেখা নেই।']
+    };
+    const UNIT = { sec: ['sec', 'সেকেন্ড'], min: ['min', 'মিনিট'], hr: ['hr', 'ঘণ্টা'] };
+    const T = k => TXT[k][lang === 'bn' ? 1 : 0];
+    const u = k => UNIT[k][lang === 'bn' ? 1 : 0];
+
+    const nfCache = {};
+    function num(n) {
+      const key = lang === 'bn' ? 'bn-BD' : 'en-US';
+      try {
+        if (!nfCache[key]) nfCache[key] = new Intl.NumberFormat(key);
+        return nfCache[key].format(n);
+      } catch (e) { return String(n); }
+    }
+
+    /* ---------- Toast ---------- */
+    let toastTimer;
+    function toast(key) {
+      const el = $('toast');
+      el.textContent = T(key);
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    /* ---------- Counting ---------- */
+    // Counts characters as Unicode code points (an emoji counts as 1)
+    function cpLen(s) {
+      let n = s.length;
+      for (let i = 0; i < s.length; i++) {
+        const c = s.charCodeAt(i);
+        if (c >= 0xDC00 && c <= 0xDFFF) n--;
+      }
+      return n;
+    }
+
+    function analyze(text) {
+      const trimmed = text.trim();
+      const w = text.match(/\S+/g);
+      return {
+        words: w ? w.length : 0,
+        chars: cpLen(text),
+        noSpace: cpLen(text.replace(/\s+/g, '')),
+        sentences: trimmed ? (trimmed.match(/[^.!?।]+[.!?।]*/g) || []).filter(s => /\S/.test(s)).length : 0,
+        paragraphs: trimmed ? trimmed.split(/\n\s*\n/).filter(p => /\S/.test(p)).length : 0,
+        lines: trimmed ? text.split(/\r\n|\r|\n/).filter(l => /\S/.test(l)).length : 0
+      };
+    }
+
+    function fmtTime(words, wpm) {
+      if (!words) return '0 ' + u('sec');
+      let secs = Math.round(words / wpm * 60);
+      if (secs < 1) secs = 1;
+      if (secs < 60) return num(secs) + ' ' + u('sec');
+      const mins = Math.floor(secs / 60);
+      const rem = secs % 60;
+      if (mins < 60) return num(mins) + ' ' + u('min') + (rem ? ' ' + num(rem) + ' ' + u('sec') : '');
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return num(h) + ' ' + u('hr') + (m ? ' ' + num(m) + ' ' + u('min') : '');
+    }
+
+    let last = analyze('');
+
+    function renderStats() {
+      $('stWords').textContent = num(last.words);
+      $('stChars').textContent = num(last.chars);
+      $('stNoSpace').textContent = num(last.noSpace);
+      $('stSent').textContent = num(last.sentences);
+      $('stPara').textContent = num(last.paragraphs);
+      $('stLines').textContent = num(last.lines);
+      $('stRead').textContent = fmtTime(last.words, 200);
+      $('stSpeak').textContent = fmtTime(last.words, 130);
+    }
+
+    /* ---------- Character limit bar ---------- */
+    function renderLimit() {
+      const limit = parseInt($('limitSelect').value, 10) || 0;
+      const meter = $('limitMeter');
+      if (!limit) { meter.hidden = true; return; }
+      meter.hidden = false;
+
+      const used = last.chars;
+      const over = used > limit;
+      const left = limit - used;
+      const fill = $('limitFill');
+      const txt = $('limitText');
+
+      fill.style.width = Math.min(100, used / limit * 100) + '%';
+      fill.className = 'limit-fill' + (over ? ' over' : (used >= limit * 0.9 ? ' warn' : ''));
+      txt.className = 'limit-text' + (over ? ' over' : '');
+
+      let status;
+      if (lang === 'bn') status = over ? 'সীমার চেয়ে ' + num(-left) + ' বেশি' : 'আর ' + num(left) + ' বাকি';
+      else status = over ? num(-left) + ' over the limit' : num(left) + ' left';
+      txt.textContent = num(used) + ' / ' + num(limit) + ' — ' + status;
+    }
+
+    function updateStats() {
+      last = analyze(input.value);
+      renderStats();
+      renderLimit();
+    }
+
+    /* ---------- Most-used words ---------- */
+    const STOP = new Set(('the and for are but not you all any can had her was one our out day get has him his how its let put say she too use ' +
+      'that with have this will your from they know want been good much some time very when come here just like long make many more only over ' +
+      'such take than them well were what which their there these those would could should about after again also because before being between ' +
+      'both does doing down during each into other ours same then through under until while why where whom yours itself myself off once own few ' +
+      'nor having did further against most').split(' '));
+
+    function updateKeywords() {
+      const box = $('kwList');
+      box.textContent = '';
+      const tokens = input.value.toLowerCase().match(/[\p{L}\p{M}\p{N}]+(?:['’-][\p{L}\p{M}\p{N}]+)*/gu);
+      if (!tokens) { $('kwEmpty').hidden = false; return; }
+
+      const counts = new Map();
+      for (const t of tokens) {
+        if (t.length < 3 || STOP.has(t)) continue;
+        counts.set(t, (counts.get(t) || 0) + 1);
+      }
+      const top = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10);
+      if (!top.length) { $('kwEmpty').hidden = false; return; }
+
+      $('kwEmpty').hidden = true;
+      const max = top[0][1];
+      const frag = document.createDocumentFragment();
+      top.forEach(entry => {
+        const item = document.createElement('div');
+        item.className = 'kw-item';
+        item.style.setProperty('--w', Math.max(6, Math.round(entry[1] / max * 100)) + '%');
+        const word = document.createElement('span');
+        word.className = 'kw-word';
+        word.textContent = entry[0];
+        const count = document.createElement('span');
+        count.className = 'kw-count';
+        count.textContent = num(entry[1]);
+        item.appendChild(word);
+        item.appendChild(count);
+        frag.appendChild(item);
+      });
+      box.appendChild(frag);
+    }
+
+    /* ---------- Typing: instant for normal text, delayed for very large text ---------- */
+    const BIG = 100000;   // characters
+    const debouncedStats = debounce(updateStats, 250);
+    const debouncedKeywords = debounce(updateKeywords, 300);
+
+    input.addEventListener('input', () => {
+      if (input.value.length > BIG) debouncedStats(); else updateStats();
+      debouncedKeywords();
+    });
+    $('limitSelect').addEventListener('change', renderLimit);
+
+    /* ---------- Buttons ---------- */
+    const history = [];
+    const undoBtn = document.querySelector('[data-act="undo"]');
+
+    const ACTIONS = {
+      upper:    s => s.toUpperCase(),
+      lower:    s => s.toLowerCase(),
+      title:    s => s.toLowerCase().replace(/(^|[^\p{L}\p{M}\p{N}'’])(\p{L})/gu, (m, a, b) => a + b.toUpperCase()),
+      sentence: s => s.toLowerCase().replace(/(^|[.!?।]\s+|\n+)(\s*)(\p{L})/gu, (m, a, b, c) => a + b + c.toUpperCase()),
+      clean:    s => s.replace(/\r\n?/g, '\n').replace(/[ \t\u00a0]+/g, ' ').replace(/^ | $/gm, '').replace(/\n{3,}/g, '\n\n').trim(),
+      clear:    () => ''
+    };
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+      return ok;
+    }
+
+    async function copyText() {
+      const text = input.value;
+      if (!text) { toast('nothing'); return; }
+      try {
+        await navigator.clipboard.writeText(text);
+        toast('copied');
+      } catch (e) {
+        toast(fallbackCopy(text) ? 'copied' : 'copyfail');
+      }
+    }
+
+    function refreshAll() {
+      undoBtn.hidden = history.length === 0;
+      updateStats();
+      updateKeywords();
+    }
+
+    function runAction(act) {
+      if (act === 'copy') { copyText(); return; }
+      if (act === 'undo') {
+        if (!history.length) return;
+        input.value = history.pop();
+        refreshAll();
+        return;
+      }
+      const fn = ACTIONS[act];
+      if (!fn) return;
+      const before = input.value;
+      const after = fn(before);
+      if (after === before) return;
+      history.push(before);
+      if (history.length > 20) history.shift();
+      input.value = after;
+      refreshAll();
+    }
+
+    document.querySelectorAll('[data-act]').forEach(btn => {
+      btn.addEventListener('click', () => runAction(btn.dataset.act));
+    });
+
+    /* ---------- Theme and language ---------- */
+    const themeBtn = $('themeToggle');
+    const langSel = $('langSelect');
+
+    function applyTheme(t) {
+      root.dataset.theme = t;
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', t === 'dark' ? '#0a0e1a' : '#f6f8fc');
+    }
+
+    function applyLang(l) {
+      lang = l;
+      root.lang = l;
+      langSel.value = l;
+      input.placeholder = l === 'bn' ? input.dataset.phBn : input.dataset.phEn;
+      document.querySelectorAll('option[data-en]').forEach(o => { o.textContent = l === 'bn' ? o.dataset.bn : o.dataset.en; });
+      renderStats();
+      renderLimit();
+      updateKeywords();
+    }
+
+    themeBtn.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      store('theme', next);
+    });
+    langSel.addEventListener('change', e => { applyLang(e.target.value); store('lang', e.target.value); });
+
+    /* Hide related links whose page is not uploaded yet */
+    if (location.protocol.indexOf('http') === 0) {
+      document.querySelectorAll('.related-link').forEach(a => {
+        fetch(a.getAttribute('href'), { method: 'HEAD', cache: 'no-cache' })
+          .then(r => { if (!r.ok) a.hidden = true; })
+          .catch(() => {});
+      });
+    }
+
+    /* ---------- Init ---------- */
+    applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
+    applyLang(load('lang') === 'bn' ? 'bn' : 'en');
+  });
+  </script>
+</body>
+</html>
