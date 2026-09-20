@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AnisTools – Free QR Code, Password & Image Tools</title>
-  <meta name="description" content="Free online QR code generator, password generator, word counter, image compressor and calculator. No sign-up — your files stay in your browser.">
+  <meta name="description" content="Free online tools that run in your browser: QR code generator, password generator, word counter, image compressor, JSON formatter and calculator. No sign-up needed.">
   <meta name="google-site-verification" content="GSsz5vm1jBiuL26qCeyLcCmU5M2ezxMjptUZP-H_he0">
-  <meta name="theme-color" content="#090d16">
+  <meta name="theme-color" content="#0a0e1a">
   <link rel="canonical" href="https://anisur-ai.github.io/Anistools/">
   <meta property="og:title" content="AnisTools – Free Online Tools">
-  <meta property="og:description" content="QR code, password generator, word counter, image compressor and calculator. Free, private, no sign-up.">
+  <meta property="og:description" content="QR code, password generator, word counter, image compressor, JSON formatter and calculator. Free, private, no sign-up.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://anisur-ai.github.io/Anistools/">
   <meta name="twitter:card" content="summary">
@@ -17,8 +17,9 @@
 
   <script>
     try {
-      var t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-      document.documentElement.dataset.theme = t;
+      var d = document.documentElement;
+      d.dataset.theme = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      if (localStorage.getItem('lang') === 'bn') d.lang = 'bn';
     } catch (e) {}
   </script>
 
@@ -32,28 +33,38 @@
   </script>
 
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebApplication","name":"AnisTools","url":"https://anisur-ai.github.io/Anistools/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":["en","bn"],"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  {"@context":"https://schema.org","@type":"WebSite","name":"AnisTools","url":"https://anisur-ai.github.io/Anistools/","inLanguage":["en","bn"]}
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script defer src="script.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="home.css">
+  <script defer src="home.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="#tools">Skip to tools</a>
-  <div class="glow-orb orb-1" aria-hidden="true"></div>
-  <div class="glow-orb orb-2" aria-hidden="true"></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
 
-  <header class="navbar">
-    <div class="nav-content">
-      <a class="logo" href="./" aria-label="AnisTools home">
-        <span>⚡</span><span>Anis<span class="gradient-text">Tools</span></span>
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="AnisTools home">
+        <span class="brand-mark" aria-hidden="true">⚡</span>
+        <span class="brand-name">Anis<span class="grad">Tools</span></span>
       </a>
-      <div class="nav-actions">
-        <label class="lang-wrap">
+
+      <nav class="main-nav" id="mainNav" aria-label="Main">
+        <a href="#tools"><span data-lang-block="en">Tools</span><span data-lang-block="bn">টুলস</span></a>
+        <a href="#why"><span data-lang-block="en">Why AnisTools</span><span data-lang-block="bn">কেন AnisTools</span></a>
+        <a href="#how"><span data-lang-block="en">How it works</span><span data-lang-block="bn">কীভাবে কাজ করে</span></a>
+        <a href="#faq"><span data-lang-block="en">FAQ</span><span data-lang-block="bn">প্রশ্নোত্তর</span></a>
+        <a href="#about"><span data-lang-block="en">About</span><span data-lang-block="bn">আমাদের সম্পর্কে</span></a>
+      </nav>
+
+      <div class="header-actions">
+        <label class="lang-switch">
           <span aria-hidden="true">🌐</span>
           <select id="langSelect" aria-label="Language">
             <option value="en">English</option>
@@ -61,223 +72,357 @@
           </select>
         </label>
         <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">🌙</button>
+        <button id="menuToggle" class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainNav">☰</button>
       </div>
     </div>
   </header>
 
-  <section class="hero">
-    <p class="hero-tag" data-i18n="hero_tag">Free · No sign-up · Runs in your browser</p>
-    <h1 class="hero-title"><span data-i18n="hero_a">Free Online Tools for</span> <span class="gradient-text" data-i18n="hero_b">Everyday Tasks</span></h1>
-    <p class="hero-subtitle" data-i18n="hero_desc">QR codes, passwords, word counts, image compression and a calculator — fast, private and free.</p>
+  <main id="main">
 
-    <div class="tool-tabs" id="tools" role="tablist" aria-label="Tools">
-      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-qr" data-tool="qr">📱 <span data-i18n="tab_qr">QR Code</span></button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-password" data-tool="password">🔐 <span data-i18n="tab_pass">Password</span></button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-word" data-tool="word">📝 <span data-i18n="tab_word">Word Counter</span></button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-compressor" data-tool="compressor">🖼️ <span data-i18n="tab_img">Image Compressor</span></button>
-      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-calculator" data-tool="calculator">🧮 <span data-i18n="tab_calc">Calculator</span></button>
-    </div>
-  </section>
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <p class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          <span data-lang-block="en">Free · No sign-up · Runs in your browser</span>
+          <span data-lang-block="bn">ফ্রি · সাইনআপ ছাড়াই · ব্রাউজারেই চলে</span>
+        </p>
 
-  <main class="main-container">
+        <h1 class="hero-title">
+          <span data-lang-block="en">Free online tools for <span class="grad">everyday tasks</span></span>
+          <span data-lang-block="bn">প্রতিদিনের কাজের জন্য <span class="grad">ফ্রি অনলাইন টুলস</span></span>
+        </h1>
 
-    <!-- QR -->
-    <section class="tool-panel active" id="panel-qr" role="tabpanel">
-      <div class="panel-header">
-        <h2 data-i18n="qr_h">QR Code Generator</h2>
-        <p data-i18n="qr_p">Turn any link or text into a QR code and download it as PNG.</p>
-      </div>
-      <div class="grid-2">
-        <div class="control-box">
-          <div class="input-group">
-            <label for="qrInput" data-i18n="qr_in">Link or text</label>
-            <input type="text" id="qrInput" value="https://anisur-ai.github.io/Anistools/" placeholder="https://example.com" autocomplete="off">
-          </div>
-          <div class="input-row">
-            <div class="input-group">
-              <label for="qrColor" data-i18n="qr_fg">QR color</label>
-              <input type="color" id="qrColor" value="#000000">
-            </div>
-            <div class="input-group">
-              <label for="qrBgColor" data-i18n="qr_bg">Background</label>
-              <input type="color" id="qrBgColor" value="#ffffff">
-            </div>
-          </div>
-          <button class="btn-primary" type="button" id="qrGenerate" data-i18n="qr_gen">Generate QR code</button>
+        <p class="hero-lead">
+          <span data-lang-block="en">QR codes, passwords, word counts, image compression, JSON formatting and a calculator — fast, private and free. No account needed.</span>
+          <span data-lang-block="bn">QR কোড, পাসওয়ার্ড, শব্দ গণনা, ছবি কম্প্রেশন, JSON ফরম্যাটিং আর ক্যালকুলেটর — দ্রুত, নিরাপদ ও ফ্রি। অ্যাকাউন্ট লাগে না।</span>
+        </p>
+
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#tools"><span data-lang-block="en">Explore tools</span><span data-lang-block="bn">টুলস দেখুন</span></a>
+          <a class="btn btn-ghost" href="#how"><span data-lang-block="en">How it works</span><span data-lang-block="bn">কীভাবে কাজ করে</span></a>
         </div>
-        <div class="qr-result">
-          <div id="qrcode"></div>
-          <a id="downloadQrBtn" class="btn-secondary" download="qrcode.png" hidden data-i18n="qr_dl">Download PNG</a>
+
+        <ul class="trust-row">
+          <li><span class="tick" aria-hidden="true">✓</span><span data-lang-block="en">No sign-up</span><span data-lang-block="bn">সাইনআপ লাগে না</span></li>
+          <li><span class="tick" aria-hidden="true">✓</span><span data-lang-block="en">Files stay on your device</span><span data-lang-block="bn">ফাইল আপনার ডিভাইসেই থাকে</span></li>
+          <li><span class="tick" aria-hidden="true">✓</span><span data-lang-block="en">English &amp; Bengali</span><span data-lang-block="bn">ইংরেজি ও বাংলা</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ TOOLS ============ -->
+    <section class="section" id="tools" aria-labelledby="tools-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="tools-title"><span data-lang-block="en">All tools</span><span data-lang-block="bn">সব টুলস</span></h2>
+          <p>
+            <span data-lang-block="en">Pick a tool to get started. Each one opens on its own page with a short guide.</span>
+            <span data-lang-block="bn">একটা টুল বেছে নিন। প্রতিটা টুল নিজের পেজে খোলে, সাথে থাকে ছোট গাইড।</span>
+          </p>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-box">
+            <span aria-hidden="true">🔎</span>
+            <input type="search" id="toolSearch" data-ph-en="Search tools…" data-ph-bn="টুল খুঁজুন…" placeholder="Search tools…" aria-label="Search tools" autocomplete="off">
+          </label>
+          <div class="chips" role="group" aria-label="Categories">
+            <button class="chip active" type="button" data-filter="all"><span data-lang-block="en">All</span><span data-lang-block="bn">সব</span></button>
+            <button class="chip" type="button" data-filter="generators"><span data-lang-block="en">Generators</span><span data-lang-block="bn">জেনারেটর</span></button>
+            <button class="chip" type="button" data-filter="text"><span data-lang-block="en">Text &amp; Data</span><span data-lang-block="bn">লেখা ও ডেটা</span></button>
+            <button class="chip" type="button" data-filter="image"><span data-lang-block="en">Image</span><span data-lang-block="bn">ছবি</span></button>
+            <button class="chip" type="button" data-filter="calc"><span data-lang-block="en">Calculators</span><span data-lang-block="bn">ক্যালকুলেটর</span></button>
+          </div>
+        </div>
+
+        <div class="tool-grid" id="toolGrid">
+
+          <a class="tool-card" href="qr-code-generator.html" data-cat="generators" data-keywords="qr code link url scan barcode কিউআর কোড লিংক">
+            <span class="tool-icon" aria-hidden="true">📱</span>
+            <span class="tool-body">
+              <h3><span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span></h3>
+              <p>
+                <span data-lang-block="en">Turn any link or text into a QR code and download it as PNG.</span>
+                <span data-lang-block="bn">যেকোনো লিংক বা লেখা থেকে QR কোড বানিয়ে PNG ডাউনলোড করুন।</span>
+              </p>
+            </span>
+            <span class="tool-cta"><span data-lang-block="en">Open tool</span><span data-lang-block="bn">টুল খুলুন</span><span aria-hidden="true">→</span></span>
+          </a>
+
+          <a class="tool-card" href="password-generator.html" data-cat="generators" data-keywords="password strong random secure generator পাসওয়ার্ড">
+            <span class="tool-icon" aria-hidden="true">🔐</span>
+            <span class="tool-body">
+              <h3><span data-lang-block="en">Password Generator</span><span data-lang-block="bn">পাসওয়ার্ড জেনারেটর</span></h3>
+              <p>
+                <span data-lang-block="en">Create strong random passwords with a strength estimate.</span>
+                <span data-lang-block="bn">শক্তিশালী র‍্যান্ডম পাসওয়ার্ড বানান, সাথে শক্তির হিসাব।</span>
+              </p>
+            </span>
+            <span class="tool-cta"><span data-lang-block="en">Open tool</span><span data-lang-block="bn">টুল খুলুন</span><span aria-hidden="true">→</span></span>
+          </a>
+
+          <a class="tool-card" href="word-counter.html" data-cat="text" data-keywords="word counter characters sentences reading time text শব্দ গণনা">
+            <span class="tool-icon" aria-hidden="true">📝</span>
+            <span class="tool-body">
+              <h3><span data-lang-block="en">Word Counter</span><span data-lang-block="bn">শব্দ গণনা</span></h3>
+              <p>
+                <span data-lang-block="en">Count words, characters, sentences and reading time.</span>
+                <span data-lang-block="bn">শব্দ, অক্ষর, বাক্য ও পড়ার সময় গুনুন।</span>
+              </p>
+            </span>
+            <span class="tool-cta"><span data-lang-block="en">Open tool</span><span data-lang-block="bn">টুল খুলুন</span><span aria-hidden="true">→</span></span>
+          </a>
+
+          <a class="tool-card" href="json-formatter.html" data-cat="text" data-keywords="json format beautify minify validate developer formatter">
+            <span class="tool-icon" aria-hidden="true">🧾</span>
+            <span class="tool-body">
+              <h3><span data-lang-block="en">JSON Formatter</span><span data-lang-block="bn">JSON ফরম্যাটার</span></h3>
+              <p>
+                <span data-lang-block="en">Format, minify and validate JSON in your browser.</span>
+                <span data-lang-block="bn">ব্রাউজারেই JSON ফরম্যাট, মিনিফাই ও যাচাই করুন।</span>
+              </p>
+            </span>
+            <span class="tool-cta"><span data-lang-block="en">Open tool</span><span data-lang-block="bn">টুল খুলুন</span><span aria-hidden="true">→</span></span>
+          </a>
+
+          <a class="tool-card" href="image-compressor.html" data-cat="image" data-keywords="image photo compress compressor reduce size jpg png webp ছবি কম্প্রেসর">
+            <span class="tool-icon" aria-hidden="true">🖼️</span>
+            <span class="tool-body">
+              <h3><span data-lang-block="en">Image Compressor</span><span data-lang-block="bn">ইমেজ কম্প্রেসর</span></h3>
+              <p>
+                <span data-lang-block="en">Reduce image size in your browser. Nothing is uploaded.</span>
+                <span data-lang-block="bn">ব্রাউজারেই ছবির সাইজ কমান। কিছুই আপলোড হয় না।</span>
+              </p>
+            </span>
+            <span class="tool-cta"><span data-lang-block="en">Open tool</span><span data-lang-block="bn">টুল খুলুন</span><span aria-hidden="true">→</span></span>
+          </a>
+
+          <a class="tool-card" href="calculator.html" data-cat="calc" data-keywords="calculator math percentage add subtract ক্যালকুলেটর হিসাব">
+            <span class="tool-icon" aria-hidden="true">🧮</span>
+            <span class="tool-body">
+              <h3><span data-lang-block="en">Calculator</span><span data-lang-block="bn">ক্যালকুলেটর</span></h3>
+              <p>
+                <span data-lang-block="en">Simple calculator with percentage and keyboard support.</span>
+                <span data-lang-block="bn">শতাংশ ও কিবোর্ড সাপোর্টসহ সহজ ক্যালকুলেটর।</span>
+              </p>
+            </span>
+            <span class="tool-cta"><span data-lang-block="en">Open tool</span><span data-lang-block="bn">টুল খুলুন</span><span aria-hidden="true">→</span></span>
+          </a>
+
+        </div>
+
+        <p class="empty-note" id="emptyNote" hidden>
+          <span data-lang-block="en">No tools found. Try a different word.</span>
+          <span data-lang-block="bn">কোনো টুল পাওয়া যায়নি। অন্য শব্দ দিয়ে খুঁজে দেখুন।</span>
+        </p>
+      </div>
+    </section>
+<!-- ============ WHY ============ -->
+    <section class="section section-alt" id="why" aria-labelledby="why-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="why-title"><span data-lang-block="en">Why AnisTools?</span><span data-lang-block="bn">কেন AnisTools?</span></h2>
+          <p>
+            <span data-lang-block="en">Simple tools that respect your time and your privacy.</span>
+            <span data-lang-block="bn">সহজ টুল, যা আপনার সময় আর গোপনীয়তাকে সম্মান করে।</span>
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <span class="feature-icon" aria-hidden="true">🔒</span>
+            <h3><span data-lang-block="en">Private by design</span><span data-lang-block="bn">গোপনীয়তা আগে</span></h3>
+            <p>
+              <span data-lang-block="en">Your passwords, text and images are processed in your browser. They are not uploaded to our servers.</span>
+              <span data-lang-block="bn">আপনার পাসওয়ার্ড, লেখা ও ছবি ব্রাউজারেই প্রসেস হয়। এগুলো আমাদের সার্ভারে আপলোড হয় না।</span>
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-icon" aria-hidden="true">⚡</span>
+            <h3><span data-lang-block="en">Fast and lightweight</span><span data-lang-block="bn">দ্রুত ও হালকা</span></h3>
+            <p>
+              <span data-lang-block="en">No accounts, no installs, no waiting. Open a page and use the tool right away.</span>
+              <span data-lang-block="bn">অ্যাকাউন্ট, ইনস্টল বা অপেক্ষা কিছুই নেই। পেজ খুলেই টুল ব্যবহার করুন।</span>
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-icon" aria-hidden="true">🆓</span>
+            <h3><span data-lang-block="en">Free to use</span><span data-lang-block="bn">সম্পূর্ণ ফ্রি</span></h3>
+            <p>
+              <span data-lang-block="en">Every tool is free, with no watermarks and no usage limits.</span>
+              <span data-lang-block="bn">সব টুল ফ্রি, ওয়াটারমার্ক নেই, ব্যবহারের সীমাও নেই।</span>
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <span class="feature-icon" aria-hidden="true">🌐</span>
+            <h3><span data-lang-block="en">English and Bengali</span><span data-lang-block="bn">ইংরেজি ও বাংলা</span></h3>
+            <p>
+              <span data-lang-block="en">Switch the language anytime. Your choice is remembered on your device.</span>
+              <span data-lang-block="bn">যেকোনো সময় ভাষা বদলান। আপনার পছন্দ আপনার ডিভাইসে মনে রাখা হয়।</span>
+            </p>
+          </article>
         </div>
       </div>
     </section>
 
-    <!-- Password -->
-    <section class="tool-panel" id="panel-password" role="tabpanel">
-      <div class="panel-header">
-        <h2 data-i18n="pw_h">Password Generator</h2>
-        <p data-i18n="pw_p">Create strong random passwords. Nothing is sent or stored.</p>
-      </div>
-      <div class="glass-card">
-        <div class="pass-display-group">
-          <input type="text" id="passOutput" readonly data-i18n-ph="pw_ph" placeholder="Your password" aria-label="Generated password">
-          <button class="btn-copy" type="button" id="copyPass" data-i18n="copy">Copy</button>
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="how-title"><span data-lang-block="en">How it works</span><span data-lang-block="bn">কীভাবে কাজ করে</span></h2>
+          <p>
+            <span data-lang-block="en">Three simple steps, the same for every tool.</span>
+            <span data-lang-block="bn">তিনটা সহজ ধাপ, সব টুলের জন্য একই।</span>
+          </p>
         </div>
-        <div class="strength-bar-wrap"><div class="strength-bar" id="strengthBar"></div></div>
-        <div class="pass-meta">
-          <span><span data-i18n="pw_strength">Strength</span>: <strong id="strengthText"></strong> (<span id="entropyText"></span>)</span>
-          <span><span data-i18n="pw_time">Estimated crack time</span>: <strong id="crackTimeText" class="highlight-cyan"></strong></span>
-        </div>
-        <p class="note" data-i18n="pw_note">Estimate assumes an offline attack at 10 billion guesses per second.</p>
 
-        <div class="pass-controls">
-          <div class="slider-group">
-            <label for="passLength"><span data-i18n="pw_len">Length</span>: <strong id="passLengthVal">16</strong></label>
-            <input type="range" id="passLength" min="8" max="64" value="16">
-          </div>
-          <div class="check-grid">
-            <label class="custom-check"><input type="checkbox" id="chkUpper" checked><span data-i18n="pw_up">Uppercase (A–Z)</span></label>
-            <label class="custom-check"><input type="checkbox" id="chkLower" checked><span data-i18n="pw_low">Lowercase (a–z)</span></label>
-            <label class="custom-check"><input type="checkbox" id="chkNum" checked><span data-i18n="pw_num">Numbers (0–9)</span></label>
-            <label class="custom-check"><input type="checkbox" id="chkSym" checked><span data-i18n="pw_sym">Symbols (!@#$)</span></label>
-          </div>
-        </div>
-        <button class="btn-primary" type="button" id="genPass" data-i18n="pw_gen">Generate password</button>
-      </div>
-    </section>
-
-    <!-- Word counter -->
-    <section class="tool-panel" id="panel-word" role="tabpanel">
-      <div class="panel-header">
-        <h2 data-i18n="wc_h">Word Counter</h2>
-        <p data-i18n="wc_p">Count words, characters, sentences and reading time as you type.</p>
-      </div>
-      <div class="glass-card">
-        <div class="stat-badges">
-          <div class="badge-card"><span class="badge-num" id="stWords">0</span><span data-i18n="st_words">Words</span></div>
-          <div class="badge-card"><span class="badge-num" id="stChars">0</span><span data-i18n="st_chars">Characters</span></div>
-          <div class="badge-card"><span class="badge-num" id="stNoSpace">0</span><span data-i18n="st_nospace">No spaces</span></div>
-          <div class="badge-card"><span class="badge-num" id="stSent">0</span><span data-i18n="st_sent">Sentences</span></div>
-          <div class="badge-card"><span class="badge-num" id="stPara">0</span><span data-i18n="st_para">Paragraphs</span></div>
-          <div class="badge-card"><span class="badge-num" id="stRead">0</span><span data-i18n="st_read">Min read</span></div>
-        </div>
-        <textarea id="wordInput" rows="8" data-i18n-ph="wc_ph" placeholder="Type or paste your text here…" aria-label="Text"></textarea>
-        <div class="text-actions">
-          <button class="btn-secondary" type="button" data-act="upper">UPPERCASE</button>
-          <button class="btn-secondary" type="button" data-act="lower">lowercase</button>
-          <button class="btn-secondary" type="button" data-act="title">Title Case</button>
-          <button class="btn-secondary" type="button" data-act="clean" data-i18n="a_clean">Remove extra spaces</button>
-          <button class="btn-secondary" type="button" data-act="copy" data-i18n="copy">Copy</button>
-          <button class="btn-secondary" type="button" data-act="clear" data-i18n="a_clear">Clear</button>
-        </div>
+        <ol class="steps">
+          <li class="step-card">
+            <span class="step-num">1</span>
+            <h3><span data-lang-block="en">Choose a tool</span><span data-lang-block="bn">একটা টুল বেছে নিন</span></h3>
+            <p>
+              <span data-lang-block="en">Pick what you need from the list above.</span>
+              <span data-lang-block="bn">ওপরের তালিকা থেকে আপনার দরকারি টুলটা বেছে নিন।</span>
+            </p>
+          </li>
+          <li class="step-card">
+            <span class="step-num">2</span>
+            <h3><span data-lang-block="en">Add your input</span><span data-lang-block="bn">তথ্য দিন</span></h3>
+            <p>
+              <span data-lang-block="en">Type, paste or drop in your file. Results show up right away.</span>
+              <span data-lang-block="bn">লিখুন, পেস্ট করুন বা ফাইল দিন। ফলাফল সাথে সাথেই দেখা যাবে।</span>
+            </p>
+          </li>
+          <li class="step-card">
+            <span class="step-num">3</span>
+            <h3><span data-lang-block="en">Copy or download</span><span data-lang-block="bn">কপি বা ডাউনলোড করুন</span></h3>
+            <p>
+              <span data-lang-block="en">Take your result with one tap — no sign-up in between.</span>
+              <span data-lang-block="bn">এক ট্যাপেই ফলাফল নিয়ে নিন — মাঝখানে সাইনআপ লাগে না।</span>
+            </p>
+          </li>
+        </ol>
       </div>
     </section>
 
-    <!-- Image compressor -->
-    <section class="tool-panel" id="panel-compressor" role="tabpanel">
-      <div class="panel-header">
-        <h2 data-i18n="im_h">Image Compressor</h2>
-        <p data-i18n="im_p">Reduce image file size in your browser. Images are never uploaded.</p>
-      </div>
-      <div class="glass-card">
-        <input type="file" id="imgUpload" accept="image/png,image/jpeg,image/webp" hidden>
-        <div class="dropzone" id="dropzone" role="button" tabindex="0">
-          <span class="drop-icon">📤</span>
-          <p data-i18n="im_drop">Click to choose an image, or drag and drop it here</p>
-          <small>PNG, JPG, WebP</small>
+    <!-- ============ FAQ ============ -->
+    <section class="section section-alt" id="faq" aria-labelledby="faq-title">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <h2 id="faq-title"><span data-lang-block="en">Frequently asked questions</span><span data-lang-block="bn">সচরাচর জিজ্ঞাসা</span></h2>
         </div>
 
-        <div id="imgSettings" hidden>
-          <div class="img-options">
-            <div class="slider-group">
-              <label for="imgQuality"><span data-i18n="im_q">Quality</span>: <strong id="qLabel">75%</strong></label>
-              <input type="range" id="imgQuality" min="10" max="95" value="75">
-            </div>
-            <div class="input-group">
-              <label for="imgFormat" data-i18n="im_fmt">Format</label>
-              <select id="imgFormat">
-                <option value="image/jpeg">JPEG</option>
-                <option value="image/webp">WebP</option>
-              </select>
-            </div>
-            <div class="input-group">
-              <label for="imgWidth" data-i18n="im_w">Max width</label>
-              <select id="imgWidth">
-                <option value="0" data-i18n="im_orig_w">Original</option>
-                <option value="1920">1920 px</option>
-                <option value="1280">1280 px</option>
-                <option value="800">800 px</option>
-              </select>
-            </div>
-          </div>
+        <div class="faq-list">
+          <details>
+            <summary><span data-lang-block="en">Is AnisTools really free?</span><span data-lang-block="bn">AnisTools কি সত্যিই ফ্রি?</span></summary>
+            <p>
+              <span data-lang-block="en">Yes. All tools are free to use, with no watermark and no limit on how often you use them.</span>
+              <span data-lang-block="bn">হ্যাঁ। সব টুল ফ্রি, কোনো ওয়াটারমার্ক নেই, আর কতবার ব্যবহার করবেন তারও সীমা নেই।</span>
+            </p>
+          </details>
 
-          <p class="img-result" id="imgResult"></p>
+          <details>
+            <summary><span data-lang-block="en">Do I need to create an account?</span><span data-lang-block="bn">অ্যাকাউন্ট খুলতে হবে কি?</span></summary>
+            <p>
+              <span data-lang-block="en">No. Open a tool page and start using it straight away.</span>
+              <span data-lang-block="bn">না। টুলের পেজ খুলে সরাসরি ব্যবহার শুরু করুন।</span>
+            </p>
+          </details>
 
-          <div class="img-preview-grid">
-            <div class="preview-item">
-              <h3><span data-i18n="im_orig">Original</span>: <span id="originalSize">0 KB</span></h3>
-              <img id="origImgPreview" alt="">
-            </div>
-            <div class="preview-item">
-              <h3><span data-i18n="im_comp">Compressed</span>: <span id="compressedSize" class="highlight-cyan">0 KB</span></h3>
-              <img id="compImgPreview" alt="">
-            </div>
-          </div>
-          <a id="downloadImgBtn" class="btn-primary" download data-i18n="im_dl">Download</a>
+          <details>
+            <summary><span data-lang-block="en">Are my files and text uploaded?</span><span data-lang-block="bn">আমার ফাইল বা লেখা কি আপলোড হয়?</span></summary>
+            <p>
+              <span data-lang-block="en">No. The tools run in your browser, so the passwords, text and images you use stay on your device.</span>
+              <span data-lang-block="bn">না। টুলগুলো আপনার ব্রাউজারেই চলে, তাই আপনার পাসওয়ার্ড, লেখা ও ছবি ডিভাইসেই থাকে।</span>
+            </p>
+          </details>
+
+          <details>
+            <summary><span data-lang-block="en">Do you collect any data?</span><span data-lang-block="bn">আপনারা কি কোনো তথ্য সংগ্রহ করেন?</span></summary>
+            <p>
+              <span data-lang-block="en">We use Google Analytics to count visits and see which pages are useful. What you enter into the tools is not sent to us. Read the <a href="privacy.html">Privacy Policy</a> for details.</span>
+              <span data-lang-block="bn">কতজন সাইটে আসছেন আর কোন পেজ কাজের, তা বুঝতে আমরা Google Analytics ব্যবহার করি। টুলে আপনি যা লেখেন তা আমাদের কাছে পাঠানো হয় না। বিস্তারিত জানতে <a href="privacy.html">গোপনীয়তা নীতি</a> পড়ুন।</span>
+            </p>
+          </details>
+
+          <details>
+            <summary><span data-lang-block="en">Does it work on my phone?</span><span data-lang-block="bn">ফোনে কি চলে?</span></summary>
+            <p>
+              <span data-lang-block="en">Yes. The site is built for phones first and works in modern browsers on phones, tablets and computers.</span>
+              <span data-lang-block="bn">হ্যাঁ। সাইটটা আগে ফোনের কথা ভেবে বানানো, আর ফোন, ট্যাবলেট ও কম্পিউটারের আধুনিক ব্রাউজারে চলে।</span>
+            </p>
+          </details>
+
+          <details>
+            <summary><span data-lang-block="en">Can I suggest a new tool?</span><span data-lang-block="bn">নতুন টুলের আইডিয়া দিতে পারি?</span></summary>
+            <p>
+              <span data-lang-block="en">Yes, please do! Send your idea through the <a href="contact.html">Contact page</a>.</span>
+              <span data-lang-block="bn">অবশ্যই! আপনার আইডিয়া <a href="contact.html">যোগাযোগ পেজ</a> থেকে পাঠান।</span>
+            </p>
+          </details>
         </div>
       </div>
     </section>
 
-    <!-- Calculator -->
-    <section class="tool-panel" id="panel-calculator" role="tabpanel">
-      <div class="panel-header">
-        <h2 data-i18n="ca_h">Calculator</h2>
-        <p data-i18n="ca_p">Simple calculator with keyboard support.</p>
-      </div>
-      <div class="calc-wrapper">
-        <div class="calc-screen-box">
-          <div class="calc-history" id="calcHistory"></div>
-          <div class="calc-main-screen" id="calcScreen">0</div>
-        </div>
-        <div class="calc-keypad" id="calcKeypad">
-          <button class="key action" data-k="AC">AC</button>
-          <button class="key action" data-k="DEL" aria-label="Delete">⌫</button>
-          <button class="key action" data-k="%">%</button>
-          <button class="key op" data-k="/" aria-label="Divide">÷</button>
-
-          <button class="key" data-k="7">7</button>
-          <button class="key" data-k="8">8</button>
-          <button class="key" data-k="9">9</button>
-          <button class="key op" data-k="*" aria-label="Multiply">×</button>
-
-          <button class="key" data-k="4">4</button>
-          <button class="key" data-k="5">5</button>
-          <button class="key" data-k="6">6</button>
-          <button class="key op" data-k="-" aria-label="Minus">−</button>
-
-          <button class="key" data-k="1">1</button>
-          <button class="key" data-k="2">2</button>
-          <button class="key" data-k="3">3</button>
-          <button class="key op" data-k="+" aria-label="Plus">+</button>
-
-          <button class="key span-2" data-k="0">0</button>
-          <button class="key" data-k=".">.</button>
-          <button class="key equals" data-k="=">=</button>
+    <!-- ============ ABOUT ============ -->
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="container container-narrow">
+        <div class="about-card">
+          <h2 id="about-title"><span data-lang-block="en">About AnisTools</span><span data-lang-block="bn">AnisTools সম্পর্কে</span></h2>
+          <p>
+            <span data-lang-block="en">AnisTools is an independent project that brings small, useful online tools together in one clean place. Each tool has its own page with a short guide, so you can use it quickly and understand how it works. New tools are added over time.</span>
+            <span data-lang-block="bn">AnisTools একটি স্বাধীন উদ্যোগ, যেখানে ছোট ছোট দরকারি অনলাইন টুল এক জায়গায় পরিষ্কারভাবে পাওয়া যায়। প্রতিটা টুলের নিজের পেজে ছোট গাইড থাকে, যাতে দ্রুত ব্যবহার করা যায় আর কীভাবে কাজ করে তা বোঝা যায়। সময়ের সাথে নতুন টুল যোগ হবে।</span>
+          </p>
+          <a class="btn btn-primary" href="contact.html"><span data-lang-block="en">Contact us</span><span data-lang-block="bn">যোগাযোগ করুন</span></a>
         </div>
       </div>
     </section>
 
   </main>
 
-  <footer>
-    <p data-i18n="f_copy">© 2026 AnisTools. All rights reserved.</p>
-    <p class="footer-links">
-      <a href="privacy.html" data-i18n="f_priv">Privacy Policy</a> ·
-      <a href="terms.html" data-i18n="f_terms">Terms of Use</a> ·
-      <a href="contact.html" data-i18n="f_contact">Contact</a>
-    </p>
-  </footer>
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="./" aria-label="AnisTools home">
+          <span class="brand-mark" aria-hidden="true">⚡</span>
+          <span class="brand-name">Anis<span class="grad">Tools</span></span>
+        </a>
+        <p>
+          <span data-lang-block="en">Free online tools that run in your browser.</span>
+          <span data-lang-block="bn">ব্রাউজারেই চলে এমন ফ্রি অনলাইন টুলস।</span>
+        </p>
+      </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <nav class="footer-col" aria-label="Tools">
+        <h3><span data-lang-block="en">Tools</span><span data-lang-block="bn">টুলস</span></h3>
+        <a href="qr-code-generator.html"><span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span></a>
+        <a href="password-generator.html"><span data-lang-block="en">Password Generator</span><span data-lang-block="bn">পাসওয়ার্ড জেনারেটর</span></a>
+        <a href="word-counter.html"><span data-lang-block="en">Word Counter</span><span data-lang-block="bn">শব্দ গণনা</span></a>
+        <a href="json-formatter.html"><span data-lang-block="en">JSON Formatter</span><span data-lang-block="bn">JSON ফরম্যাটার</span></a>
+        <a href="image-compressor.html"><span data-lang-block="en">Image Compressor</span><span data-lang-block="bn">ইমেজ কম্প্রেসর</span></a>
+        <a href="calculator.html"><span data-lang-block="en">Calculator</span><span data-lang-block="bn">ক্যালকুলেটর</span></a>
+      </nav>
+
+      <nav class="footer-col" aria-label="Company">
+        <h3><span data-lang-block="en">Company</span><span data-lang-block="bn">প্রতিষ্ঠান</span></h3>
+        <a href="#about"><span data-lang-block="en">About</span><span data-lang-block="bn">আমাদের সম্পর্কে</span></a>
+        <a href="contact.html"><span data-lang-block="en">Contact</span><span data-lang-block="bn">যোগাযোগ</span></a>
+        <a href="privacy.html"><span data-lang-block="en">Privacy Policy</span><span data-lang-block="bn">গোপনীয়তা নীতি</span></a>
+        <a href="terms.html"><span data-lang-block="en">Terms of Use</span><span data-lang-block="bn">ব্যবহারের শর্তাবলী</span></a>
+      </nav>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>
+        <span data-lang-block="en">© 2026 AnisTools. All rights reserved.</span>
+        <span data-lang-block="bn">© ২০২৬ AnisTools। সর্বস্বত্ব সংরক্ষিত।</span>
+      </p>
+    </div>
+  </footer>
 </body>
 </html>
