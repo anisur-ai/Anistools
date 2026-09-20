@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Free QR Code Generator – Create and Download PNG | AnisTools</title>
-  <meta name="description" content="Create a free QR code for any link or text in seconds. Pick your colors and download a sharp PNG. No sign-up, nothing is uploaded.">
-  <meta name="theme-color" content="#090d16">
+  <title>Free QR Code Generator – PNG & SVG, Wi-Fi, Link | AnisTools</title>
+  <meta name="description" content="Create a free QR code for a link, text, Wi-Fi, email or phone number. Choose colors and download PNG or SVG. No sign-up — nothing is uploaded.">
+  <meta name="theme-color" content="#0a0e1a">
   <link rel="canonical" href="https://anisur-ai.github.io/Anistools/qr-code-generator.html">
   <meta property="og:title" content="Free QR Code Generator | AnisTools">
-  <meta property="og:description" content="Create a QR code for any link or text and download it as PNG. Free, private, no sign-up.">
+  <meta property="og:description" content="QR codes for links, text, Wi-Fi, email and phone. Download PNG or SVG. Free, private, no sign-up.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://anisur-ai.github.io/Anistools/qr-code-generator.html">
   <meta name="twitter:card" content="summary">
@@ -16,8 +16,9 @@
 
   <script>
     try {
-      var t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-      document.documentElement.dataset.theme = t;
+      var d = document.documentElement;
+      d.dataset.theme = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      if (localStorage.getItem('lang') === 'bn') d.lang = 'bn';
     } catch (e) {}
   </script>
 
@@ -42,23 +43,291 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script defer src="script.js"></script>
-</head>
-<body data-tool="qr">
-  <a class="skip-link" href="#tool">Skip to tool</a>
-  <div class="glow-orb orb-1" aria-hidden="true"></div>
-  <div class="glow-orb orb-2" aria-hidden="true"></div>
 
-  <header class="navbar">
-    <div class="nav-content">
-      <a class="logo" href="./" aria-label="AnisTools home">
-        <span>⚡</span><span>Anis<span class="gradient-text">Tools</span></span>
+  <style>
+    :root {
+      --bg: #070b16;
+      --bg-alt: rgba(11, 17, 32, 0.62);
+      --header-bg: rgba(7, 11, 22, 0.78);
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-2: rgba(255, 255, 255, 0.07);
+      --card: rgba(15, 23, 42, 0.72);
+      --field: rgba(0, 0, 0, 0.28);
+      --border: rgba(148, 163, 184, 0.16);
+      --border-strong: rgba(148, 163, 184, 0.3);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --link: #818cf8;
+      --primary: #6366f1;
+      --primary-2: #8b5cf6;
+      --accent: #ec4899;
+      --success: #10b981;
+      --glow: rgba(99, 102, 241, 0.35);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --header-h: 64px;
+      --font: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      color-scheme: dark;
+    }
+    [data-theme="light"] {
+      --bg: #f6f8fc;
+      --bg-alt: rgba(238, 242, 249, 0.75);
+      --header-bg: rgba(246, 248, 252, 0.82);
+      --surface: rgba(15, 23, 42, 0.04);
+      --surface-2: rgba(15, 23, 42, 0.07);
+      --card: rgba(255, 255, 255, 0.94);
+      --field: #ffffff;
+      --border: rgba(15, 23, 42, 0.1);
+      --border-strong: rgba(15, 23, 42, 0.22);
+      --text: #0f172a;
+      --muted: #475569;
+      --link: #4f46e5;
+      --glow: rgba(99, 102, 241, 0.22);
+      --shadow: 0 18px 44px rgba(15, 23, 42, 0.1);
+      color-scheme: light;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
+      transition: background-color .3s, color .3s;
+    }
+    main { flex: 1; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    ul, ol { list-style: none; }
+    [hidden] { display: none !important; }
+    ::selection { background: var(--primary); color: #fff; }
+    :focus-visible { outline: 2px solid #22d3ee; outline-offset: 3px; border-radius: 6px; }
+
+    html[lang="bn"] [data-lang-block="en"],
+    html:not([lang="bn"]) [data-lang-block="bn"] { display: none; }
+    html[lang="bn"] h1, html[lang="bn"] h2, html[lang="bn"] .brand-name { letter-spacing: 0; }
+
+    .container { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+    .container-narrow { width: min(860px, 100% - 2.5rem); }
+
+    .skip-link {
+      position: absolute; left: 12px; top: -64px; z-index: 3000; padding: .6rem 1rem;
+      font-weight: 600; color: #fff; background: var(--primary); border-radius: 10px;
+    }
+    .skip-link:focus { top: 12px; }
+
+    .bg-glow { position: fixed; z-index: -1; width: 600px; height: 600px; border-radius: 50%; pointer-events: none; opacity: .34; }
+    .bg-glow-1 { top: -260px; left: -200px; background: radial-gradient(circle, var(--primary) 0, transparent 68%); }
+    .bg-glow-2 { bottom: -280px; right: -220px; background: radial-gradient(circle, var(--accent) 0, transparent 68%); opacity: .18; }
+    [data-theme="light"] .bg-glow { opacity: .15; }
+    [data-theme="light"] .bg-glow-2 { opacity: .09; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky; top: 0; z-index: 100; height: var(--header-h);
+      background: var(--header-bg);
+      -webkit-backdrop-filter: saturate(160%) blur(14px); backdrop-filter: saturate(160%) blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .brand { display: inline-flex; align-items: center; gap: .55rem; font-weight: 800; font-size: 1.3rem; letter-spacing: -.01em; }
+    .brand-mark {
+      display: grid; place-items: center; width: 36px; height: 36px; font-size: 1.1rem; border-radius: 11px;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 6px 18px var(--glow);
+    }
+    .grad {
+      background-image: linear-gradient(135deg, #818cf8, #a78bfa 45%, #f472b6);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+    }
+    [data-theme="light"] .grad { background-image: linear-gradient(135deg, #4f46e5, #7c3aed 50%, #db2777); }
+    .header-actions { display: flex; align-items: center; gap: .6rem; }
+    .nav-link { padding: .5rem .85rem; font-weight: 600; font-size: .95rem; color: var(--muted); border-radius: 10px; transition: color .2s, background-color .2s; }
+    .nav-link:hover { color: var(--text); background: var(--surface-2); }
+    .lang-switch { display: flex; align-items: center; gap: .4rem; height: 40px; padding: 0 .7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; }
+    .lang-switch select { background: transparent; border: 0; outline: 0; font-weight: 600; cursor: pointer; }
+    .icon-btn { display: grid; place-items: center; width: 40px; height: 40px; font-size: 1.05rem; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; transition: background-color .2s; }
+    .icon-btn:hover { background: var(--surface-2); }
+    select option { background: var(--bg); color: var(--text); }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      min-height: 50px; padding: .8rem 1.5rem; font-weight: 700; font-size: 1rem;
+      border: 1px solid transparent; border-radius: 14px; text-align: center;
+      transition: transform .15s, box-shadow .25s, background-color .2s;
+    }
+    .btn-primary { color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-2) 55%, var(--accent)); box-shadow: 0 12px 30px var(--glow); }
+    .btn-ghost { background: var(--surface); border-color: var(--border-strong); }
+    .btn:active { transform: scale(.98); }
+    @media (hover: hover) {
+      .btn:hover { transform: translateY(-2px); }
+      .btn-ghost:hover { background: var(--surface-2); }
+    }
+
+    /* ---------- Page hero ---------- */
+    .page-hero { padding: clamp(2rem, 5vw, 3.5rem) 0 1.6rem; text-align: center; }
+    .breadcrumb { margin-bottom: 1rem; font-size: .85rem; color: var(--muted); }
+    .breadcrumb a { color: var(--link); }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .page-hero h1 { margin-bottom: .8rem; font-size: clamp(2rem, 5.5vw, 3.2rem); font-weight: 800; line-height: 1.15; letter-spacing: -.02em; text-wrap: balance; }
+    .page-hero .lead { max-width: 680px; margin: 0 auto; color: var(--muted); font-size: clamp(1rem, 2.2vw, 1.15rem); }
+
+    /* ---------- Tool ---------- */
+    .tool-shell {
+      padding: clamp(1.1rem, 3vw, 2rem); background: var(--card);
+      border: 1px solid var(--border); border-radius: 28px; box-shadow: var(--shadow);
+    }
+    .qr-layout {
+      display: grid; gap: 1.6rem 2rem; align-items: start;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      grid-template-areas: "fields preview" "options preview";
+    }
+    .qr-fields { grid-area: fields; }
+    .qr-options { grid-area: options; }
+    .qr-preview { grid-area: preview; position: sticky; top: calc(var(--header-h) + 16px); }
+
+    .type-tabs {
+      display: flex; gap: .4rem; margin-bottom: 1.2rem; padding: .35rem; overflow-x: auto; scrollbar-width: none;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    }
+    .type-tabs::-webkit-scrollbar { display: none; }
+    .type-btn {
+      flex: 1 0 auto; padding: .6rem .9rem; font-weight: 600; font-size: .92rem; white-space: nowrap;
+      color: var(--muted); background: transparent; border: 0; border-radius: 10px;
+      transition: color .2s, background-color .2s;
+    }
+    .type-btn:hover { color: var(--text); }
+    .type-btn.active { color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-2)); box-shadow: 0 6px 16px var(--glow); }
+
+    .field { margin-bottom: 1rem; }
+    .field > label { display: block; margin-bottom: .4rem; font-size: .88rem; font-weight: 600; color: var(--muted); }
+    .field input[type="text"], .field input[type="tel"], .field textarea, .field select {
+      width: 100%; padding: .8rem 1rem; font-size: 1rem; outline: 0;
+      background: var(--field); border: 1px solid var(--border-strong); border-radius: 12px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field textarea { min-height: 96px; resize: vertical; }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--glow); }
+    input[type="color"] {
+      width: 100%; height: 46px; padding: 4px; cursor: pointer;
+      background: var(--field); border: 1px solid var(--border-strong); border-radius: 12px;
+    }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .check { display: flex; align-items: center; gap: .6rem; margin-bottom: 1rem; font-weight: 500; cursor: pointer; }
+    .check input { width: 18px; height: 18px; accent-color: var(--primary); }
+
+    .options { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+    .options summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: .95rem 1.1rem; font-weight: 700; cursor: pointer; list-style: none;
+    }
+    .options summary::-webkit-details-marker { display: none; }
+    .options summary::after {
+      content: "+"; display: grid; place-items: center; width: 28px; height: 28px; font-size: 1.2rem; font-weight: 500;
+      color: var(--link); background: var(--surface-2); border-radius: 50%; transition: transform .2s;
+    }
+    .options[open] summary::after { transform: rotate(45deg); }
+    .options-body { padding: .2rem 1.1rem 0; }
+    .options-body .field:last-child { padding-bottom: .2rem; }
+
+    .preview-card {
+      display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.4rem; text-align: center;
+      background: var(--surface); border: 1px dashed var(--border-strong); border-radius: 20px;
+    }
+    .qr-stage {
+      display: grid; place-items: center; width: min(320px, 100%); aspect-ratio: 1; overflow: hidden;
+      background: #fff; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    }
+    .qr-stage canvas { width: 100%; height: 100%; display: block; }
+    .qr-empty { padding: 1.5rem; font-size: .95rem; font-weight: 500; color: #64748b; }
+    .qr-note { min-height: 1.5em; font-size: .9rem; font-weight: 600; color: var(--muted); }
+    .qr-note.ok { color: var(--success); }
+    .qr-note.warn { color: #f59e0b; }
+    [data-theme="light"] .qr-note.warn { color: #b45309; }
+    .qr-meta { min-height: 1.2em; font-size: .82rem; color: var(--muted); }
+    .dl-row { display: flex; flex-wrap: wrap; gap: .7rem; width: 100%; }
+    .dl-row .btn { flex: 1 1 140px; }
+
+    /* ---------- Content ---------- */
+    .content { display: grid; gap: 1.2rem; padding: 2.5rem 0 3rem; }
+    .content-card { padding: clamp(1.3rem, 3vw, 2rem); background: var(--card); border: 1px solid var(--border); border-radius: 20px; }
+    .content-card h2 { margin-bottom: .9rem; font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+    .content-card p, .content-card li { color: var(--muted); line-height: 1.75; }
+    .content-card strong { color: var(--text); }
+    .content-card ol { display: grid; gap: .8rem; counter-reset: step; }
+    .content-card ol li { position: relative; padding-left: 2.6rem; counter-increment: step; }
+    .content-card ol li::before {
+      content: counter(step); position: absolute; left: 0; top: .1rem; display: grid; place-items: center;
+      width: 1.9rem; height: 1.9rem; font-weight: 800; font-size: .85rem; color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 50%;
+    }
+    .content-card ul { display: grid; gap: .6rem; padding-left: 1.2rem; list-style: disc; }
+    .content-card ul li::marker { color: var(--primary); }
+
+    .faq { display: grid; gap: .7rem; }
+    .faq details { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; transition: border-color .2s; }
+    .faq details[open] { border-color: var(--border-strong); }
+    .faq summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 1rem 1.2rem; font-weight: 700; cursor: pointer; list-style: none;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+      content: "+"; flex: none; display: grid; place-items: center; width: 26px; height: 26px; font-size: 1.15rem; font-weight: 500;
+      color: var(--link); background: var(--surface-2); border-radius: 50%; transition: transform .2s;
+    }
+    .faq details[open] summary::after { transform: rotate(45deg); }
+    .faq details p { padding: 0 1.2rem 1.1rem; }
+
+    .related-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+    .related-link {
+      display: flex; align-items: center; gap: .6rem; padding: .9rem 1.1rem; font-weight: 600;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      transition: border-color .2s, transform .2s;
+    }
+    @media (hover: hover) { .related-link:hover { border-color: var(--primary); transform: translateY(-2px); } }
+
+    /* ---------- Footer ---------- */
+    .site-footer { padding: 1.8rem 0; text-align: center; font-size: .9rem; color: var(--muted); background: var(--bg-alt); border-top: 1px solid var(--border); }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.3rem; margin-bottom: .6rem; }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 860px) {
+      .qr-layout { grid-template-columns: 1fr; grid-template-areas: "fields" "preview" "options"; }
+      .qr-preview { position: static; }
+    }
+    @media (max-width: 560px) {
+      .brand-name { font-size: 1.1rem; }
+      .lang-switch { padding: 0 .5rem; }
+      .lang-switch > span { display: none; }
+      .nav-link { display: none; }
+      .tool-shell { border-radius: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#tool">Skip to tool</a>
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="AnisTools home">
+        <span class="brand-mark" aria-hidden="true">⚡</span>
+        <span class="brand-name">Anis<span class="grad">Tools</span></span>
       </a>
-      <div class="nav-actions">
-        <label class="lang-wrap">
+      <div class="header-actions">
+        <a class="nav-link" href="./#tools"><span data-lang-block="en">All tools</span><span data-lang-block="bn">সব টুলস</span></a>
+        <label class="lang-switch">
           <span aria-hidden="true">🌐</span>
           <select id="langSelect" aria-label="Language">
             <option value="en">English</option>
@@ -70,111 +339,239 @@
     </div>
   </header>
 
-  <section class="hero">
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <a href="./">AnisTools</a> ›
-      <span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span>
-    </nav>
-    <h1 class="hero-title">
-      <span data-lang-block="en">Free <span class="gradient-text">QR Code Generator</span></span>
-      <span data-lang-block="bn">ফ্রি <span class="gradient-text">QR কোড জেনারেটর</span></span>
-    </h1>
-    <p class="hero-subtitle" data-lang-block="en">Create a QR code for any link or text in seconds. Pick your colors and download a sharp PNG — free, with no sign-up, and nothing is uploaded.</p>
-    <p class="hero-subtitle" data-lang-block="bn">যেকোনো লিংক বা লেখার QR কোড মুহূর্তেই বানান। রং বেছে নিয়ে স্পষ্ট PNG ডাউনলোড করুন — ফ্রি, সাইনআপ ছাড়াই, আর কিছুই আপলোড হয় না।</p>
-  </section>
+  <main id="main">
 
-  <main class="main-container" id="tool">
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="./">AnisTools</a> ›
+          <span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span>
+        </nav>
+        <h1>
+          <span data-lang-block="en">Free <span class="grad">QR Code Generator</span></span>
+          <span data-lang-block="bn">ফ্রি <span class="grad">QR কোড জেনারেটর</span></span>
+        </h1>
+        <p class="lead">
+          <span data-lang-block="en">Create QR codes for links, text, Wi-Fi, email and phone numbers. Download them as PNG or SVG — free, with no sign-up, and nothing is uploaded.</span>
+          <span data-lang-block="bn">লিংক, লেখা, Wi-Fi, ইমেইল আর ফোন নম্বরের QR কোড বানান। PNG বা SVG হিসেবে ডাউনলোড করুন — ফ্রি, সাইনআপ ছাড়াই, আর কিছুই আপলোড হয় না।</span>
+        </p>
+      </div>
+    </section>
 
-    <section class="tool-panel active" id="panel-qr">
-      <div class="grid-2">
-        <div class="control-box">
-          <div class="input-group">
-            <label for="qrInput" data-i18n="qr_in">Link or text</label>
-            <input type="text" id="qrInput" value="https://anisur-ai.github.io/Anistools/" placeholder="https://example.com" autocomplete="off">
-          </div>
-          <div class="input-row">
-            <div class="input-group">
-              <label for="qrColor" data-i18n="qr_fg">QR color</label>
-              <input type="color" id="qrColor" value="#000000">
+    <!-- ============ TOOL ============ -->
+    <section class="container" id="tool" aria-label="QR code generator">
+      <div class="tool-shell">
+        <div class="qr-layout">
+
+          <div class="qr-fields">
+            <div class="type-tabs" role="tablist" aria-label="QR code type">
+              <button class="type-btn active" type="button" role="tab" aria-selected="true" data-type="text"><span data-lang-block="en">Link / Text</span><span data-lang-block="bn">লিংক / লেখা</span></button>
+              <button class="type-btn" type="button" role="tab" aria-selected="false" data-type="wifi">Wi-Fi</button>
+              <button class="type-btn" type="button" role="tab" aria-selected="false" data-type="email"><span data-lang-block="en">Email</span><span data-lang-block="bn">ইমেইল</span></button>
+              <button class="type-btn" type="button" role="tab" aria-selected="false" data-type="phone"><span data-lang-block="en">Phone</span><span data-lang-block="bn">ফোন</span></button>
             </div>
-            <div class="input-group">
-              <label for="qrBgColor" data-i18n="qr_bg">Background</label>
-              <input type="color" id="qrBgColor" value="#ffffff">
+
+            <div class="field-panel" data-panel="text">
+              <div class="field">
+                <label for="fText"><span data-lang-block="en">Link or text</span><span data-lang-block="bn">লিংক বা লেখা</span></label>
+                <textarea id="fText" rows="3" spellcheck="false" data-ph-en="https://example.com" data-ph-bn="https://example.com">https://anisur-ai.github.io/Anistools/</textarea>
+              </div>
+            </div>
+
+            <div class="field-panel" data-panel="wifi" hidden>
+              <div class="field">
+                <label for="wSsid"><span data-lang-block="en">Network name (SSID)</span><span data-lang-block="bn">নেটওয়ার্কের নাম (SSID)</span></label>
+                <input type="text" id="wSsid" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="field">
+                <label for="wSec"><span data-lang-block="en">Security</span><span data-lang-block="bn">সিকিউরিটি</span></label>
+                <select id="wSec">
+                  <option value="WPA">WPA / WPA2 / WPA3</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass" data-en="None (open network)" data-bn="কোনো পাসওয়ার্ড নেই (ওপেন)">None (open network)</option>
+                </select>
+              </div>
+              <div class="field" id="wPassWrap">
+                <label for="wPass"><span data-lang-block="en">Password</span><span data-lang-block="bn">পাসওয়ার্ড</span></label>
+                <input type="text" id="wPass" autocomplete="off" spellcheck="false">
+              </div>
+              <label class="check"><input type="checkbox" id="wHidden"><span data-lang-block="en">Hidden network</span><span data-lang-block="bn">লুকানো নেটওয়ার্ক</span></label>
+            </div>
+
+            <div class="field-panel" data-panel="email" hidden>
+              <div class="field">
+                <label for="eAddr"><span data-lang-block="en">Email address</span><span data-lang-block="bn">ইমেইল ঠিকানা</span></label>
+                <input type="text" id="eAddr" inputmode="email" autocomplete="off" spellcheck="false" data-ph-en="name@example.com" data-ph-bn="name@example.com">
+              </div>
+              <div class="field">
+                <label for="eSubj"><span data-lang-block="en">Subject (optional)</span><span data-lang-block="bn">বিষয় (ঐচ্ছিক)</span></label>
+                <input type="text" id="eSubj" autocomplete="off">
+              </div>
+              <div class="field">
+                <label for="eBody"><span data-lang-block="en">Message (optional)</span><span data-lang-block="bn">বার্তা (ঐচ্ছিক)</span></label>
+                <textarea id="eBody" rows="3"></textarea>
+              </div>
+            </div>
+
+            <div class="field-panel" data-panel="phone" hidden>
+              <div class="field">
+                <label for="pNum"><span data-lang-block="en">Phone number</span><span data-lang-block="bn">ফোন নম্বর</span></label>
+                <input type="tel" id="pNum" autocomplete="off" data-ph-en="+8801XXXXXXXXX" data-ph-bn="+8801XXXXXXXXX">
+              </div>
             </div>
           </div>
-          <button class="btn-primary" type="button" id="qrGenerate" data-i18n="qr_gen">Generate QR code</button>
-        </div>
-        <div class="qr-result">
-          <div id="qrcode"></div>
-          <a id="downloadQrBtn" class="btn-secondary" download="qrcode.png" hidden data-i18n="qr_dl">Download PNG</a>
+
+          <div class="qr-preview">
+            <div class="preview-card">
+              <div class="qr-stage">
+                <canvas id="qrCanvas" hidden></canvas>
+                <p class="qr-empty" id="qrEmpty"><span data-lang-block="en">Your QR code will appear here.</span><span data-lang-block="bn">আপনার QR কোড এখানে দেখা যাবে।</span></p>
+              </div>
+              <p class="qr-note" id="qrNote" role="status" aria-live="polite"></p>
+              <p class="qr-meta" id="qrMeta"></p>
+              <div class="dl-row">
+                <a id="dlPng" class="btn btn-primary" href="#" download="qrcode.png" hidden><span data-lang-block="en">Download PNG</span><span data-lang-block="bn">PNG ডাউনলোড</span></a>
+                <a id="dlSvg" class="btn btn-ghost" href="#" download="qrcode.svg" hidden><span data-lang-block="en">Download SVG</span><span data-lang-block="bn">SVG ডাউনলোড</span></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="qr-options">
+            <details class="options" open>
+              <summary><span data-lang-block="en">Style options</span><span data-lang-block="bn">স্টাইল অপশন</span></summary>
+              <div class="options-body">
+                <div class="field-row">
+                  <div class="field">
+                    <label for="qrFg"><span data-lang-block="en">QR color</span><span data-lang-block="bn">QR-এর রং</span></label>
+                    <input type="color" id="qrFg" value="#000000">
+                  </div>
+                  <div class="field">
+                    <label for="qrBg"><span data-lang-block="en">Background</span><span data-lang-block="bn">ব্যাকগ্রাউন্ড</span></label>
+                    <input type="color" id="qrBg" value="#ffffff">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label for="qrSize"><span data-lang-block="en">Size</span><span data-lang-block="bn">সাইজ</span></label>
+                    <select id="qrSize">
+                      <option value="256" data-en="Small (256 px)" data-bn="ছোট (২৫৬ px)">Small (256 px)</option>
+                      <option value="512" data-en="Medium (512 px)" data-bn="মাঝারি (৫১২ px)" selected>Medium (512 px)</option>
+                      <option value="1024" data-en="Large (1024 px)" data-bn="বড় (১০২৪ px)">Large (1024 px)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="qrMargin"><span data-lang-block="en">Margin</span><span data-lang-block="bn">মার্জিন</span></label>
+                    <select id="qrMargin">
+                      <option value="0" data-en="None" data-bn="নেই">None</option>
+                      <option value="2" data-en="Small" data-bn="ছোট">Small</option>
+                      <option value="4" data-en="Standard" data-bn="সাধারণ" selected>Standard</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="qrLevel"><span data-lang-block="en">Error correction</span><span data-lang-block="bn">ত্রুটি সংশোধন</span></label>
+                  <select id="qrLevel">
+                    <option value="L" data-en="Low (7%)" data-bn="কম (৭%)">Low (7%)</option>
+                    <option value="M" data-en="Medium (15%)" data-bn="মাঝারি (১৫%)" selected>Medium (15%)</option>
+                    <option value="Q" data-en="Quartile (25%)" data-bn="কোয়ার্টাইল (২৫%)">Quartile (25%)</option>
+                    <option value="H" data-en="High (30%)" data-bn="বেশি (৩০%)">High (30%)</option>
+                  </select>
+                </div>
+              </div>
+            </details>
+          </div>
+
         </div>
       </div>
     </section>
 
-    <article class="content">
+    <!-- ============ GUIDE ============ -->
+    <article class="container container-narrow content">
 
       <section class="content-card">
         <h2 data-lang-block="en">How to make a QR code</h2>
         <h2 data-lang-block="bn">QR কোড বানানোর নিয়ম</h2>
         <ol data-lang-block="en">
-          <li>Type or paste your link, text, email address (mailto:…) or phone number (tel:…) into the box.</li>
-          <li>Choose the QR color and background. Dark code on a light background scans best.</li>
-          <li>The QR code updates as you type. You can also press "Generate QR code".</li>
-          <li>Press "Download PNG". The image is a 512 × 512 pixel PNG.</li>
+          <li>Choose what the QR code should hold: a link or text, Wi-Fi details, an email or a phone number.</li>
+          <li>Fill in the details. The QR code updates as you type.</li>
+          <li>If you like, change the colors, size, margin and error correction under "Style options".</li>
+          <li>Press "Download PNG" for everyday use, or "Download SVG" for print and design work where you need sharp edges at any size. Scan the code with your phone to test it.</li>
         </ol>
         <ol data-lang-block="bn">
-          <li>আপনার লিংক, লেখা, ইমেইল (mailto:…) বা ফোন নম্বর (tel:…) ঘরে লিখুন বা পেস্ট করুন।</li>
-          <li>QR-এর রং আর ব্যাকগ্রাউন্ডের রং বেছে নিন। হালকা ব্যাকগ্রাউন্ডে গাঢ় রংের কোড সবচেয়ে ভালো স্ক্যান হয়।</li>
-          <li>টাইপ করার সাথে সাথেই QR কোড আপডেট হয়। চাইলে "QR কোড তৈরি করুন" বাটনও চাপতে পারেন।</li>
-          <li>"PNG ডাউনলোড" চাপুন। ছবিটি ৫১২×৫১২ পিক্সেলের PNG।</li>
+          <li>QR কোডে কী থাকবে বেছে নিন: লিংক বা লেখা, Wi-Fi-এর তথ্য, ইমেইল বা ফোন নম্বর।</li>
+          <li>তথ্য লিখুন। টাইপ করার সাথে সাথেই QR কোড আপডেট হয়।</li>
+          <li>চাইলে "স্টাইল অপশন" থেকে রং, সাইজ, মার্জিন আর ত্রুটি সংশোধন বদলাতে পারেন।</li>
+          <li>সাধারণ কাজের জন্য "PNG ডাউনলোড" চাপুন। প্রিন্ট বা ডিজাইনের কাজে যেখানে যেকোনো সাইজে ধার পরিষ্কার থাকা দরকার, সেখানে "SVG ডাউনলোড" নিন। ফোনে স্ক্যান করে পরীক্ষা করে নিন।</li>
         </ol>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">What you can put in a QR code</h2>
+        <h2 data-lang-block="bn">QR কোডে কী কী রাখা যায়</h2>
+        <ul data-lang-block="en">
+          <li><strong>Link or text:</strong> opens a website or shows your text when scanned. For websites, start the address with https://.</li>
+          <li><strong>Wi-Fi:</strong> lets guests join your network without typing the password. The name and password are stored inside the code, so share it only with people you trust.</li>
+          <li><strong>Email:</strong> opens a new email with the address, subject and message already filled in.</li>
+          <li><strong>Phone:</strong> opens the dialer with the number ready to call.</li>
+        </ul>
+        <ul data-lang-block="bn">
+          <li><strong>লিংক বা লেখা:</strong> স্ক্যান করলে ওয়েবসাইট খোলে বা লেখা দেখায়। ওয়েবসাইটের ঠিকানা https:// দিয়ে শুরু করুন।</li>
+          <li><strong>Wi-Fi:</strong> অতিথিরা পাসওয়ার্ড না লিখেই আপনার নেটওয়ার্কে যুক্ত হতে পারে। নাম আর পাসওয়ার্ড কোডের ভেতরেই থাকে, তাই শুধু বিশ্বস্ত মানুষের সঙ্গে শেয়ার করুন।</li>
+          <li><strong>ইমেইল:</strong> ঠিকানা, বিষয় আর বার্তা আগে থেকে ভরা একটি নতুন ইমেইল খোলে।</li>
+          <li><strong>ফোন:</strong> নম্বরসহ ডায়ালার খোলে, শুধু কল করলেই হয়।</li>
+        </ul>
       </section>
 
       <section class="content-card">
         <h2 data-lang-block="en">Tips for a QR code that scans reliably</h2>
         <h2 data-lang-block="bn">যেভাবে QR কোড সহজে স্ক্যান হবে</h2>
         <ul data-lang-block="en">
-          <li>Keep strong contrast between the code and the background. Don't invert the colors (light code on a dark background), because many scanners can't read it.</li>
-          <li>Shorter text makes a simpler code that is easier to scan. For websites, use a short full address starting with https://.</li>
-          <li>Test the code with your phone before printing or sharing it.</li>
-          <li>Leave a blank margin around the code and don't print it too small.</li>
+          <li>Keep strong contrast between the code and the background. A dark code on a light background works best.</li>
+          <li>Don't invert the colors (a light code on a dark background). Some scanner apps can't read it.</li>
+          <li>Shorter content makes a simpler code that is easier to scan. Higher error correction makes the code denser.</li>
+          <li>Keep the margin on "Standard" and don't print the code smaller than about 2 cm (0.8 in).</li>
+          <li>Always test the code with your phone before printing or sharing it.</li>
           <li>This tool makes static QR codes: the data is stored in the image itself, so the code never expires and doesn't track scans.</li>
         </ul>
         <ul data-lang-block="bn">
-          <li>কোড আর ব্যাকগ্রাউন্ডের মধ্যে রঙের পার্থক্য স্পষ্ট রাখুন। রং উল্টে দেবেন না (গাঢ় ব্যাকগ্রাউন্ডে হালকা কোড), কারণ অনেক স্ক্যানার সেটা পড়তে পারে না।</li>
-          <li>লেখা যত ছোট, কোড তত সহজ আর স্ক্যান করা তত সুবিধাজনক। ওয়েবসাইটের জন্য https:// দিয়ে শুরু করা ছোট পূর্ণ ঠিকানা দিন।</li>
+          <li>কোড আর ব্যাকগ্রাউন্ডের মধ্যে রঙের পার্থক্য স্পষ্ট রাখুন। হালকা ব্যাকগ্রাউন্ডে গাঢ় কোড সবচেয়ে ভালো কাজ করে।</li>
+          <li>রং উল্টাবেন না (গাঢ় ব্যাকগ্রাউন্ডে হালকা কোড)। কিছু স্ক্যানার অ্যাপ সেটা পড়তে পারে না।</li>
+          <li>লেখা যত ছোট, কোড তত সহজ আর স্ক্যান করা তত সুবিধাজনক। ত্রুটি সংশোধনের স্তর বাড়ালে কোড ঘন হয়।</li>
+          <li>মার্জিন "সাধারণ" রাখুন, আর কোড প্রায় ২ সেমি-র চেয়ে ছোট ছাপবেন না।</li>
           <li>ছাপানো বা শেয়ার করার আগে নিজের ফোনে স্ক্যান করে দেখুন।</li>
-          <li>কোডের চারপাশে ফাঁকা জায়গা রাখুন, আর খুব ছোট করে ছাপবেন না।</li>
           <li>এই টুল স্ট্যাটিক QR কোড বানায়: তথ্য ছবির ভেতরেই থাকে, তাই কোডের মেয়াদ শেষ হয় না আর কে স্ক্যান করল তা ট্র্যাক হয় না।</li>
         </ul>
       </section>
-
-      <section class="content-card">
+<section class="content-card">
         <h2 data-lang-block="en">Frequently asked questions</h2>
         <h2 data-lang-block="bn">সচরাচর জিজ্ঞাসা</h2>
         <div class="faq" data-lang-block="en">
           <details><summary>Is this QR code generator really free?</summary>
             <p>Yes. There is no sign-up, no watermark and no limit on how many codes you create.</p></details>
           <details><summary>Do the QR codes expire?</summary>
-            <p>No. The link or text is encoded directly in the image, so the code keeps working as long as the destination itself (such as your website) is online.</p></details>
-          <details><summary>Is my link or text uploaded anywhere?</summary>
-            <p>No. The code is generated in your browser, and what you type is not sent anywhere.</p></details>
+            <p>No. The data is encoded directly in the image, so the code keeps working for as long as the destination itself, such as your website, is online.</p></details>
+          <details><summary>Is my link, text or Wi-Fi password uploaded anywhere?</summary>
+            <p>No. The code is created in your browser and what you type is not sent to our servers.</p></details>
+          <details><summary>Should I download PNG or SVG?</summary>
+            <p>PNG is an ordinary image, good for websites, documents and chats. SVG is a vector file that stays sharp at any size, which makes it the better choice for posters, stickers and professional printing.</p></details>
+          <details><summary>What is error correction?</summary>
+            <p>It adds extra data so the code can still be read if part of it is dirty or damaged. Higher levels survive more damage but make the code denser. "Medium" is a good choice for most uses.</p></details>
           <details><summary>Why won't my QR code scan?</summary>
-            <p>The usual reasons are low contrast between the code and the background, inverted colors, very long text, or printing it too small. Use a dark code on a light background and test it with your phone.</p></details>
-          <details><summary>What image size do I get?</summary>
-            <p>A 512 × 512 pixel PNG, which is sharp enough for websites, documents and small prints.</p></details>
+            <p>The usual reasons are low contrast between the code and the background, inverted colors, very long content, no margin around the code, or printing it too small. Use a dark code on a light background and test it with your phone.</p></details>
         </div>
         <div class="faq" data-lang-block="bn">
           <details><summary>এই QR কোড জেনারেটর কি সত্যিই ফ্রি?</summary>
             <p>হ্যাঁ। সাইনআপ লাগে না, ছবিতে ওয়াটারমার্ক নেই, আর যত খুশি কোড বানাতে পারবেন।</p></details>
           <details><summary>QR কোডের কি মেয়াদ শেষ হয়?</summary>
-            <p>না। লিংক বা লেখা সরাসরি ছবির ভেতরেই থাকে, তাই গন্তব্য (যেমন আপনার ওয়েবসাইট) চালু থাকলে কোডও কাজ করবে।</p></details>
-          <details><summary>আমার লিংক বা লেখা কি কোথাও আপলোড হয়?</summary>
-            <p>না। কোডটি আপনার ব্রাউজারেই তৈরি হয়, আপনি যা লেখেন তা কোথাও পাঠানো হয় না।</p></details>
+            <p>না। তথ্য সরাসরি ছবির ভেতরেই থাকে, তাই গন্তব্য (যেমন আপনার ওয়েবসাইট) চালু থাকলে কোডও কাজ করবে।</p></details>
+          <details><summary>আমার লিংক, লেখা বা Wi-Fi পাসওয়ার্ড কি কোথাও আপলোড হয়?</summary>
+            <p>না। কোডটি আপনার ব্রাউজারেই তৈরি হয়, আপনি যা লেখেন তা আমাদের সার্ভারে পাঠানো হয় না।</p></details>
+          <details><summary>PNG নেব নাকি SVG?</summary>
+            <p>PNG সাধারণ ছবি, ওয়েবসাইট, ডকুমেন্ট আর চ্যাটের জন্য ভালো। SVG হলো ভেক্টর ফাইল, যেকোনো সাইজে ধারালো থাকে, তাই পোস্টার, স্টিকার আর পেশাদার প্রিন্টের জন্য এটাই ভালো।</p></details>
+          <details><summary>ত্রুটি সংশোধন (error correction) কী?</summary>
+            <p>এটা বাড়তি তথ্য যোগ করে, যাতে কোডের কিছু অংশ নোংরা বা নষ্ট হলেও পড়া যায়। উঁচু স্তরে বেশি নষ্ট হলেও পড়া যায়, তবে কোড ঘন হয়। বেশিরভাগ কাজের জন্য "মাঝারি" ঠিক আছে।</p></details>
           <details><summary>আমার QR কোড স্ক্যান হচ্ছে না কেন?</summary>
-            <p>সাধারণ কারণ হলো কোড আর ব্যাকগ্রাউন্ডের রঙের পার্থক্য কম, রং উল্টানো, লেখা অনেক বড়, বা খুব ছোট করে ছাপা। হালকা ব্যাকগ্রাউন্ডে গাঢ় কোড ব্যবহার করুন আর ফোনে স্ক্যান করে দেখুন।</p></details>
-          <details><summary>ডাউনলোড করা ছবির সাইজ কত?</summary>
-            <p>৫১২×৫১২ পিক্সেলের PNG, যা ওয়েবসাইট, ডকুমেন্ট আর ছোট প্রিন্টের জন্য যথেষ্ট স্পষ্ট।</p></details>
+            <p>সাধারণ কারণ হলো কোড আর ব্যাকগ্রাউন্ডের রঙের পার্থক্য কম, রং উল্টানো, লেখা অনেক বড়, কোডের চারপাশে মার্জিন না থাকা, বা খুব ছোট করে ছাপা। হালকা ব্যাকগ্রাউন্ডে গাঢ় কোড ব্যবহার করুন আর ফোনে স্ক্যান করে দেখুন।</p></details>
         </div>
       </section>
 
@@ -182,25 +579,274 @@
         <h2 data-lang-block="en">More free tools</h2>
         <h2 data-lang-block="bn">আরও ফ্রি টুলস</h2>
         <div class="related-grid">
-          <a class="related-link" href="password-generator.html">🔐 <span data-i18n="tab_pass">Password</span></a>
-          <a class="related-link" href="word-counter.html">📝 <span data-i18n="tab_word">Word Counter</span></a>
-          <a class="related-link" href="image-compressor.html">🖼️ <span data-i18n="tab_img">Image Compressor</span></a>
-          <a class="related-link" href="calculator.html">🧮 <span data-i18n="tab_calc">Calculator</span></a>
+          <a class="related-link" href="password-generator.html">🔐 <span data-lang-block="en">Password Generator</span><span data-lang-block="bn">পাসওয়ার্ড জেনারেটর</span></a>
+          <a class="related-link" href="word-counter.html">📝 <span data-lang-block="en">Word Counter</span><span data-lang-block="bn">শব্দ গণনা</span></a>
+          <a class="related-link" href="json-formatter.html">🧾 <span data-lang-block="en">JSON Formatter</span><span data-lang-block="bn">JSON ফরম্যাটার</span></a>
+          <a class="related-link" href="image-compressor.html">🖼️ <span data-lang-block="en">Image Compressor</span><span data-lang-block="bn">ইমেজ কম্প্রেসর</span></a>
+          <a class="related-link" href="calculator.html">🧮 <span data-lang-block="en">Calculator</span><span data-lang-block="bn">ক্যালকুলেটর</span></a>
         </div>
       </section>
 
     </article>
   </main>
 
-  <footer>
-    <p data-i18n="f_copy">© 2026 AnisTools. All rights reserved.</p>
-    <p class="footer-links">
-      <a href="privacy.html" data-i18n="f_priv">Privacy Policy</a> ·
-      <a href="terms.html" data-i18n="f_terms">Terms of Use</a> ·
-      <a href="contact.html" data-i18n="f_contact">Contact</a>
-    </p>
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-links">
+        <a href="./"><span data-lang-block="en">Home</span><span data-lang-block="bn">হোম</span></a>
+        <a href="privacy.html"><span data-lang-block="en">Privacy Policy</span><span data-lang-block="bn">গোপনীয়তা নীতি</span></a>
+        <a href="terms.html"><span data-lang-block="en">Terms of Use</span><span data-lang-block="bn">ব্যবহারের শর্তাবলী</span></a>
+        <a href="contact.html"><span data-lang-block="en">Contact</span><span data-lang-block="bn">যোগাযোগ</span></a>
+      </p>
+      <p>
+        <span data-lang-block="en">© 2026 AnisTools. All rights reserved.</span>
+        <span data-lang-block="bn">© ২০২৬ AnisTools। সর্বস্বত্ব সংরক্ষিত।</span>
+      </p>
+    </div>
   </footer>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+
+    const root = document.documentElement;
+    const $ = id => document.getElementById(id);
+    const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+    const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+
+    /* ---------- Messages: [English, বাংলা] ---------- */
+    const MSG = {
+      empty:    ['Enter something to create your QR code.', 'QR কোড বানাতে কিছু লিখুন।'],
+      ssid:     ['Enter the Wi-Fi network name.', 'Wi-Fi নেটওয়ার্কের নাম লিখুন।'],
+      addr:     ['Enter an email address.', 'একটি ইমেইল ঠিকানা লিখুন।'],
+      phone:    ['Enter a phone number.', 'একটি ফোন নম্বর লিখুন।'],
+      long:     ['This is too long for a QR code. Shorten it or lower the error correction level.', 'QR কোডের জন্য এটি অনেক বড়। ছোট করুন বা ত্রুটি সংশোধনের স্তর কমান।'],
+      fail:     ['The QR code could not be created. Please reload the page and try again.', 'QR কোড বানানো যায়নি। পেজ রিলোড করে আবার চেষ্টা করুন।'],
+      contrast: ['The colors are too similar — the QR code may not scan.', 'রং দুটো খুব কাছাকাছি — QR কোড স্ক্যান নাও হতে পারে।'],
+      invert:   ['A light code on a dark background does not scan in some apps.', 'গাঢ় ব্যাকগ্রাউন্ডে হালকা কোড কিছু অ্যাপে স্ক্যান হয় না।'],
+      ready:    ['Ready — scan it with your phone to test it.', 'তৈরি — ফোনে স্ক্যান করে পরীক্ষা করে নিন।']
+    };
+    let lang = 'en';
+    const T = k => MSG[k][lang === 'bn' ? 1 : 0];
+
+    let noteKey = 'empty', noteKind = '';
+    function setNote(key, kind) {
+      noteKey = key; noteKind = kind || '';
+      const el = $('qrNote');
+      el.textContent = T(key);
+      el.className = 'qr-note' + (noteKind ? ' ' + noteKind : '');
+    }
+
+    /* ---------- Theme & language ---------- */
+    const themeBtn = $('themeToggle');
+    const langSel = $('langSelect');
+
+    function applyTheme(t) {
+      root.dataset.theme = t;
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', t === 'dark' ? '#0a0e1a' : '#f6f8fc');
+    }
+    function applyLang(l) {
+      lang = l;
+      root.lang = l;
+      langSel.value = l;
+      document.querySelectorAll('[data-ph-en]').forEach(el => { el.placeholder = l === 'bn' ? el.dataset.phBn : el.dataset.phEn; });
+      document.querySelectorAll('option[data-en]').forEach(o => { o.textContent = l === 'bn' ? o.dataset.bn : o.dataset.en; });
+      setNote(noteKey, noteKind);
+    }
+    themeBtn.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      store('theme', next);
+    });
+    langSel.addEventListener('change', e => { applyLang(e.target.value); store('lang', e.target.value); });
+
+    /* ---------- Content type ---------- */
+    let type = 'text';
+    const escWifi = s => s.replace(/([\\;,:"])/g, '\\$1');
+
+    function getPayload() {
+      if (type === 'text') {
+        const v = $('fText').value.trim();
+        return v ? { value: v } : { error: 'empty' };
+      }
+      if (type === 'wifi') {
+        const ssid = $('wSsid').value;
+        if (!ssid.trim()) return { error: 'ssid' };
+        const sec = $('wSec').value;
+        const pass = sec === 'nopass' ? '' : $('wPass').value;
+        return { value: 'WIFI:T:' + sec + ';S:' + escWifi(ssid) + ';' + (pass ? 'P:' + escWifi(pass) + ';' : '') + ($('wHidden').checked ? 'H:true;' : '') + ';' };
+      }
+      if (type === 'email') {
+        const a = $('eAddr').value.trim();
+        if (!a) return { error: 'addr' };
+        const parts = [];
+        const s = $('eSubj').value.trim();
+        const b = $('eBody').value.trim();
+        if (s) parts.push('subject=' + encodeURIComponent(s));
+        if (b) parts.push('body=' + encodeURIComponent(b));
+        return { value: 'mailto:' + a + (parts.length ? '?' + parts.join('&') : '') };
+      }
+      const n = $('pNum').value.replace(/[^\d+]/g, '');
+      return n ? { value: 'tel:' + n } : { error: 'phone' };
+    }
+
+    /* ---------- Colors ---------- */
+    function luminance(hex) {
+      const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+        .map(v => (v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)));
+      return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    }
+    function contrast(a, b) {
+      const hi = Math.max(luminance(a), luminance(b));
+      const lo = Math.min(luminance(a), luminance(b));
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    /* ---------- QR model (qrcodejs) and drawing ---------- */
+    function makeModel(text, level) {
+      const levels = { L: QRCode.CorrectLevel.L, M: QRCode.CorrectLevel.M, Q: QRCode.CorrectLevel.Q, H: QRCode.CorrectLevel.H };
+      const holder = document.createElement('div');
+      const qr = new QRCode(holder, { text: text, width: 64, height: 64, correctLevel: levels[level] });
+      return qr._oQRCode;
+    }
+
+    function draw(model, o) {
+      const n = model.getModuleCount();
+      const total = n + 2 * o.margin;
+      const cell = Math.max(1, Math.floor(o.size / total));
+      const px = cell * total;
+
+      const cv = $('qrCanvas');
+      cv.width = px;
+      cv.height = px;
+      const ctx = cv.getContext('2d');
+      ctx.fillStyle = o.bg;
+      ctx.fillRect(0, 0, px, px);
+      ctx.fillStyle = o.fg;
+      for (let r = 0; r < n; r++) {
+        for (let c = 0; c < n; c++) {
+          if (model.isDark(r, c)) ctx.fillRect((c + o.margin) * cell, (r + o.margin) * cell, cell, cell);
+        }
+      }
+
+      let d = '';
+      for (let r = 0; r < n; r++) {
+        let c = 0;
+        while (c < n) {
+          if (model.isDark(r, c)) {
+            const start = c;
+            while (c < n && model.isDark(r, c)) c++;
+            d += 'M' + (start + o.margin) + ' ' + (r + o.margin) + 'h' + (c - start) + 'v1h-' + (c - start) + 'z';
+          } else {
+            c++;
+          }
+        }
+      }
+      const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + total + ' ' + total + '" width="' + px + '" height="' + px + '" shape-rendering="crispEdges">' +
+        '<rect width="' + total + '" height="' + total + '" fill="' + o.bg + '"/>' +
+        '<path fill="' + o.fg + '" d="' + d + '"/></svg>';
+      return { px: px, svg: svg };
+    }
+
+    /* ---------- Downloads ---------- */
+    let pngUrl = null, svgUrl = null;
+    function setDownloads(svgText) {
+      if (svgUrl) URL.revokeObjectURL(svgUrl);
+      svgUrl = URL.createObjectURL(new Blob([svgText], { type: 'image/svg+xml' }));
+      $('dlSvg').href = svgUrl;
+      $('dlSvg').download = 'qr-' + type + '.svg';
+      $('qrCanvas').toBlob(blob => {
+        if (!blob) return;
+        if (pngUrl) URL.revokeObjectURL(pngUrl);
+        pngUrl = URL.createObjectURL(blob);
+        $('dlPng').href = pngUrl;
+        $('dlPng').download = 'qr-' + type + '.png';
+        $('dlPng').hidden = false;
+        $('dlSvg').hidden = false;
+      }, 'image/png');
+    }
+
+    /* ---------- Update ---------- */
+    function showEmpty(key) {
+      $('qrCanvas').hidden = true;
+      $('qrEmpty').hidden = false;
+      $('dlPng').hidden = true;
+      $('dlSvg').hidden = true;
+      $('qrMeta').textContent = '';
+      setNote(key, key === 'empty' || key === 'ssid' || key === 'addr' || key === 'phone' ? '' : 'warn');
+    }
+
+    function update() {
+      const p = getPayload();
+      if (p.error) { showEmpty(p.error); return; }
+      if (typeof QRCode === 'undefined') { showEmpty('fail'); return; }
+
+      const fg = $('qrFg').value;
+      const bg = $('qrBg').value;
+      let model;
+      try {
+        model = makeModel(p.value, $('qrLevel').value);
+      } catch (e) {
+        showEmpty('long');
+        return;
+      }
+      if (!model || typeof model.isDark !== 'function') { showEmpty('fail'); return; }
+
+      const out = draw(model, {
+        fg: fg, bg: bg,
+        size: parseInt($('qrSize').value, 10),
+        margin: parseInt($('qrMargin').value, 10)
+      });
+      $('qrCanvas').hidden = false;
+      $('qrEmpty').hidden = true;
+      $('qrMeta').textContent = out.px + ' × ' + out.px + ' px';
+
+      let warn = null;
+      if (contrast(fg, bg) < 3) warn = 'contrast';
+      else if (luminance(fg) > luminance(bg)) warn = 'invert';
+      if (warn) setNote(warn, 'warn'); else setNote('ready', 'ok');
+
+      setDownloads(out.svg);
+    }
+    const debouncedUpdate = debounce(update, 200);
+
+    /* ---------- Events ---------- */
+    document.querySelectorAll('.type-btn').forEach(btn => btn.addEventListener('click', () => {
+      type = btn.dataset.type;
+      document.querySelectorAll('.type-btn').forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on);
+      });
+      document.querySelectorAll('.field-panel').forEach(p => { p.hidden = p.dataset.panel !== type; });
+      update();
+    }));
+
+    $('wSec').addEventListener('change', () => { $('wPassWrap').hidden = $('wSec').value === 'nopass'; });
+
+    ['fText', 'wSsid', 'wPass', 'wSec', 'wHidden', 'eAddr', 'eSubj', 'eBody', 'pNum', 'qrFg', 'qrBg', 'qrSize', 'qrMargin', 'qrLevel']
+      .forEach(id => {
+        $(id).addEventListener('input', debouncedUpdate);
+        $(id).addEventListener('change', debouncedUpdate);
+      });
+
+    /* Hide related links whose page is not uploaded yet */
+    if (location.protocol.indexOf('http') === 0) {
+      document.querySelectorAll('.related-link').forEach(a => {
+        fetch(a.getAttribute('href'), { method: 'HEAD', cache: 'no-cache' })
+          .then(r => { if (!r.ok) a.hidden = true; })
+          .catch(() => {});
+      });
+    }
+
+    /* ---------- Init ---------- */
+    applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
+    applyLang(load('lang') === 'bn' ? 'bn' : 'en');
+    update();
+  });
+  </script>
 </body>
 </html>
