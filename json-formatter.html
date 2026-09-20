@@ -790,3 +790,966 @@
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+
+    /* ---------- Basics ---------- */
+    const root = document.documentElement;
+    const $ = id => document.getElementById(id);
+    const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+    const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+
+    const LIVE_MAX = 5 * 1024 * 1024;   // above this many characters, live checking is off
+    const HIGHLIGHT_MAX = 400000;       // above this many characters, the output has no colours
+    const MAX_DEPTH = 1000;
+
+    const input = $('jsonIn');
+    const outEl = $('jsonOut');
+    const gutter = $('gutter');
+    const mark = $('errMark');
+    const statusBox = $('status');
+    const statusText = $('statusText');
+    const gotoBtn = $('gotoBtn');
+    const editor = input.parentElement;
+    editor.style.overflow = 'hidden';
+
+    /* ---------- Language helpers ---------- */
+    let lang = 'en';
+    const L = pair => pair[lang === 'bn' ? 1 : 0];
+    const fill = (s, args) => s.replace(/\{(\d)\}/g, (m, i) => (args && args[i] !== undefined ? args[i] : ''));
+
+    /* ---------- Interface text: [English, বাংলা] ---------- */
+    const TXT = {
+      copied:     ['Copied!', 'কপি হয়েছে!'],
+      copyfail:   ['Could not copy. Select the text and copy it manually.', 'কপি করা যায়নি। লেখা সিলেক্ট করে হাতে কপি করুন।'],
+      needInput:  ['Paste or type some JSON first.', 'আগে কিছু JSON পেস্ট বা টাইপ করুন।'],
+      pastefail:  ['Could not read the clipboard. Press and hold in the Input box, then choose Paste.', 'ক্লিপবোর্ড পড়া যায়নি। ইনপুট ঘরে চেপে ধরে "পেস্ট" বেছে নিন।'],
+      badfile:    ['Please choose a .json or .txt file.', 'অনুগ্রহ করে একটি .json বা .txt ফাইল বেছে নিন।'],
+      readfail:   ['The file could not be read.', 'ফাইলটি পড়া যায়নি।'],
+      loaded:     ['File loaded.', 'ফাইল লোড হয়েছে।'],
+      moved:      ['The output was moved to the input box.', 'আউটপুট ইনপুট ঘরে সরানো হয়েছে।'],
+      downloaded: ['Download started.', 'ডাউনলোড শুরু হয়েছে।'],
+
+      statusIdle: ['Paste or type JSON to begin.', 'শুরু করতে JSON পেস্ট বা টাইপ করুন।'],
+      valid:      ['Valid JSON.', 'JSON সঠিক।'],
+      formatted:  ['Formatted. The JSON is valid.', 'ফরম্যাট হয়েছে। JSON সঠিক।'],
+      minified:   ['Minified: {0} → {1} ({2}% smaller). The JSON is valid.', 'মিনিফাই হয়েছে: {0} → {1} ({2}% ছোট)। JSON সঠিক।'],
+      minified0:  ['Minified. The JSON is valid.', 'মিনিফাই হয়েছে। JSON সঠিক।'],
+      invalid:    ['Invalid JSON', 'JSON ভুল'],
+      line:       ['line', 'লাইন'],
+      column:     ['column', 'কলাম'],
+      lines:      ['lines', 'লাইন'],
+      big:        ['This input is over 5 MB, so live checking is off. Press Validate or Format to check it.', 'এই ইনপুট ৫ এমবির বেশি, তাই টাইপের সময় নিজে থেকে যাচাই বন্ধ আছে। যাচাই করতে "যাচাই করুন" বা "ফরম্যাট" চাপুন।'],
+
+      alreadyValid: ['The JSON is already valid, so nothing needed fixing. The formatted result is shown.', 'JSON আগে থেকেই সঠিক, তাই কিছু ঠিক করতে হয়নি। ফরম্যাট করা ফল দেখানো হয়েছে।'],
+      fixed:      ['Fixed and formatted. Repairs made — {0}.', 'ভুল ঠিক করে ফরম্যাট করা হয়েছে। যা যা মেরামত হয়েছে — {0}।'],
+      fixPartial: ['Some problems could not be repaired automatically. The output box shows the partly repaired text. Remaining problem in the output — {0}', 'কিছু ভুল নিজে থেকে ঠিক করা যায়নি। আউটপুট ঘরে আংশিক মেরামত করা লেখা দেখানো হয়েছে। আউটপুটে বাকি ভুল — {0}'],
+      fixNone:    ['Nothing could be repaired automatically. The output box shows your text as it is. The problem — {0}', 'নিজে থেকে কিছুই মেরামত করা যায়নি। আউটপুট ঘরে আপনার লেখা যেমন আছে তেমনই দেখানো হয়েছে। ভুলটা — {0}'],
+      rComments:  ['comments', 'কমেন্ট'],
+      rCommas:    ['trailing commas', 'বাড়তি কমা'],
+      rQuotes:    ['single-quoted texts', 'সিঙ্গেল কোটেশনের লেখা'],
+      rKeys:      ['unquoted keys', 'কোটেশনহীন কী'],
+      rLits:      ['True/False/None', 'True/False/None'],
+
+      tobj:  ['Object', 'অবজেক্ট'],
+      tarr:  ['Array', 'অ্যারে'],
+      tstr:  ['String', 'স্ট্রিং'],
+      tnum:  ['Number', 'সংখ্যা'],
+      tbool: ['Boolean', 'বুলিয়ান'],
+      tnull: ['Null', 'নাল']
+    };
+    const T = (k, ...a) => fill(L(TXT[k]), a);
+
+    /* ---------- Error messages ---------- */
+    const MSG = {
+      end:             ['Unexpected end of the JSON. A closing } or ], or a value, is probably missing.', 'JSON হঠাৎ শেষ হয়ে গেছে। সম্ভবত শেষের } বা ], অথবা কোনো মান বাদ পড়েছে।'],
+      unexpected:      ['Unexpected character “{0}”.', 'অপ্রত্যাশিত অক্ষর “{0}”।'],
+      noValue:         ['A value is missing before “{0}”.', '“{0}”-এর আগে একটি মান বাদ পড়েছে।'],
+      trailingComma:   ['Trailing comma. Remove the comma before the closing bracket.', 'শেষে বাড়তি কমা। বন্ধ করার বন্ধনীর আগের কমাটি সরান।'],
+      comma:           ['A comma is missing between items.', 'আইটেমগুলোর মাঝে কমা বাদ পড়েছে।'],
+      colon:           ['A colon (:) is expected after the key, but found “{0}”.', 'কী-এর পরে কোলন (:) থাকার কথা, কিন্তু “{0}” পাওয়া গেছে।'],
+      mismatch:        ['Wrong closing bracket. “{0}” is expected here.', 'ভুল বন্ধনী। এখানে “{0}” থাকার কথা।'],
+      singleQuote:     ['Single quotes are not allowed. Use double quotes (").', 'সিঙ্গেল কোটেশন চলে না। ডাবল কোটেশন (") ব্যবহার করুন।'],
+      curlyQuote:      ['Curly quotes (“ ”) are not allowed. Use straight double quotes (").', 'বাঁকা কোটেশন (“ ”) চলে না। সোজা ডাবল কোটেশন (") ব্যবহার করুন।'],
+      unquotedKey:     ['The key “{0}” must be in double quotes.', '“{0}” কী-টি ডাবল কোটেশনের ভেতরে থাকতে হবে।'],
+      expectedKey:     ['A key in double quotes is expected here, but found “{0}”.', 'এখানে ডাবল কোটেশনে লেখা কী থাকার কথা, কিন্তু “{0}” পাওয়া গেছে।'],
+      unterminated:    ['This text is not closed. A closing double quote is missing.', 'এই লেখাটি বন্ধ করা হয়নি। শেষের ডাবল কোটেশন বাদ পড়েছে।'],
+      newlineInString: ['A line break is not allowed inside text. Use \\n instead.', 'লেখার ভেতরে লাইন-ব্রেক চলে না। এর বদলে \\n ব্যবহার করুন।'],
+      control:         ['A tab or other control character inside text must be escaped (for example \\t).', 'লেখার ভেতরে ট্যাব বা অন্য কন্ট্রোল অক্ষর সরাসরি চলে না, এস্কেপ করতে হবে (যেমন \\t)।'],
+      badEscape:       ['Invalid escape sequence “\\{0}” inside text.', 'লেখার ভেতরে অবৈধ এস্কেপ “\\{0}”।'],
+      badUnicode:      ['\\u must be followed by exactly 4 hexadecimal digits.', '\\u-এর পরে ঠিক ৪টি হেক্সাডেসিমাল অঙ্ক থাকতে হবে।'],
+      leadingZero:     ['Numbers cannot have a leading zero (for example 007).', 'সংখ্যা শূন্য দিয়ে শুরু করা যায় না (যেমন 007)।'],
+      badNumber:       ['This is not a valid number.', 'এটি সঠিক সংখ্যা নয়।'],
+      pyLiteral:       ['“{0}” is not valid JSON. Use lowercase true, false or null.', '“{0}” JSON-এ চলে না। ছোট হাতের true, false বা null ব্যবহার করুন।'],
+      nanLiteral:      ['“{0}” is not valid JSON. Use null or a number instead.', '“{0}” JSON-এ চলে না। এর বদলে null বা সংখ্যা ব্যবহার করুন।'],
+      badWord:         ['“{0}” is not valid here. Text must be in double quotes.', '“{0}” এখানে সঠিক নয়। লেখা ডাবল কোটেশনের ভেতরে থাকতে হবে।'],
+      comment:         ['Comments are not allowed in JSON.', 'JSON-এ কমেন্ট চলে না।'],
+      nbsp:            ['A non-breaking or invisible space was found. Replace it with a normal space or delete it.', 'একটি নন-ব্রেকিং বা অদৃশ্য স্পেস পাওয়া গেছে। সাধারণ স্পেস দিয়ে বদলান বা মুছে দিন।'],
+      extra:           ['Unexpected content after the end of the JSON. Only one value is allowed at the top level.', 'JSON শেষ হওয়ার পরে অতিরিক্ত লেখা আছে। সবচেয়ে ওপরের স্তরে শুধু একটি মান থাকতে পারে।'],
+      deep:            ['The JSON is nested too deeply (more than 1000 levels).', 'JSON খুব বেশি গভীর (১০০০ স্তরের বেশি)।'],
+      internal:        ['Something went wrong while checking. Please reload the page and try again.', 'যাচাই করার সময় কিছু একটা ভুল হয়েছে। পেজ রিলোড করে আবার চেষ্টা করুন।']
+    };
+
+    /* ---------- Toast ---------- */
+    let toastTimer;
+    function toast(key) {
+      const el = $('toast');
+      el.textContent = T(key);
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    /* ---------- Small utilities ---------- */
+    const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+    function countLines(s) {
+      let n = 1, p = -1;
+      while ((p = s.indexOf('\n', p + 1)) !== -1) n++;
+      return n;
+    }
+
+    // Line and column (both start at 1) of a character position
+    function lineCol(s, pos) {
+      if (pos > s.length) pos = s.length;
+      let line = 1, last = -1, p = -1;
+      while ((p = s.indexOf('\n', p + 1)) !== -1 && p < pos) { line++; last = p; }
+      return { line: line, col: pos - last };
+    }
+
+    function utf8Bytes(s) {
+      let b = 0;
+      for (let k = 0; k < s.length; k++) {
+        const c = s.charCodeAt(k);
+        if (c < 0x80) b += 1;
+        else if (c < 0x800) b += 2;
+        else if (c >= 0xD800 && c <= 0xDBFF && k + 1 < s.length && (s.charCodeAt(k + 1) & 0xFC00) === 0xDC00) { b += 4; k++; }
+        else b += 3;
+      }
+      return b;
+    }
+
+    function fmtBytes(n) {
+      if (n < 1024) return n + ' B';
+      if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+      return (n / 1048576).toFixed(2) + ' MB';
+    }
+/* ================= JSON parser (keeps numbers and text exactly as written) ================= */
+    function jerr(code, pos, arg) {
+      const e = new Error(code);
+      e.code = code;
+      e.pos = pos;
+      e.arg = arg;
+      return e;
+    }
+
+    const WORD = /[A-Za-z_$][\w$]*/y;
+    const KEYWORD = /[\w$]+/y;
+
+    function charName(c) {
+      if (c === undefined) return '';
+      const k = c.charCodeAt(0);
+      if (k < 32 || k === 127) return '\\u' + ('0000' + k.toString(16)).slice(-4);
+      return c;
+    }
+
+    // want = true builds the full tree, want = false only checks and counts
+    function parseJSON(s, want) {
+      const n = s.length;
+      let i = 0, keys = 0, maxDepth = 0;
+
+      const isD = ch => ch >= '0' && ch <= '9';
+      const isCurly = ch => ch === '\u201C' || ch === '\u201D' || ch === '\u2018' || ch === '\u2019';
+      const isComment = p => s[p] === '/' && (s[p + 1] === '/' || s[p + 1] === '*');
+
+      function ws() {
+        while (i < n) {
+          const c = s.charCodeAt(i);
+          if (c === 32 || c === 10 || c === 13 || c === 9) { i++; continue; }
+          if (c === 0xFEFF && i === 0) { i++; continue; }
+          if (c === 0xA0 || (c >= 0x2000 && c <= 0x200B) || c === 0x202F || c === 0x205F || c === 0x3000) throw jerr('nbsp', i);
+          break;
+        }
+      }
+
+      function str() {
+        const start = i;
+        i++;
+        for (;;) {
+          if (i >= n) throw jerr('unterminated', start);
+          const c = s.charCodeAt(i);
+          if (c === 34) { i++; break; }
+          if (c === 92) {
+            const nx = s[i + 1];
+            if (nx === undefined) throw jerr('unterminated', start);
+            if ('"\\/bfnrt'.indexOf(nx) !== -1) { i += 2; continue; }
+            if (nx === 'u') {
+              if (!/^[0-9a-fA-F]{4}$/.test(s.substr(i + 2, 4))) throw jerr('badUnicode', i);
+              i += 6;
+              continue;
+            }
+            throw jerr('badEscape', i, nx);
+          }
+          if (c === 10 || c === 13) throw jerr('newlineInString', i);
+          if (c < 32) throw jerr('control', i);
+          i++;
+        }
+        return want ? s.slice(start, i) : null;
+      }
+
+      function number() {
+        const start = i;
+        if (s[i] === '-') {
+          i++;
+          if (s.startsWith('Infinity', i)) throw jerr('nanLiteral', start, '-Infinity');
+        }
+        if (s[i] === '0') {
+          i++;
+          if (isD(s[i])) throw jerr('leadingZero', start);
+        } else if (isD(s[i])) {
+          while (isD(s[i])) i++;
+        } else {
+          throw jerr('badNumber', start);
+        }
+        if (s[i] === '.') {
+          i++;
+          if (!isD(s[i])) throw jerr('badNumber', start);
+          while (isD(s[i])) i++;
+        }
+        if (s[i] === 'e' || s[i] === 'E') {
+          i++;
+          if (s[i] === '+' || s[i] === '-') i++;
+          if (!isD(s[i])) throw jerr('badNumber', start);
+          while (isD(s[i])) i++;
+        }
+        return want ? { t: 'num', raw: s.slice(start, i) } : 'num';
+      }
+
+      function literal() {
+        const c = s[i];
+        if (c === "'") throw jerr('singleQuote', i);
+        if (isCurly(c)) throw jerr('curlyQuote', i);
+        if (isComment(i)) throw jerr('comment', i);
+        if (c === ',' || c === '}' || c === ']') throw jerr('noValue', i, c);
+        if (c === '.' || c === '+') throw jerr('badNumber', i);
+        WORD.lastIndex = i;
+        const m = WORD.exec(s);
+        if (m) {
+          const w = m[0];
+          if (w === 'true' || w === 'false') { i += w.length; return want ? { t: 'bool', raw: w } : 'bool'; }
+          if (w === 'null') { i += 4; return want ? { t: 'null', raw: 'null' } : 'null'; }
+          if (w === 'True' || w === 'False' || w === 'None') throw jerr('pyLiteral', i, w);
+          if (w === 'undefined' || w === 'NaN' || w === 'Infinity') throw jerr('nanLiteral', i, w);
+          throw jerr('badWord', i, w);
+        }
+        throw jerr('unexpected', i, charName(c));
+      }
+
+      function keyProblem(c) {
+        if (c === "'") throw jerr('singleQuote', i);
+        if (isCurly(c)) throw jerr('curlyQuote', i);
+        if (isComment(i)) throw jerr('comment', i);
+        if (c === ']') throw jerr('mismatch', i, '}');
+        KEYWORD.lastIndex = i;
+        const w = KEYWORD.exec(s);
+        if (w) throw jerr('unquotedKey', i, w[0]);
+        throw jerr('expectedKey', i, charName(c));
+      }
+
+      function afterItem(e, closer) {
+        if (e === '}' || e === ']') throw jerr('mismatch', i, closer);
+        if (isComment(i)) throw jerr('comment', i);
+        if (e === '"' || e === "'" || e === '{' || e === '[' || e === '-' || isD(e) || /[A-Za-z_$]/.test(e)) throw jerr('comma', i);
+        throw jerr('unexpected', i, charName(e));
+      }
+
+      function object(d) {
+        if (d > MAX_DEPTH) throw jerr('deep', i);
+        if (d > maxDepth) maxDepth = d;
+        i++;
+        const m = want ? [] : null;
+        ws();
+        if (s[i] === '}') { i++; return want ? { t: 'obj', m: m } : 'obj'; }
+        let comma = -1;
+        for (;;) {
+          ws();
+          if (i >= n) throw jerr('end', i);
+          const c = s[i];
+          if (c === '}') throw jerr('trailingComma', comma);
+          if (c !== '"') keyProblem(c);
+          const k = str();
+          keys++;
+          ws();
+          if (i >= n) throw jerr('end', i);
+          if (s[i] !== ':') {
+            if (isComment(i)) throw jerr('comment', i);
+            throw jerr('colon', i, charName(s[i]));
+          }
+          i++;
+          const v = value(d);
+          if (want) m.push({ k: k, v: v });
+          ws();
+          if (i >= n) throw jerr('end', i);
+          const e = s[i];
+          if (e === ',') { comma = i; i++; continue; }
+          if (e === '}') { i++; break; }
+          afterItem(e, '}');
+        }
+        return want ? { t: 'obj', m: m } : 'obj';
+      }
+
+      function array(d) {
+        if (d > MAX_DEPTH) throw jerr('deep', i);
+        if (d > maxDepth) maxDepth = d;
+        i++;
+        const a = want ? [] : null;
+        ws();
+        if (s[i] === ']') { i++; return want ? { t: 'arr', a: a } : 'arr'; }
+        let comma = -1;
+        for (;;) {
+          ws();
+          if (i >= n) throw jerr('end', i);
+          if (s[i] === ']') throw jerr('trailingComma', comma);
+          const v = value(d);
+          if (want) a.push(v);
+          ws();
+          if (i >= n) throw jerr('end', i);
+          const e = s[i];
+          if (e === ',') { comma = i; i++; continue; }
+          if (e === ']') { i++; break; }
+          afterItem(e, ']');
+        }
+        return want ? { t: 'arr', a: a } : 'arr';
+      }
+
+      function value(d) {
+        ws();
+        if (i >= n) throw jerr('end', i);
+        const c = s[i];
+        if (c === '{') return object(d + 1);
+        if (c === '[') return array(d + 1);
+        if (c === '"') { const raw = str(); return want ? { t: 'str', raw: raw } : 'str'; }
+        if (c === '-' || isD(c)) return number();
+        return literal();
+      }
+
+      const rootNode = value(0);
+      ws();
+      if (i < n) {
+        if (isComment(i)) throw jerr('comment', i);
+        throw jerr('extra', i);
+      }
+      return { root: rootNode, keys: keys, depth: maxDepth, type: want ? rootNode.t : rootNode };
+    }
+
+    function tryParse(src, want) {
+      try {
+        return { ok: true, res: parseJSON(src, want) };
+      } catch (e) {
+        if (e && typeof e.code === 'string') return { ok: false, err: { code: e.code, pos: e.pos, arg: e.arg } };
+        if (e instanceof RangeError) return { ok: false, err: { code: 'deep', pos: 0 } };
+        return { ok: false, err: { code: 'internal', pos: 0 } };
+      }
+    }
+
+    /* ================= Writer: format, minify, sort ================= */
+    function cmpKeys(a, b) {
+      const la = a.toLowerCase(), lb = b.toLowerCase();
+      if (la < lb) return -1;
+      if (la > lb) return 1;
+      return a < b ? -1 : (a > b ? 1 : 0);
+    }
+
+    function sortedMembers(m) {
+      return m.slice().sort((x, y) => {
+        if (x.kd === undefined) x.kd = JSON.parse(x.k);
+        if (y.kd === undefined) y.kd = JSON.parse(y.k);
+        return cmpKeys(x.kd, y.kd);
+      });
+    }
+
+    // indent = null means minify
+    function write(rootNode, indent, sort) {
+      const pretty = indent !== null;
+      const out = [];
+      const pads = [''];
+      const pad = lv => (pads[lv] !== undefined ? pads[lv] : (pads[lv] = indent.repeat(lv)));
+
+      function w(node, lv) {
+        if (node.t === 'obj') {
+          const m = sort ? sortedMembers(node.m) : node.m;
+          if (!m.length) { out.push('{}'); return; }
+          out.push(pretty ? '{\n' : '{');
+          for (let k = 0; k < m.length; k++) {
+            if (pretty) out.push(pad(lv + 1));
+            out.push(m[k].k, pretty ? ': ' : ':');
+            w(m[k].v, lv + 1);
+            out.push(k < m.length - 1 ? (pretty ? ',\n' : ',') : (pretty ? '\n' : ''));
+          }
+          if (pretty) out.push(pad(lv));
+          out.push('}');
+        } else if (node.t === 'arr') {
+          const a = node.a;
+          if (!a.length) { out.push('[]'); return; }
+          out.push(pretty ? '[\n' : '[');
+          for (let k = 0; k < a.length; k++) {
+            if (pretty) out.push(pad(lv + 1));
+            w(a[k], lv + 1);
+            out.push(k < a.length - 1 ? (pretty ? ',\n' : ',') : (pretty ? '\n' : ''));
+          }
+          if (pretty) out.push(pad(lv));
+          out.push(']');
+        } else {
+          out.push(node.raw);
+        }
+      }
+      w(rootNode, 0);
+      return out.join('');
+    }
+
+    /* ================= Colours for valid JSON output ================= */
+    const TOK = /("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)|(true|false)|(null)|([{}\[\],:])/g;
+
+    function highlight(text) {
+      return text.replace(TOK, (m, str, colon, num, bool, nul, punc) => {
+        if (str !== undefined) {
+          if (colon) return '<span class="tk-key">' + esc(str) + '</span><span class="tk-punc">' + colon + '</span>';
+          return '<span class="tk-str">' + esc(str) + '</span>';
+        }
+        if (num !== undefined) return '<span class="tk-num">' + num + '</span>';
+        if (bool !== undefined) return '<span class="tk-bool">' + bool + '</span>';
+        if (nul !== undefined) return '<span class="tk-null">null</span>';
+        return '<span class="tk-punc">' + punc + '</span>';
+      });
+    }
+/* ================= Repair ("Fix errors") ================= */
+    function repair(text) {
+      const n = text.length;
+      const cnt = { c: 0, t: 0, q: 0, k: 0, l: 0 };
+      const out = [];
+      const WORDS = /[\w$]+/y;
+      let i = 0;
+
+      function nextSig(p) {
+        for (;;) {
+          while (p < n && /\s/.test(text[p])) p++;
+          if (text[p] === '/' && text[p + 1] === '/') {
+            while (p < n && text[p] !== '\n') p++;
+            continue;
+          }
+          if (text[p] === '/' && text[p + 1] === '*') {
+            const e = text.indexOf('*/', p + 2);
+            if (e === -1) return n;
+            p = e + 2;
+            continue;
+          }
+          return p;
+        }
+      }
+
+      while (i < n) {
+        const c = text[i];
+
+        if (c === '"') {                                   // keep double-quoted text as it is
+          let j = i + 1;
+          while (j < n && text[j] !== '"') j += text[j] === '\\' ? 2 : 1;
+          out.push(text.slice(i, j + 1));
+          i = j + 1;
+          continue;
+        }
+        if (c === "'") {                                   // 'single quotes' -> "double quotes"
+          let j = i + 1, buf = '"';
+          while (j < n && text[j] !== "'") {
+            const d = text[j];
+            if (d === '\\') {
+              const e = text[j + 1];
+              if (e === "'") { buf += "'"; j += 2; continue; }
+              buf += d + (e === undefined ? '' : e);
+              j += 2;
+              continue;
+            }
+            buf += d === '"' ? '\\"' : d;
+            j++;
+          }
+          out.push(buf + '"');
+          cnt.q++;
+          i = j + 1;
+          continue;
+        }
+        if (c === '/' && text[i + 1] === '/') {            // // comment
+          while (i < n && text[i] !== '\n') i++;
+          cnt.c++;
+          continue;
+        }
+        if (c === '/' && text[i + 1] === '*') {            // /* comment */
+          const e = text.indexOf('*/', i + 2);
+          i = e === -1 ? n : e + 2;
+          out.push(' ');
+          cnt.c++;
+          continue;
+        }
+        if (c === ',') {                                   // trailing comma
+          const p = nextSig(i + 1);
+          if (text[p] === '}' || text[p] === ']') cnt.t++;
+          else out.push(',');
+          i++;
+          continue;
+        }
+        if (/[\w$]/.test(c)) {                             // unquoted keys, True/False/None
+          WORDS.lastIndex = i;
+          const w = WORDS.exec(text)[0];
+          const after = i + w.length;
+          if (text[nextSig(after)] === ':') { out.push('"' + w + '"'); cnt.k++; }
+          else if (w === 'True') { out.push('true'); cnt.l++; }
+          else if (w === 'False') { out.push('false'); cnt.l++; }
+          else if (w === 'None') { out.push('null'); cnt.l++; }
+          else out.push(w);
+          i = after;
+          continue;
+        }
+        out.push(c);
+        i++;
+      }
+      const fixed = out.join('');
+      return { text: fixed, counts: cnt, changed: fixed !== text };
+    }
+
+    function repairList(cnt) {
+      const parts = [['c', 'rComments'], ['t', 'rCommas'], ['q', 'rQuotes'], ['k', 'rKeys'], ['l', 'rLits']]
+        .filter(p => cnt[p[0]] > 0)
+        .map(p => T(p[1]) + ': ' + cnt[p[0]]);
+      return parts.length ? parts.join(', ') : '–';
+    }
+
+    /* ================= State ================= */
+    let errPos = -1, errLine = 0;
+    let lastMode = null;
+    let curStatus = null;
+    let statInfo = null;
+    let outText = '', outName = 'formatted.json', outMime = 'application/json';
+    let liveTimer = 0, rafId = 0;
+    let lineTotal = 1, linesDirty = true;
+
+    const gIn = document.createElement('div');
+    gutter.textContent = '';
+    gutter.appendChild(gIn);
+
+    const lineH = () => parseFloat(getComputedStyle(input).lineHeight) || 22;
+
+    /* ---------- Line numbers (only the visible lines are drawn) ---------- */
+    function syncGutter() {
+      if (linesDirty) { lineTotal = countLines(input.value); linesDirty = false; }
+      const lh = lineH();
+      const st = input.scrollTop;
+      const first = Math.max(0, Math.floor(st / lh) - 1);
+      const last = Math.min(lineTotal, first + Math.ceil(input.clientHeight / lh) + 4);
+      const nums = [];
+      for (let k = first + 1; k <= last; k++) nums.push(k);
+      gIn.textContent = nums.join('\n');
+      gIn.style.transform = 'translateY(' + (first * lh - st) + 'px)';
+      const digits = String(lineTotal).length;
+      gutter.style.width = digits > 4 ? (digits + 2) + 'ch' : '';
+    }
+
+    /* ---------- Red highlight on the line with the error ---------- */
+    function positionMark() {
+      if (!errLine) { mark.style.display = 'none'; return; }
+      const lh = lineH();
+      const top = 12 + (errLine - 1) * lh - input.scrollTop;
+      if (top + lh <= 0 || top >= input.clientHeight) { mark.style.display = 'none'; return; }
+      mark.style.top = top + 'px';
+      mark.style.display = 'block';
+    }
+
+    function clearInputError() {
+      errPos = -1;
+      errLine = 0;
+      positionMark();
+      gotoBtn.hidden = true;
+    }
+
+    /* ---------- Status bar ---------- */
+    function renderStatus() {
+      if (!curStatus) return;
+      statusBox.className = 'jt-status' + (curStatus.cls ? ' ' + curStatus.cls : '');
+      statusText.textContent = curStatus.build();
+    }
+    function setStatus(cls, build) {
+      curStatus = { cls: cls, build: build };
+      renderStatus();
+    }
+    const fmtErr = (err, lc) =>
+      T('line') + ' ' + lc.line + ', ' + T('column') + ' ' + lc.col + ': ' + fill(L(MSG[err.code] || MSG.internal), [err.arg]);
+
+    function showInputError(err, src) {
+      const lc = lineCol(src, err.pos);
+      errPos = err.pos;
+      errLine = lc.line;
+      positionMark();
+      gotoBtn.hidden = false;
+      setStatus('err', () => T('invalid') + ' — ' + fmtErr(err, lc));
+    }
+
+    /* ---------- Numbers under the tool ---------- */
+    const typeName = t => T('t' + t);
+
+    function renderStats(src, info) {
+      const ids = ['stSize', 'stLines', 'stKeys', 'stDepth', 'stType'];
+      if (!src) {
+        ids.forEach(id => { $(id).textContent = '–'; });
+        $('inMeta').textContent = '';
+        return;
+      }
+      const size = fmtBytes(utf8Bytes(src));
+      const lines = countLines(src);
+      $('stSize').textContent = size;
+      $('stLines').textContent = String(lines);
+      $('stKeys').textContent = info ? String(info.keys) : '–';
+      $('stDepth').textContent = info ? String(info.depth) : '–';
+      $('stType').textContent = info ? typeName(info.type) : '–';
+      $('inMeta').textContent = size + ' · ' + lines + ' ' + T('lines');
+    }
+
+    /* ---------- Output box ---------- */
+    function renderOutMeta() {
+      $('outMeta').textContent = outText
+        ? fmtBytes(utf8Bytes(outText)) + ' · ' + countLines(outText) + ' ' + T('lines')
+        : '';
+    }
+
+    function setOutput(text, opts) {
+      opts = opts || {};
+      outText = text;
+      const has = text.length > 0;
+      $('outEmpty').hidden = has;
+      $('btnCopy').disabled = !has;
+      $('btnDownload').disabled = !has;
+      $('btnUseOut').disabled = !has;
+      if (!has) { outEl.textContent = ''; renderOutMeta(); return; }
+      if (opts.highlight && text.length <= HIGHLIGHT_MAX) outEl.innerHTML = highlight(text);
+      else outEl.textContent = text;
+      outEl.scrollTop = 0;
+      outEl.scrollLeft = 0;
+      outName = opts.name || 'formatted.json';
+      outMime = opts.mime || 'application/json';
+      renderOutMeta();
+    }
+
+    /* ================= Actions ================= */
+    const getIndent = () => {
+      const v = $('indentSel').value;
+      return v === 'tab' ? '\t' : ' '.repeat(parseInt(v, 10));
+    };
+    const sortOn = () => $('sortChk').checked;
+
+    function runFix(src) {
+      lastMode = 'fix';
+      const first = tryParse(src, true);
+      if (first.ok) {
+        clearInputError();
+        statInfo = first.res;
+        renderStats(src, statInfo);
+        setOutput(write(first.res.root, getIndent(), sortOn()), { highlight: true, name: 'fixed.json' });
+        setStatus('ok', () => T('alreadyValid'));
+        return;
+      }
+      const rep = repair(src);
+      const second = tryParse(rep.text, true);
+      clearInputError();
+      if (second.ok) {
+        statInfo = second.res;
+        renderStats(src, statInfo);
+        setOutput(write(second.res.root, getIndent(), sortOn()), { highlight: true, name: 'fixed.json' });
+        setStatus('ok', () => T('fixed', repairList(rep.counts)));
+      } else {
+        statInfo = null;
+        renderStats(src, null);
+        setOutput(rep.text, { highlight: false, name: 'partly-fixed.txt', mime: 'text/plain' });
+        const lc = lineCol(rep.text, second.err.pos);
+        setStatus('err', () => T(rep.changed ? 'fixPartial' : 'fixNone', fmtErr(second.err, lc)));
+      }
+    }
+
+    function runAction(mode, silent) {
+      const src = input.value;
+      if (!src.trim()) {
+        clearInputError();
+        statInfo = null;
+        renderStats('', null);
+        setStatus('', () => T('statusIdle'));
+        if (!silent) toast('needInput');
+        return;
+      }
+      if (mode === 'fix') { runFix(src); return; }
+
+      const r = tryParse(src, mode !== 'validate');
+      if (!r.ok) {
+        if (mode !== 'validate') setOutput('');
+        statInfo = null;
+        renderStats(src, null);
+        showInputError(r.err, src);
+        return;
+      }
+      clearInputError();
+      statInfo = r.res;
+      renderStats(src, statInfo);
+
+      if (mode === 'validate') { setStatus('ok', () => T('valid')); return; }
+
+      lastMode = mode;
+      const text = write(r.res.root, mode === 'minify' ? null : getIndent(), sortOn());
+      setOutput(text, { highlight: true, name: mode === 'minify' ? 'minified.json' : 'formatted.json' });
+      if (mode === 'minify') {
+        const a = utf8Bytes(src), b = utf8Bytes(text);
+        const pct = a > 0 ? Math.round((1 - b / a) * 100) : 0;
+        if (pct > 0) setStatus('ok', () => T('minified', fmtBytes(a), fmtBytes(b), pct));
+        else setStatus('ok', () => T('minified0'));
+      } else {
+        setStatus('ok', () => T('formatted'));
+      }
+    }
+
+    /* ---------- Live check while typing ---------- */
+    function liveCheck() {
+      const src = input.value;
+      if (!src.trim()) {
+        clearInputError();
+        statInfo = null;
+        renderStats('', null);
+        setStatus('', () => T('statusIdle'));
+        return;
+      }
+      if (src.length > LIVE_MAX) {
+        clearInputError();
+        statInfo = null;
+        renderStats(src, null);
+        setStatus('', () => T('big'));
+        return;
+      }
+      const r = tryParse(src, false);
+      if (r.ok) {
+        clearInputError();
+        statInfo = r.res;
+        renderStats(src, statInfo);
+        setStatus('ok', () => T('valid'));
+      } else {
+        statInfo = null;
+        renderStats(src, null);
+        showInputError(r.err, src);
+      }
+    }
+
+    /* ---------- Jump to the error ---------- */
+    function charW() {
+      const cs = getComputedStyle(input);
+      if (!charW.ctx) charW.ctx = document.createElement('canvas').getContext('2d');
+      charW.ctx.font = cs.fontSize + ' ' + cs.fontFamily;
+      return charW.ctx.measureText('0').width || 8;
+    }
+
+    function goToError() {
+      if (errPos < 0) return;
+      const src = input.value;
+      const lc = lineCol(src, errPos);
+      const lh = lineH();
+      input.focus({ preventScroll: true });
+      try { input.setSelectionRange(errPos, Math.min(src.length, errPos + 1)); } catch (e) {}
+      input.scrollTop = Math.max(0, (lc.line - 1) * lh - input.clientHeight / 2 + lh);
+      const x = (lc.col - 1) * charW();
+      if (x < input.scrollLeft || x > input.scrollLeft + input.clientWidth - 48) {
+        input.scrollLeft = Math.max(0, x - input.clientWidth / 2);
+      }
+      syncGutter();
+      positionMark();
+      $('inPane').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+/* ================= Buttons and events ================= */
+    function setInput(text) {
+      input.value = text;
+      input.scrollTop = 0;
+      input.scrollLeft = 0;
+      linesDirty = true;
+      clearInputError();
+      syncGutter();
+      clearTimeout(liveTimer);
+      liveCheck();
+    }
+
+    $('btnFormat').addEventListener('click', () => runAction('format'));
+    $('btnMinify').addEventListener('click', () => runAction('minify'));
+    $('btnValidate').addEventListener('click', () => runAction('validate'));
+    $('btnFix').addEventListener('click', () => runAction('fix'));
+    gotoBtn.addEventListener('click', goToError);
+
+    // Changing the indent or "Sort keys" updates the output that is already shown
+    function rerun() { if (lastMode && outText) runAction(lastMode, true); }
+    $('indentSel').addEventListener('change', rerun);
+    $('sortChk').addEventListener('change', rerun);
+
+    // Ctrl + Enter (or Cmd + Enter) formats
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runAction('format');
+      }
+    });
+
+    input.addEventListener('input', () => {
+      linesDirty = true;
+      clearInputError();
+      syncGutter();
+      clearTimeout(liveTimer);
+      liveTimer = setTimeout(liveCheck, 400);
+    });
+    input.addEventListener('scroll', () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => { rafId = 0; syncGutter(); positionMark(); });
+    });
+    window.addEventListener('resize', () => { syncGutter(); positionMark(); });
+    window.addEventListener('load', () => { syncGutter(); positionMark(); });
+
+    /* ---------- Clipboard ---------- */
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+      return ok;
+    }
+
+    async function copyText(text) {
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        toast('copied');
+      } catch (e) {
+        toast(fallbackCopy(text) ? 'copied' : 'copyfail');
+      }
+    }
+
+    $('btnCopy').addEventListener('click', () => copyText(outText));
+
+    $('btnPaste').addEventListener('click', async () => {
+      try {
+        const t = await navigator.clipboard.readText();
+        setInput(t);
+      } catch (e) {
+        toast('pastefail');
+      }
+    });
+
+    /* ---------- Sample, clear, output tools ---------- */
+    const SAMPLE = '{"site":"AnisTools","free":true,"languages":["English","বাংলা"],"tools":[{"id":1,"name":"QR Code Generator"},{"id":2,"name":"Password Generator"},{"id":3,"name":"JSON Formatter"}],"rating":4.5,"sponsor":null}';
+    $('btnSample').addEventListener('click', () => setInput(SAMPLE));
+    $('btnClear').addEventListener('click', () => setInput(''));
+
+    $('btnUseOut').addEventListener('click', () => {
+      if (!outText) return;
+      setInput(outText);
+      toast('moved');
+    });
+
+    $('btnDownload').addEventListener('click', () => {
+      if (!outText) return;
+      const url = URL.createObjectURL(new Blob([outText], { type: outMime }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = outName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast('downloaded');
+    });
+
+    /* ---------- Files: Upload button and drag and drop ---------- */
+    function readFile(f) {
+      if (!/\.(json|txt)$/i.test(f.name) && f.type !== 'application/json' && f.type !== 'text/plain') {
+        toast('badfile');
+        return;
+      }
+      const r = new FileReader();
+      r.onload = () => { setInput(String(r.result)); toast('loaded'); };
+      r.onerror = () => toast('readfail');
+      r.readAsText(f);
+    }
+
+    $('btnUpload').addEventListener('click', () => $('fileInput').click());
+    $('fileInput').addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (f) readFile(f);
+      e.target.value = '';
+    });
+
+    const pane = $('inPane');
+    const hasFiles = e => !!(e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], 'Files') !== -1);
+    ['dragenter', 'dragover'].forEach(ev => pane.addEventListener(ev, e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      pane.classList.add('drag');
+    }));
+    pane.addEventListener('dragleave', e => {
+      if (!pane.contains(e.relatedTarget)) pane.classList.remove('drag');
+    });
+    pane.addEventListener('drop', e => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      pane.classList.remove('drag');
+      const f = e.dataTransfer.files[0];
+      if (f) readFile(f);
+    });
+
+    /* ---------- Theme and language ---------- */
+    const themeBtn = $('themeToggle');
+    const langSel = $('langSelect');
+
+    function applyTheme(t) {
+      root.dataset.theme = t;
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', t === 'dark' ? '#0a0e1a' : '#f6f8fc');
+    }
+
+    function applyLang(l) {
+      lang = l;
+      root.lang = l;
+      langSel.value = l;
+      input.placeholder = l === 'bn' ? input.dataset.phBn : input.dataset.phEn;
+      document.querySelectorAll('option[data-en]').forEach(o => { o.textContent = l === 'bn' ? o.dataset.bn : o.dataset.en; });
+      renderStatus();
+      renderStats(input.value, statInfo);
+      renderOutMeta();
+    }
+
+    themeBtn.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      store('theme', next);
+    });
+    langSel.addEventListener('change', e => { applyLang(e.target.value); store('lang', e.target.value); });
+
+    /* Hide related links whose page is not uploaded yet */
+    if (location.protocol.indexOf('http') === 0) {
+      document.querySelectorAll('.related-link').forEach(a => {
+        fetch(a.getAttribute('href'), { method: 'HEAD', cache: 'no-cache' })
+          .then(r => { if (!r.ok) a.hidden = true; })
+          .catch(() => {});
+      });
+    }
+
+    /* ---------- Start ---------- */
+    applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
+    applyLang(load('lang') === 'bn' ? 'bn' : 'en');
+    setStatus('', () => T('statusIdle'));
+    renderStats('', null);
+    syncGutter();
+  });
+  </script>
+</body>
+</html>
