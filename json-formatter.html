@@ -578,3 +578,215 @@
 
       </div>
     </section>
+<!-- ============ GUIDE ============ -->
+    <article class="container container-narrow content">
+
+      <section class="content-card">
+        <h2 data-lang-block="en">How to use the JSON formatter</h2>
+        <h2 data-lang-block="bn">JSON ফরম্যাটার ব্যবহারের নিয়ম</h2>
+        <ol data-lang-block="en">
+          <li>Put your JSON in the Input box: type or paste it, press "Paste", "Upload" or "Sample", or drag a <code>.json</code> file onto the box.</li>
+          <li>Choose the indent (2 spaces, 4 spaces or Tab). Tick "Sort keys A–Z" if you want the keys of every object in alphabetical order.</li>
+          <li>Press "Format" to make it easy to read, "Minify" to squeeze it onto one line, or "Validate" to only check it. <strong>Ctrl + Enter</strong> (⌘ + Enter on a Mac) also formats.</li>
+          <li>The status bar checks your JSON a moment after you stop typing. If there is a mistake, it tells you what is wrong, gives the line and column, and highlights the line. Press "Go to error" to jump there.</li>
+          <li>Press "Copy" or "Download" to take the result, or "Use as input" to keep working on it.</li>
+        </ol>
+        <ol data-lang-block="bn">
+          <li>আপনার JSON ইনপুট ঘরে দিন: টাইপ বা পেস্ট করুন, "পেস্ট", "ফাইল" বা "নমুনা" বাটন চাপুন, অথবা ঘরের ওপর একটি <code>.json</code> ফাইল টেনে এনে ছাড়ুন।</li>
+          <li>ইনডেন্ট বেছে নিন (২ স্পেস, ৪ স্পেস বা ট্যাব)। প্রতিটা অবজেক্টের কী বর্ণানুক্রমে সাজাতে চাইলে "কী A–Z সাজান" টিক দিন।</li>
+          <li>পড়তে সহজ করতে "ফরম্যাট", এক লাইনে ছোট করতে "মিনিফাই", আর শুধু পরীক্ষা করতে "যাচাই করুন" চাপুন। <strong>Ctrl + Enter</strong> (ম্যাকে ⌘ + Enter) চাপলেও ফরম্যাট হয়।</li>
+          <li>আপনি টাইপ থামানোর কিছুক্ষণ পর স্ট্যাটাস বার আপনার JSON যাচাই করে। ভুল থাকলে কী ভুল আর কোন লাইন ও কলামে, তা জানায় এবং ওই লাইন চিহ্নিত করে। সেখানে যেতে "ভুলের জায়গায় যান" চাপুন।</li>
+          <li>ফলাফল নিতে "কপি" বা "ডাউনলোড" চাপুন, আর তার ওপর কাজ চালিয়ে যেতে "ইনপুট বানান" চাপুন।</li>
+        </ol>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">What each button does</h2>
+        <h2 data-lang-block="bn">প্রতিটা বাটন কী করে</h2>
+        <div class="table-wrap" data-lang-block="en">
+          <table>
+            <thead><tr><th scope="col">Button</th><th scope="col">What it does</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Format</strong></td><td>Adds line breaks and indentation so the JSON is easy to read.</td></tr>
+              <tr><td><strong>Minify</strong></td><td>Removes every space and line break that is not inside text, to make the JSON as small as possible.</td></tr>
+              <tr><td><strong>Validate</strong></td><td>Checks the JSON and reports the result without changing the output.</td></tr>
+              <tr><td><strong>Fix errors</strong></td><td>Repairs a few common mistakes (listed below) and shows the formatted result in the output box. Your input is not changed.</td></tr>
+              <tr><td><strong>Indent</strong></td><td>The indentation used when formatting: 2 spaces, 4 spaces or a Tab.</td></tr>
+              <tr><td><strong>Sort keys A–Z</strong></td><td>Sorts the keys of every object alphabetically. Items inside arrays keep their order.</td></tr>
+              <tr><td><strong>Paste, Upload, Sample, Clear</strong></td><td>Fill the input from the clipboard or from a file, load an example, or empty the box.</td></tr>
+              <tr><td><strong>Copy, Download, Use as input</strong></td><td>Copy the result, save it as a <code>.json</code> file, or move it into the input box.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap" data-lang-block="bn">
+          <table>
+            <thead><tr><th scope="col">বাটন</th><th scope="col">কী করে</th></tr></thead>
+            <tbody>
+              <tr><td><strong>ফরম্যাট</strong></td><td>লাইন-ব্রেক আর ইনডেন্ট যোগ করে, যাতে JSON পড়া সহজ হয়।</td></tr>
+              <tr><td><strong>মিনিফাই</strong></td><td>লেখার বাইরের সব স্পেস ও লাইন-ব্রেক সরিয়ে JSON যতটা সম্ভব ছোট করে।</td></tr>
+              <tr><td><strong>যাচাই করুন</strong></td><td>JSON পরীক্ষা করে ফল জানায়, আউটপুট বদলায় না।</td></tr>
+              <tr><td><strong>ভুল ঠিক করুন</strong></td><td>কিছু সাধারণ ভুল (নিচে তালিকা আছে) সারিয়ে ফরম্যাট করা ফল আউটপুট ঘরে দেখায়। আপনার ইনপুট বদলায় না।</td></tr>
+              <tr><td><strong>ইনডেন্ট</strong></td><td>ফরম্যাট করার সময় কতটা ভেতরে সরানো হবে: ২ স্পেস, ৪ স্পেস বা ট্যাব।</td></tr>
+              <tr><td><strong>কী A–Z সাজান</strong></td><td>প্রতিটা অবজেক্টের কী বর্ণানুক্রমে সাজায়। অ্যারের ভেতরের আইটেমের ক্রম একই থাকে।</td></tr>
+              <tr><td><strong>পেস্ট, ফাইল, নমুনা, মুছুন</strong></td><td>ক্লিপবোর্ড বা ফাইল থেকে ইনপুট ভরে, একটা উদাহরণ দেয়, বা ঘর খালি করে।</td></tr>
+              <tr><td><strong>কপি, ডাউনলোড, ইনপুট বানান</strong></td><td>ফলাফল কপি করে, <code>.json</code> ফাইল হিসেবে সংরক্ষণ করে, বা ইনপুট ঘরে নিয়ে যায়।</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top: 1rem;" data-lang-block="en">Formatting never changes your data. Numbers (even very long ones) and the text inside strings are kept exactly as written. Only spaces and line breaks change, and the order of keys if you tick "Sort keys A–Z".</p>
+        <p style="margin-top: 1rem;" data-lang-block="bn">ফরম্যাট করলে আপনার তথ্য বদলায় না। সংখ্যা (খুব বড় হলেও) আর স্ট্রিংয়ের ভেতরের লেখা যেমন ছিল তেমনই থাকে। শুধু স্পেস আর লাইন-ব্রেক বদলায়, আর "কী A–Z সাজান" টিক দিলে কী-এর ক্রম বদলায়।</p>
+      </section>
+<section class="content-card">
+        <h2 data-lang-block="en">What "Fix errors" can and cannot repair</h2>
+        <h2 data-lang-block="bn">"ভুল ঠিক করুন" বাটন যা পারে আর যা পারে না</h2>
+        <ul data-lang-block="en">
+          <li>It removes comments (<code>// note</code> and <code>/* note */</code>).</li>
+          <li>It removes a trailing comma before a closing <code>}</code> or <code>]</code>.</li>
+          <li>It changes <code>'single quotes'</code> around text and keys into <code>"double quotes"</code>.</li>
+          <li>It puts double quotes around keys that have none, such as <code>{name: "Anis"}</code>.</li>
+          <li>It changes <code>True</code>, <code>False</code> and <code>None</code> into <code>true</code>, <code>false</code> and <code>null</code>.</li>
+          <li>It cannot guess missing commas, brackets, braces or values. If something is still wrong after the repairs, the output box shows the partly repaired text, and the status bar gives the line and column of the remaining problem in that text.</li>
+          <li>It repairs the syntax only and cannot know what you meant, so check the result before you use it. Your input stays as it is until you press "Use as input".</li>
+        </ul>
+        <ul data-lang-block="bn">
+          <li>কমেন্ট মুছে দেয় (<code>// note</code> আর <code>/* note */</code>)।</li>
+          <li>শেষ <code>}</code> বা <code>]</code>-এর আগের বাড়তি কমা সরিয়ে দেয়।</li>
+          <li>লেখা ও কী-এর চারপাশের <code>'সিঙ্গেল কোটেশন'</code>-কে <code>"ডাবল কোটেশন"</code>-এ বদলায়।</li>
+          <li>কোটেশন ছাড়া কী-তে ডাবল কোটেশন বসায়, যেমন <code>{name: "Anis"}</code>।</li>
+          <li><code>True</code>, <code>False</code> আর <code>None</code>-কে <code>true</code>, <code>false</code> আর <code>null</code> করে।</li>
+          <li>কমা, বন্ধনী বা মান বাদ পড়লে সেটা আন্দাজ করতে পারে না। মেরামতের পরেও কিছু ভুল থাকলে আউটপুট ঘরে আংশিক মেরামত করা লেখা দেখায়, আর স্ট্যাটাস বার ওই লেখার কোন লাইন ও কলামে বাকি ভুলটা আছে তা জানায়।</li>
+          <li>এটা শুধু গঠন ঠিক করে, আপনি কী বোঝাতে চেয়েছেন তা জানতে পারে না, তাই ফল ব্যবহারের আগে দেখে নিন। "ইনপুট বানান" না চাপা পর্যন্ত আপনার ইনপুট যেমন ছিল তেমনই থাকে।</li>
+        </ul>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Common JSON mistakes</h2>
+        <h2 data-lang-block="bn">JSON-এ সাধারণ ভুল</h2>
+        <div class="table-wrap" data-lang-block="en">
+          <table>
+            <thead><tr><th scope="col">Mistake</th><th scope="col">Wrong</th><th scope="col">Right</th></tr></thead>
+            <tbody>
+              <tr><td>Trailing comma</td><td><code>{"a": 1,}</code></td><td><code>{"a": 1}</code></td></tr>
+              <tr><td>Single quotes</td><td><code>{'a': 'b'}</code></td><td><code>{"a": "b"}</code></td></tr>
+              <tr><td>Key without quotes</td><td><code>{a: 1}</code></td><td><code>{"a": 1}</code></td></tr>
+              <tr><td>Missing comma</td><td><code>{"a": 1 "b": 2}</code></td><td><code>{"a": 1, "b": 2}</code></td></tr>
+              <tr><td>Comment</td><td><code>{"a": 1 /* note */}</code></td><td><code>{"a": 1}</code></td></tr>
+              <tr><td>Python-style values</td><td><code>{"a": True, "b": None}</code></td><td><code>{"a": true, "b": null}</code></td></tr>
+              <tr><td>Values JSON does not have</td><td><code>{"a": undefined, "b": NaN}</code></td><td><code>{"a": null, "b": null}</code></td></tr>
+              <tr><td>Number formats</td><td><code>{"a": 007, "b": .5, "c": +1}</code></td><td><code>{"a": 7, "b": 0.5, "c": 1}</code></td></tr>
+              <tr><td>Line break inside text</td><td>A real line break between the quotes</td><td><code>"line 1\nline 2"</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap" data-lang-block="bn">
+          <table>
+            <thead><tr><th scope="col">ভুলের ধরন</th><th scope="col">ভুল</th><th scope="col">সঠিক</th></tr></thead>
+            <tbody>
+              <tr><td>শেষে বাড়তি কমা</td><td><code>{"a": 1,}</code></td><td><code>{"a": 1}</code></td></tr>
+              <tr><td>সিঙ্গেল কোটেশন</td><td><code>{'a': 'b'}</code></td><td><code>{"a": "b"}</code></td></tr>
+              <tr><td>কোটেশন ছাড়া কী</td><td><code>{a: 1}</code></td><td><code>{"a": 1}</code></td></tr>
+              <tr><td>কমা বাদ পড়া</td><td><code>{"a": 1 "b": 2}</code></td><td><code>{"a": 1, "b": 2}</code></td></tr>
+              <tr><td>কমেন্ট</td><td><code>{"a": 1 /* note */}</code></td><td><code>{"a": 1}</code></td></tr>
+              <tr><td>পাইথন-ধাঁচের মান</td><td><code>{"a": True, "b": None}</code></td><td><code>{"a": true, "b": null}</code></td></tr>
+              <tr><td>যেসব মান JSON-এ নেই</td><td><code>{"a": undefined, "b": NaN}</code></td><td><code>{"a": null, "b": null}</code></td></tr>
+              <tr><td>সংখ্যার ভুল রূপ</td><td><code>{"a": 007, "b": .5, "c": +1}</code></td><td><code>{"a": 7, "b": 0.5, "c": 1}</code></td></tr>
+              <tr><td>লেখার ভেতরে লাইন-ব্রেক</td><td>কোটেশনের ভেতরে সত্যিকারের লাইন-ব্রেক</td><td><code>"line 1\nline 2"</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top: 1rem;" data-lang-block="en">The "Fix errors" button can repair trailing commas, single quotes, keys without quotes, comments and True/False/None. Missing commas, undefined, NaN, number formats and real line breaks inside text need to be fixed by hand.</p>
+        <p style="margin-top: 1rem;" data-lang-block="bn">"ভুল ঠিক করুন" বাটন শেষে বাড়তি কমা, সিঙ্গেল কোটেশন, কোটেশন ছাড়া কী, কমেন্ট আর True/False/None সারাতে পারে। কমা বাদ পড়া, undefined, NaN, সংখ্যার ভুল রূপ আর লেখার ভেতরের সত্যিকারের লাইন-ব্রেক হাতে ঠিক করতে হবে।</p>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Reading the numbers below the tool</h2>
+        <h2 data-lang-block="bn">টুলের নিচের সংখ্যাগুলো কীভাবে পড়বেন</h2>
+        <ul data-lang-block="en">
+          <li><strong>Size:</strong> the size of your input in bytes, KB or MB. It is counted in UTF-8, so one Bengali letter takes 3 bytes.</li>
+          <li><strong>Lines:</strong> the number of lines in your input.</li>
+          <li><strong>Keys:</strong> the total number of keys in all objects, including nested ones.</li>
+          <li><strong>Depth:</strong> how many levels of objects and arrays sit inside each other. <code>{}</code> has a depth of 1, and <code>{"a": {}}</code> has a depth of 2.</li>
+          <li><strong>Type:</strong> whether the JSON is an Object, Array, String, Number, Boolean or Null.</li>
+          <li>Keys, Depth and Type appear only when the JSON is valid.</li>
+        </ul>
+        <ul data-lang-block="bn">
+          <li><strong>সাইজ:</strong> আপনার ইনপুটের আকার, বাইট, কেবি বা এমবিতে। গণনা UTF-8-এ হয়, তাই একটি বাংলা অক্ষর ৩ বাইট নেয়।</li>
+          <li><strong>লাইন:</strong> আপনার ইনপুটে মোট কতগুলো লাইন আছে।</li>
+          <li><strong>কী:</strong> ভেতরের অবজেক্টসহ সব অবজেক্টের মোট কী সংখ্যা।</li>
+          <li><strong>গভীরতা:</strong> অবজেক্ট আর অ্যারে কত স্তর একটার ভেতরে আরেকটা আছে। <code>{}</code>-এর গভীরতা ১, আর <code>{"a": {}}</code>-এর গভীরতা ২।</li>
+          <li><strong>ধরন:</strong> JSON-টি অবজেক্ট, অ্যারে, স্ট্রিং, সংখ্যা, বুলিয়ান নাকি নাল।</li>
+          <li>কী, গভীরতা আর ধরন শুধু তখনই দেখায় যখন JSON সঠিক।</li>
+        </ul>
+      </section>
+<section class="content-card">
+        <h2 data-lang-block="en">Frequently asked questions</h2>
+        <h2 data-lang-block="bn">সচরাচর জিজ্ঞাসা</h2>
+        <div class="faq" data-lang-block="en">
+          <details><summary>Is this JSON formatter free?</summary>
+            <p>Yes. It is free, needs no sign-up and adds no watermark.</p></details>
+          <details><summary>Is my JSON uploaded or saved?</summary>
+            <p>No. Your JSON is processed in your browser and is not sent to our servers or saved. We use Google Analytics to count visits, but the JSON you enter is not part of that. Because nothing is saved, your input disappears when you close or reload the page, so copy or download it first. As with any online tool, avoid pasting real passwords or secret keys.</p></details>
+          <details><summary>What is JSON?</summary>
+            <p>JSON (JavaScript Object Notation) is a simple text format for storing and exchanging data. Websites, apps and APIs use it a lot, and so do many settings files. It is built from objects like {"key": value}, arrays like [1, 2, 3], text in double quotes, numbers, true, false and null.</p></details>
+          <details><summary>What is the difference between Format and Minify?</summary>
+            <p>Format adds line breaks and indentation so the JSON is easy to read. Minify removes every space and line break that is not inside text, which makes the data smaller and is handy when you send JSON over a network.</p></details>
+          <details><summary>Why does it say my JSON is invalid?</summary>
+            <p>Usually because of a mistake from the table above, such as a trailing comma, single quotes or a missing comma. The line and column show where the tool noticed the problem. Sometimes the real mistake is just before that spot. For example, a missing comma between two items is noticed at the start of the second item.</p></details>
+          <details><summary>Is there a size limit?</summary>
+            <p>There is no fixed limit. Files of several megabytes may take a moment on an older phone. Above about 5 MB, checking as you type is switched off, and the JSON is checked only when you press a button.</p></details>
+          <details><summary>Does it change my numbers or text?</summary>
+            <p>No. Formatting only changes spaces and line breaks, and the order of keys if you tick "Sort keys A–Z". Numbers, including very long ones such as 12345678901234567890, and the text inside strings are kept exactly as written. Tools that first turn JSON into JavaScript numbers can round long numbers, but this tool keeps the digits as they are.</p></details>
+          <details><summary>Can I use a JSON file from my device?</summary>
+            <p>Yes. Press "Upload", or drag a .json or .txt file onto the input box. The file is read in your browser and is not uploaded. Press "Download" to save the result as a .json file.</p></details>
+        </div>
+        <div class="faq" data-lang-block="bn">
+          <details><summary>এই JSON ফরম্যাটার কি ফ্রি?</summary>
+            <p>হ্যাঁ। এটা ফ্রি, সাইনআপ লাগে না, আর ওয়াটারমার্কও নেই।</p></details>
+          <details><summary>আমার JSON কি আপলোড বা সংরক্ষণ হয়?</summary>
+            <p>না। আপনার JSON ব্রাউজারেই প্রসেস হয়, আমাদের সার্ভারে পাঠানো বা সংরক্ষণ করা হয় না। কতজন সাইটে আসছেন তা গুনতে আমরা Google Analytics ব্যবহার করি, কিন্তু আপনার দেওয়া JSON তার অংশ নয়। কিছুই সংরক্ষণ হয় না বলে পেজ বন্ধ করলে বা রিলোড দিলে ইনপুট মুছে যায়, তাই আগে কপি বা ডাউনলোড করে নিন। যেকোনো অনলাইন টুলের মতোই আসল পাসওয়ার্ড বা সিক্রেট কী পেস্ট করবেন না।</p></details>
+          <details><summary>JSON কী?</summary>
+            <p>JSON (JavaScript Object Notation) হলো তথ্য জমা রাখা ও আদান-প্রদানের একটি সহজ টেক্সট ফরম্যাট। ওয়েবসাইট, অ্যাপ আর API এটা খুব ব্যবহার করে, অনেক সেটিংস ফাইলেও এটা থাকে। এটা তৈরি হয় {"key": value}-এর মতো অবজেক্ট, [1, 2, 3]-এর মতো অ্যারে, ডাবল কোটেশনে লেখা টেক্সট, সংখ্যা, true, false আর null দিয়ে।</p></details>
+          <details><summary>ফরম্যাট আর মিনিফাইয়ের পার্থক্য কী?</summary>
+            <p>ফরম্যাট লাইন-ব্রেক আর ইনডেন্ট যোগ করে, যাতে JSON পড়া সহজ হয়। মিনিফাই লেখার বাইরের সব স্পেস ও লাইন-ব্রেক সরিয়ে দেয়, ফলে ডেটা ছোট হয়, নেটওয়ার্কে JSON পাঠানোর সময় এটা কাজে লাগে।</p></details>
+          <details><summary>"JSON ভুল" দেখাচ্ছে কেন?</summary>
+            <p>সাধারণত ওপরের টেবিলের কোনো ভুলের কারণে, যেমন শেষে বাড়তি কমা, সিঙ্গেল কোটেশন বা কমা বাদ পড়া। লাইন ও কলাম দেখায় টুল কোথায় সমস্যাটা টের পেয়েছে। মাঝে মাঝে আসল ভুলটা ওই জায়গার ঠিক আগেই থাকে। যেমন, দুই আইটেমের মাঝে কমা বাদ পড়লে সেটা দ্বিতীয় আইটেমের শুরুতে ধরা পড়ে।</p></details>
+          <details><summary>সাইজের কি কোনো সীমা আছে?</summary>
+            <p>নির্দিষ্ট কোনো সীমা নেই। কয়েক মেগাবাইটের ফাইল পুরনো ফোনে একটু সময় নিতে পারে। প্রায় ৫ এমবির বেশি হলে টাইপ করার সময় নিজে থেকে যাচাই বন্ধ থাকে, আর বাটন চাপলে তবেই JSON যাচাই হয়।</p></details>
+          <details><summary>আমার সংখ্যা বা লেখা কি বদলে যায়?</summary>
+            <p>না। ফরম্যাটে শুধু স্পেস আর লাইন-ব্রেক বদলায়, আর "কী A–Z সাজান" টিক দিলে কী-এর ক্রম। সংখ্যা, এমনকি 12345678901234567890-এর মতো খুব বড় সংখ্যাও, আর স্ট্রিংয়ের ভেতরের লেখা যেমন ছিল ঠিক তেমনই থাকে। যেসব টুল আগে JSON-কে JavaScript-এর সংখ্যায় বদলে নেয়, তারা বড় সংখ্যা গোল করে ফেলতে পারে; এই টুল অঙ্কগুলো যেমন লেখা তেমনই রাখে।</p></details>
+          <details><summary>আমার ডিভাইস থেকে JSON ফাইল খুলতে পারি?</summary>
+            <p>হ্যাঁ। "ফাইল" বাটন চাপুন বা একটি .json অথবা .txt ফাইল ইনপুট ঘরের ওপর টেনে এনে ছাড়ুন। ফাইলটি আপনার ব্রাউজারেই পড়া হয়, আপলোড হয় না। ফলাফল .json ফাইল হিসেবে সংরক্ষণ করতে "ডাউনলোড" চাপুন।</p></details>
+        </div>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">More free tools</h2>
+        <h2 data-lang-block="bn">আরও ফ্রি টুলস</h2>
+        <div class="related-grid">
+          <a class="related-link" href="qr-code-generator.html">📱 <span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span></a>
+          <a class="related-link" href="password-generator.html">🔐 <span data-lang-block="en">Password Generator</span><span data-lang-block="bn">পাসওয়ার্ড জেনারেটর</span></a>
+          <a class="related-link" href="word-counter.html">📝 <span data-lang-block="en">Word Counter</span><span data-lang-block="bn">শব্দ গণনা</span></a>
+          <a class="related-link" href="image-compressor.html">🖼️ <span data-lang-block="en">Image Compressor</span><span data-lang-block="bn">ইমেজ কম্প্রেসর</span></a>
+          <a class="related-link" href="calculator.html">🧮 <span data-lang-block="en">Calculator</span><span data-lang-block="bn">ক্যালকুলেটর</span></a>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-links">
+        <a href="./"><span data-lang-block="en">Home</span><span data-lang-block="bn">হোম</span></a>
+        <a href="privacy.html"><span data-lang-block="en">Privacy Policy</span><span data-lang-block="bn">গোপনীয়তা নীতি</span></a>
+        <a href="terms.html"><span data-lang-block="en">Terms of Use</span><span data-lang-block="bn">ব্যবহারের শর্তাবলী</span></a>
+        <a href="contact.html"><span data-lang-block="en">Contact</span><span data-lang-block="bn">যোগাযোগ</span></a>
+      </p>
+      <p>
+        <span data-lang-block="en">© 2026 AnisTools. All rights reserved.</span>
+        <span data-lang-block="bn">© ২০২৬ AnisTools। সর্বস্বত্ব সংরক্ষিত।</span>
+      </p>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
