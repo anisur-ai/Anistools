@@ -490,3 +490,215 @@
       *, *::before, *::after { animation: none !important; transition: none !important; }
     }
   </style>
+</head>
+<body>
+  <a class="skip-link" href="#tool">Skip to tool</a>
+
+  <!-- 3D background: floating photo frames over a moving grid floor -->
+  <div class="scene" aria-hidden="true">
+    <div class="scene-inner" id="sceneInner">
+      <div class="floor"></div>
+      <div class="frame f1"></div>
+      <div class="frame f2"></div>
+      <div class="frame f3"></div>
+      <div class="frame f4"></div>
+      <div class="frame f5"></div>
+      <div class="frame f6"></div>
+      <div class="frame f7"></div>
+      <div class="frame f8"></div>
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="AnisTools home">
+        <span class="brand-mark" aria-hidden="true">⚡</span>
+        <span class="brand-name">Anis<span class="grad">Tools</span></span>
+      </a>
+      <div class="header-actions">
+        <a class="nav-link" href="./#tools"><span data-lang-block="en">All tools</span><span data-lang-block="bn">সব টুলস</span></a>
+        <label class="lang-switch">
+          <span aria-hidden="true">🌐</span>
+          <select id="langSelect" aria-label="Language">
+            <option value="en">English</option>
+            <option value="bn">বাংলা</option>
+          </select>
+        </label>
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="./">AnisTools</a> ›
+          <span data-lang-block="en">Image Compressor</span><span data-lang-block="bn">ইমেজ কম্প্রেসর</span>
+        </nav>
+        <h1>
+          <span data-lang-block="en">Free <span class="grad-ember">Image Compressor</span></span>
+          <span data-lang-block="bn">ফ্রি <span class="grad-ember">ইমেজ কম্প্রেসর</span></span>
+        </h1>
+        <p class="lead">
+          <span data-lang-block="en">Make your photos smaller without losing the look. Compress JPG, PNG and WebP, resize, change the format, set a target file size and compare before and after. Everything runs in your browser, so your images are never uploaded.</span>
+          <span data-lang-block="bn">ছবির চেহারা নষ্ট না করে সাইজ ছোট করুন। JPG, PNG ও WebP কম্প্রেস করুন, মাপ বদলান, ফরম্যাট বদলান, ফাইল সাইজের লক্ষ্য ঠিক করুন আর আগে-পরে মিলিয়ে দেখুন। সবকিছু আপনার ব্রাউজারেই চলে, তাই আপনার ছবি কোথাও আপলোড হয় না।</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ TOOL ============ -->
+    <section class="container" id="tool" aria-label="Image compressor">
+      <div class="tool-shell">
+
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/avif,image/gif,image/bmp" multiple hidden>
+
+        <!-- Drop zone -->
+        <div class="dropzone" id="dropzone" role="button" tabindex="0">
+          <span class="dz-icon" aria-hidden="true">🖼️</span>
+          <span class="dz-title">
+            <span data-lang-block="en">Drop images here or click to choose</span>
+            <span data-lang-block="bn">ছবি এখানে টেনে আনুন বা ক্লিক করে বেছে নিন</span>
+          </span>
+          <span class="dz-sub">
+            <span data-lang-block="en">Choose as many as you like. You can also paste an image with Ctrl + V.</span>
+            <span data-lang-block="bn">যত খুশি ছবি নিন। Ctrl + V দিয়ে ছবি পেস্টও করতে পারেন।</span>
+          </span>
+          <span class="dz-formats" aria-hidden="true">
+            <span class="dz-tag">JPG</span><span class="dz-tag">PNG</span><span class="dz-tag">WebP</span>
+            <span class="dz-tag">AVIF</span><span class="dz-tag">GIF</span><span class="dz-tag">BMP</span>
+          </span>
+        </div>
+
+        <!-- Settings -->
+        <div class="ic-settings">
+          <h2 class="ic-settings-title">
+            <span data-lang-block="en">Settings (used for all images)</span>
+            <span data-lang-block="bn">সেটিংস (সব ছবির জন্য)</span>
+          </h2>
+          <div class="ic-grid">
+
+            <div class="ic-field">
+              <label class="ic-label" for="fmtSel"><span data-lang-block="en">Output format</span><span data-lang-block="bn">আউটপুট ফরম্যাট</span></label>
+              <select class="ic-select" id="fmtSel">
+                <option value="original" data-en="Same as original" data-bn="আসলের মতোই" selected>Same as original</option>
+                <option value="jpeg">JPEG</option>
+                <option value="webp">WebP</option>
+                <option value="png" data-en="PNG (lossless)" data-bn="PNG (লসলেস)">PNG (lossless)</option>
+              </select>
+            </div>
+
+            <div class="ic-field">
+              <label class="ic-label" for="qualityRange">
+                <span><span data-lang-block="en">Quality</span><span data-lang-block="bn">কোয়ালিটি</span></span>
+                <output id="qualityOut" for="qualityRange">80%</output>
+              </label>
+              <input class="ic-range" type="range" id="qualityRange" min="10" max="100" step="1" value="80">
+              <p class="ic-hint" id="qualityHint">
+                <span data-lang-block="en">Applies to JPEG and WebP. Around 75–85% keeps photos looking sharp.</span>
+                <span data-lang-block="bn">JPEG ও WebP-তে কাজ করে। ৭৫–৮৫% রাখলে ছবি ধারালো দেখায়।</span>
+              </p>
+            </div>
+
+            <div class="ic-field">
+              <label class="ic-label" for="widthSel"><span data-lang-block="en">Maximum width</span><span data-lang-block="bn">সর্বোচ্চ প্রস্থ</span></label>
+              <select class="ic-select" id="widthSel">
+                <option value="0" data-en="Original size" data-bn="আসল মাপ" selected>Original size</option>
+                <option value="3840">3840 px (4K)</option>
+                <option value="2560">2560 px</option>
+                <option value="1920">1920 px (Full HD)</option>
+                <option value="1600">1600 px</option>
+                <option value="1280">1280 px (HD)</option>
+                <option value="1024">1024 px</option>
+                <option value="800">800 px</option>
+                <option value="640">640 px</option>
+                <option value="custom" data-en="Custom…" data-bn="নিজে দিন…">Custom…</option>
+              </select>
+              <input class="ic-input" type="number" id="widthInput" min="16" max="16000" step="1" value="1200" inputmode="numeric" hidden style="margin-top: .5rem;" aria-label="Custom width in pixels">
+              <p class="ic-hint">
+                <span data-lang-block="en">Smaller images are never enlarged.</span>
+                <span data-lang-block="bn">ছোট ছবি কখনো বড় করা হয় না।</span>
+              </p>
+            </div>
+
+            <div class="ic-field">
+              <label class="ic-check" for="targetChk">
+                <input type="checkbox" id="targetChk">
+                <span><span data-lang-block="en">Aim for a file size</span><span data-lang-block="bn">ফাইল সাইজের লক্ষ্য ঠিক করুন</span></span>
+              </label>
+              <input class="ic-input" type="number" id="targetKb" min="5" max="20000" step="5" value="200" inputmode="numeric" disabled style="margin-top: .5rem;" aria-label="Target size in KB">
+              <p class="ic-hint">
+                <span data-lang-block="en">Size in KB. Works with JPEG and WebP: the quality is lowered until the file fits.</span>
+                <span data-lang-block="bn">সাইজ কেবি-তে। JPEG ও WebP-তে কাজ করে: ফাইল না মেলা পর্যন্ত কোয়ালিটি কমানো হয়।</span>
+              </p>
+            </div>
+
+            <div class="ic-field">
+              <label class="ic-label" for="bgColor"><span data-lang-block="en">Background for transparent images</span><span data-lang-block="bn">স্বচ্ছ ছবির ব্যাকগ্রাউন্ড</span></label>
+              <input class="ic-color" type="color" id="bgColor" value="#ffffff">
+              <p class="ic-hint">
+                <span data-lang-block="en">Used only when a transparent image is saved as JPEG.</span>
+                <span data-lang-block="bn">শুধু স্বচ্ছ ছবি JPEG হিসেবে সেভ করলে কাজে লাগে।</span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Totals -->
+        <div class="ic-summary" id="summary" hidden>
+          <div class="ic-sum-stats">
+            <div class="ic-sum-stat">
+              <span class="ic-sum-num" id="sumCount">0</span>
+              <span class="ic-sum-label"><span data-lang-block="en">Images</span><span data-lang-block="bn">ছবি</span></span>
+            </div>
+            <div class="ic-sum-stat">
+              <span class="ic-sum-num" id="sumOrig">0 KB</span>
+              <span class="ic-sum-label"><span data-lang-block="en">Original total</span><span data-lang-block="bn">আসল মোট</span></span>
+            </div>
+            <div class="ic-sum-stat">
+              <span class="ic-sum-num" id="sumNew">0 KB</span>
+              <span class="ic-sum-label"><span data-lang-block="en">Compressed total</span><span data-lang-block="bn">কম্প্রেসড মোট</span></span>
+            </div>
+            <div class="ic-sum-stat">
+              <span class="ic-sum-num good" id="sumSaved">0%</span>
+              <span class="ic-sum-label"><span data-lang-block="en">Saved</span><span data-lang-block="bn">সাশ্রয়</span></span>
+            </div>
+          </div>
+          <div class="ic-sum-actions">
+            <button class="ic-btn ic-btn-primary" id="btnZip" type="button"><span data-lang-block="en">Download all (ZIP)</span><span data-lang-block="bn">সব ডাউনলোড (ZIP)</span></button>
+            <button class="ic-btn" id="btnAdd" type="button"><span data-lang-block="en">Add more images</span><span data-lang-block="bn">আরও ছবি যোগ করুন</span></button>
+            <button class="ic-btn ic-btn-danger" id="btnClearAll" type="button"><span data-lang-block="en">Clear all</span><span data-lang-block="bn">সব মুছুন</span></button>
+          </div>
+        </div>
+
+        <!-- One card per image is added here -->
+        <div class="ic-list" id="list" aria-live="polite"></div>
+
+        <p class="ic-note">
+          <span data-lang-block="en">Your images are processed in your browser. They are not uploaded or saved.</span>
+          <span data-lang-block="bn">আপনার ছবি আপনার ব্রাউজারেই প্রসেস হয়। এগুলো আপলোড বা সংরক্ষণ করা হয় না।</span>
+        </p>
+
+      </div>
+    </section>
+
+    <!-- Before / after comparison window -->
+    <div class="ic-modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="ic-modal-box">
+        <div class="ic-modal-head">
+          <span class="ic-modal-title" id="modalTitle"></span>
+          <button class="ic-close" id="modalClose" type="button" aria-label="Close">✕</button>
+        </div>
+        <div class="ic-cmp" id="cmp" style="--pos: 50%;">
+          <img id="cmpAfter" alt="">
+          <div class="ic-cmp-top"><img id="cmpBefore" alt=""></div>
+          <span class="ic-cmp-label l"><span data-lang-block="en">Original</span><span data-lang-block="bn">আসল</span></span>
+          <span class="ic-cmp-label r"><span data-lang-block="en">Compressed</span><span data-lang-block="bn">কম্প্রেসড</span></span>
+          <div class="ic-cmp-handle"></div>
+          <input class="ic-cmp-range" type="range" id="cmpRange" min="0" max="100" step="0.1" value="50" aria-label="Before and after slider">
+        </div>
+        <div class="ic-cmp-info"><span id="cmpInfoA"></span><span id="cmpInfoB"></span></div>
+      </div>
+    </div>
