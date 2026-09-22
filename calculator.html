@@ -343,6 +343,227 @@
       *, *::before, *::after { animation: none !important; transition: none !important; }
     }
   </style>
+</head>
+<body>
+  <a class="skip-link" href="#tool">Skip to tool</a>
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="AnisTools home">
+        <span class="brand-mark" aria-hidden="true">⚡</span>
+        <span class="brand-name">Anis<span class="grad">Tools</span></span>
+      </a>
+      <div class="header-actions">
+        <a class="nav-link" href="./#tools"><span data-lang-block="en">All tools</span><span data-lang-block="bn">সব টুলস</span></a>
+        <label class="lang-switch">
+          <span aria-hidden="true">🌐</span>
+          <select id="langSelect" aria-label="Language">
+            <option value="en">English</option>
+            <option value="bn">বাংলা</option>
+          </select>
+        </label>
+        <button id="themeToggle" class="icon-btn" type="button" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="./">AnisTools</a> ›
+          <span data-lang-block="en">Calculator</span><span data-lang-block="bn">ক্যালকুলেটর</span>
+        </nav>
+        <h1>
+          <span data-lang-block="en">Free <span class="grad-mint">Calculator</span></span>
+          <span data-lang-block="bn">ফ্রি <span class="grad-mint">ক্যালকুলেটর</span></span>
+        </h1>
+        <p class="lead">
+          <span data-lang-block="en">A calculator with keyboard support, a percentage calculator and an EMI/loan calculator, all in one place. Everything runs in your browser, and nothing is uploaded.</span>
+          <span data-lang-block="bn">কিবোর্ড সাপোর্টসহ ক্যালকুলেটর, শতাংশ ক্যালকুলেটর আর EMI/লোন ক্যালকুলেটর, সবকিছু একসাথে। সবকিছু আপনার ব্রাউজারেই চলে, কিছুই আপলোড হয় না।</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ TOOL ============ -->
+    <section class="container" id="tool" aria-label="Calculator">
+      <div class="tool-shell">
+
+        <div class="mode-tabs" role="tablist" aria-label="Calculator mode">
+          <button class="mode-btn active" type="button" role="tab" aria-selected="true" data-mode="standard">
+            <span data-lang-block="en">Calculator</span><span data-lang-block="bn">ক্যালকুলেটর</span>
+          </button>
+          <button class="mode-btn" type="button" role="tab" aria-selected="false" data-mode="percent">
+            <span data-lang-block="en">Percentage</span><span data-lang-block="bn">শতাংশ</span>
+          </button>
+          <button class="mode-btn" type="button" role="tab" aria-selected="false" data-mode="emi">
+            <span data-lang-block="en">EMI / Loan</span><span data-lang-block="bn">EMI / লোন</span>
+          </button>
+        </div>
+
+        <!-- ===== Standard calculator ===== -->
+        <div class="mode-panel active" id="panel-standard">
+          <div class="calc-wrap">
+            <div class="calc-screen">
+              <div class="calc-mem" id="calcMem"></div>
+              <div class="calc-expr" id="calcExpr"></div>
+              <div class="calc-main" id="calcMain">0</div>
+            </div>
+            <div class="calc-pad" id="calcPad">
+              <button class="key mem" type="button" data-k="mc">MC</button>
+              <button class="key mem" type="button" data-k="mr">MR</button>
+              <button class="key mem" type="button" data-k="m-">M−</button>
+              <button class="key mem" type="button" data-k="m+">M+</button>
+
+              <button class="key fn" type="button" data-k="ac">AC</button>
+              <button class="key fn" type="button" data-k="del" aria-label="Delete">⌫</button>
+              <button class="key fn" type="button" data-k="pct">%</button>
+              <button class="key op" type="button" data-k="/" aria-label="Divide">÷</button>
+
+              <button class="key" type="button" data-k="7">7</button>
+              <button class="key" type="button" data-k="8">8</button>
+              <button class="key" type="button" data-k="9">9</button>
+              <button class="key op" type="button" data-k="*" aria-label="Multiply">×</button>
+
+              <button class="key" type="button" data-k="4">4</button>
+              <button class="key" type="button" data-k="5">5</button>
+              <button class="key" type="button" data-k="6">6</button>
+              <button class="key op" type="button" data-k="-" aria-label="Minus">−</button>
+
+              <button class="key" type="button" data-k="1">1</button>
+              <button class="key" type="button" data-k="2">2</button>
+              <button class="key" type="button" data-k="3">3</button>
+              <button class="key op" type="button" data-k="+" aria-label="Plus">+</button>
+
+              <button class="key" type="button" data-k="00">00</button>
+              <button class="key" type="button" data-k="0">0</button>
+              <button class="key" type="button" data-k=".">.</button>
+              <button class="key eq" type="button" data-k="=">=</button>
+            </div>
+            <p class="calc-hint">
+              <span data-lang-block="en">Keyboard works too: numbers, + − × / (or * and /), Enter for =, Backspace, Esc for AC.</span>
+              <span data-lang-block="bn">কিবোর্ডও চলে: সংখ্যা, + − × / (বা * ও /), = -এর জন্য Enter, Backspace, AC-এর জন্য Esc।</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- ===== Percentage calculator ===== -->
+        <div class="mode-panel" id="panel-percent">
+          <div class="pc-card">
+            <div class="pc-tabs" role="tablist" aria-label="Percentage calculation type">
+              <button class="pc-tab active" type="button" data-pc="of">
+                <span data-lang-block="en">X% of Y</span><span data-lang-block="bn">Y-এর X%</span>
+              </button>
+              <button class="pc-tab" type="button" data-pc="isWhat">
+                <span data-lang-block="en">X is what % of Y</span><span data-lang-block="bn">X, Y-এর কত %</span>
+              </button>
+              <button class="pc-tab" type="button" data-pc="change">
+                <span data-lang-block="en">% change from X to Y</span><span data-lang-block="bn">X থেকে Y-এ % পরিবর্তন</span>
+              </button>
+            </div>
+
+            <!-- X% of Y -->
+            <div class="pc-panel" id="pc-of">
+              <div class="pc-row">
+                <label for="ofX"><span data-lang-block="en">Percentage (%)</span><span data-lang-block="bn">শতাংশ (%)</span></label>
+                <input class="pc-input" type="number" id="ofX" inputmode="decimal" value="15">
+              </div>
+              <div class="pc-row">
+                <label for="ofY"><span data-lang-block="en">Of this number</span><span data-lang-block="bn">এই সংখ্যার</span></label>
+                <input class="pc-input" type="number" id="ofY" inputmode="decimal" value="200">
+              </div>
+              <div class="pc-result" id="ofResult"></div>
+            </div>
+
+            <!-- X is what % of Y -->
+            <div class="pc-panel" id="pc-isWhat" hidden>
+              <div class="pc-row">
+                <label for="iwX"><span data-lang-block="en">This number</span><span data-lang-block="bn">এই সংখ্যা</span></label>
+                <input class="pc-input" type="number" id="iwX" inputmode="decimal" value="30">
+              </div>
+              <div class="pc-row">
+                <label for="iwY"><span data-lang-block="en">Is what % of this number</span><span data-lang-block="bn">এই সংখ্যার কত %</span></label>
+                <input class="pc-input" type="number" id="iwY" inputmode="decimal" value="200">
+              </div>
+              <div class="pc-result" id="iwResult"></div>
+            </div>
+
+            <!-- % change -->
+            <div class="pc-panel" id="pc-change" hidden>
+              <div class="pc-row">
+                <label for="chX"><span data-lang-block="en">From (original value)</span><span data-lang-block="bn">থেকে (আসল মান)</span></label>
+                <input class="pc-input" type="number" id="chX" inputmode="decimal" value="200">
+              </div>
+              <div class="pc-row">
+                <label for="chY"><span data-lang-block="en">To (new value)</span><span data-lang-block="bn">এ (নতুন মান)</span></label>
+                <input class="pc-input" type="number" id="chY" inputmode="decimal" value="250">
+              </div>
+              <div class="pc-result" id="chResult"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== EMI / loan calculator ===== -->
+        <div class="mode-panel" id="panel-emi">
+          <div class="pc-card">
+            <div class="emi-grid">
+              <div class="emi-field">
+                <label for="emiPrincipal">
+                  <span><span data-lang-block="en">Loan amount</span><span data-lang-block="bn">লোনের পরিমাণ</span></span>
+                  <output id="emiPrincipalOut" for="emiPrincipal"></output>
+                </label>
+                <input type="number" id="emiPrincipal" min="1000" max="100000000" step="1000" value="500000" inputmode="decimal">
+                <input type="range" id="emiPrincipalR" min="10000" max="10000000" step="10000" value="500000">
+              </div>
+              <div class="emi-field">
+                <label for="emiRate">
+                  <span><span data-lang-block="en">Annual interest rate</span><span data-lang-block="bn">বার্ষিক সুদের হার</span></span>
+                  <output id="emiRateOut" for="emiRate"></output>
+                </label>
+                <input type="number" id="emiRate" min="0" max="40" step="0.05" value="9.5" inputmode="decimal">
+                <input type="range" id="emiRateR" min="0" max="30" step="0.1" value="9.5">
+              </div>
+              <div class="emi-field">
+                <label for="emiYears">
+                  <span><span data-lang-block="en">Loan term (years)</span><span data-lang-block="bn">লোনের মেয়াদ (বছর)</span></span>
+                  <output id="emiYearsOut" for="emiYears"></output>
+                </label>
+                <input type="number" id="emiYears" min="1" max="40" step="1" value="5" inputmode="numeric">
+                <input type="range" id="emiYearsR" min="1" max="30" step="1" value="5">
+              </div>
+            </div>
+
+            <div class="emi-summary">
+              <div class="emi-stat hi">
+                <span class="emi-num big" id="emiMonthly">–</span>
+                <span class="emi-label"><span data-lang-block="en">Monthly EMI</span><span data-lang-block="bn">মাসিক EMI</span></span>
+              </div>
+              <div class="emi-stat">
+                <span class="emi-num" id="emiInterest">–</span>
+                <span class="emi-label"><span data-lang-block="en">Total interest</span><span data-lang-block="bn">মোট সুদ</span></span>
+              </div>
+              <div class="emi-stat">
+                <span class="emi-num" id="emiTotal">–</span>
+                <span class="emi-label"><span data-lang-block="en">Total payment</span><span data-lang-block="bn">মোট পরিশোধ</span></span>
+              </div>
+            </div>
+
+            <div class="emi-bar-wrap" aria-hidden="true">
+              <div class="emi-bar-p" id="emiBarP" style="width: 50%;"></div>
+              <div class="emi-bar-i" id="emiBarI" style="width: 50%;"></div>
+            </div>
+            <div class="emi-legend">
+              <span><span class="dot p"></span><span data-lang-block="en">Principal</span><span data-lang-block="bn">মূলধন</span></span>
+              <span><span class="dot i"></span><span data-lang-block="en">Interest</span><span data-lang-block="bn">সুদ</span></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
 <!-- ============ GUIDE ============ -->
     <article class="container container-narrow content">
 
