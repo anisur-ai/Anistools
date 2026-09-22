@@ -343,3 +343,485 @@
       *, *::before, *::after { animation: none !important; transition: none !important; }
     }
   </style>
+<!-- ============ GUIDE ============ -->
+    <article class="container container-narrow content">
+
+      <section class="content-card">
+        <h2 data-lang-block="en">How to use this calculator</h2>
+        <h2 data-lang-block="bn">এই ক্যালকুলেটর ব্যবহারের নিয়ম</h2>
+        <ol data-lang-block="en">
+          <li>Choose a mode at the top: Calculator, Percentage or EMI / Loan.</li>
+          <li>In "Calculator", tap the keys or use your keyboard. <code>M+</code>, <code>M−</code>, <code>MR</code> and <code>MC</code> add to, subtract from, recall and clear the memory.</li>
+          <li>In "Percentage", pick the calculation you need and type the two numbers. The result updates as you type.</li>
+          <li>In "EMI / Loan", enter the loan amount, interest rate and term using the boxes or the sliders. The monthly payment and totals update automatically.</li>
+        </ol>
+        <ol data-lang-block="bn">
+          <li>ওপর থেকে একটা মোড বেছে নিন: ক্যালকুলেটর, শতাংশ বা EMI / লোন।</li>
+          <li>"ক্যালকুলেটর"-এ বাটনে চাপুন বা কিবোর্ড ব্যবহার করুন। <code>M+</code>, <code>M−</code>, <code>MR</code> আর <code>MC</code> মেমরিতে যোগ, বিয়োগ, মনে করা আর মুছে দেয়।</li>
+          <li>"শতাংশ"-এ আপনার দরকারি হিসাবটা বেছে দুটো সংখ্যা লিখুন। লেখার সাথে সাথেই ফল বদলায়।</li>
+          <li>"EMI / লোন"-এ ঘর বা স্লাইডার দিয়ে লোনের পরিমাণ, সুদের হার আর মেয়াদ দিন। মাসিক পরিশোধ আর মোট হিসাব নিজে থেকেই বদলায়।</li>
+        </ol>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">The three percentage calculations</h2>
+        <h2 data-lang-block="bn">তিনটা শতাংশ হিসাব</h2>
+        <div class="table-wrap" data-lang-block="en">
+          <table>
+            <thead><tr><th scope="col">Calculation</th><th scope="col">Formula</th><th scope="col">Example</th></tr></thead>
+            <tbody>
+              <tr><td><strong>X% of Y</strong></td><td>(X ÷ 100) × Y</td><td>15% of 200 = 30</td></tr>
+              <tr><td><strong>X is what % of Y</strong></td><td>(X ÷ Y) × 100</td><td>30 is 15% of 200</td></tr>
+              <tr><td><strong>% change from X to Y</strong></td><td>((Y − X) ÷ X) × 100</td><td>200 to 250 is a 25% increase</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap" data-lang-block="bn">
+          <table>
+            <thead><tr><th scope="col">হিসাব</th><th scope="col">সূত্র</th><th scope="col">উদাহরণ</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Y-এর X%</strong></td><td>(X ÷ ১০০) × Y</td><td>২০০-এর ১৫% = ৩০</td></tr>
+              <tr><td><strong>X, Y-এর কত %</strong></td><td>(X ÷ Y) × ১০০</td><td>৩০ হলো ২০০-এর ১৫%</td></tr>
+              <tr><td><strong>X থেকে Y-এ % পরিবর্তন</strong></td><td>((Y − X) ÷ X) × ১০০</td><td>২০০ থেকে ২৫০ হলে ২৫% বৃদ্ধি</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top: 1rem;" data-lang-block="en">A negative result in "% change" means a decrease. For example, 200 to 150 is a −25% change (a 25% decrease).</p>
+        <p style="margin-top: 1rem;" data-lang-block="bn">"% পরিবর্তন"-এ ফল নেগেটিভ হলে সেটা কমে যাওয়া বোঝায়। যেমন, ২০০ থেকে ১৫০ হলে −২৫% পরিবর্তন (২৫% কমেছে)।</p>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">How the EMI is calculated</h2>
+        <h2 data-lang-block="bn">EMI কীভাবে হিসাব হয়</h2>
+        <p data-lang-block="en">This calculator uses the standard reducing-balance EMI formula, the same one banks use for most fixed-rate loans:</p>
+        <p data-lang-block="bn">এই ক্যালকুলেটর স্ট্যান্ডার্ড রিডিউসিং-ব্যালেন্স EMI সূত্র ব্যবহার করে, যা ব্যাংকগুলো বেশিরভাগ ফিক্সড-রেট লোনে ব্যবহার করে:</p>
+        <div class="table-wrap">
+          <table>
+            <tbody>
+              <tr><td style="text-align:center; font-family: var(--mono);">EMI = P × r × (1 + r)<sup>n</sup> ÷ [(1 + r)<sup>n</sup> − 1]</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul data-lang-block="en" style="margin-top: 1rem;">
+          <li><strong>P</strong> is the loan amount (principal).</li>
+          <li><strong>r</strong> is the monthly interest rate (the annual rate ÷ 12 ÷ 100).</li>
+          <li><strong>n</strong> is the number of monthly payments (years × 12).</li>
+          <li>Total interest = (EMI × n) − P. Total payment = EMI × n.</li>
+        </ul>
+        <ul data-lang-block="bn" style="margin-top: 1rem;">
+          <li><strong>P</strong> হলো লোনের পরিমাণ (মূলধন)।</li>
+          <li><strong>r</strong> হলো মাসিক সুদের হার (বার্ষিক হার ÷ ১২ ÷ ১০০)।</li>
+          <li><strong>n</strong> হলো মাসিক পরিশোধের সংখ্যা (বছর × ১২)।</li>
+          <li>মোট সুদ = (EMI × n) − P। মোট পরিশোধ = EMI × n।</li>
+        </ul>
+      </section>
+<section class="content-card">
+        <h2 data-lang-block="en">What the EMI calculator does not include</h2>
+        <h2 data-lang-block="bn">EMI ক্যালকুলেটরে যা ধরা হয়নি</h2>
+        <ul data-lang-block="en">
+          <li>Processing fees, insurance, taxes and other charges that many lenders add.</li>
+          <li>A floating or variable interest rate, since this calculator assumes a fixed rate for the whole term.</li>
+          <li>Prepayments or extra payments, which would change the actual schedule.</li>
+          <li>This is an estimate to help you compare options. Check the exact figures with your bank or lender before deciding.</li>
+        </ul>
+        <ul data-lang-block="bn">
+          <li>প্রসেসিং ফি, ইনসিওরেন্স, ট্যাক্স আর অন্যান্য চার্জ, যা অনেক লোনদাতা যোগ করে।</li>
+          <li>ফ্লোটিং বা পরিবর্তনশীল সুদের হার, কারণ এই ক্যালকুলেটর পুরো মেয়াদে একই হার ধরে নেয়।</li>
+          <li>আগেভাগে পরিশোধ বা বাড়তি পরিশোধ, যা আসল হিসাব বদলে দিতে পারে।</li>
+          <li>এটা তুলনা করার জন্য একটা আনুমানিক হিসাব। সিদ্ধান্ত নেওয়ার আগে আপনার ব্যাংক বা লোনদাতার কাছে সঠিক সংখ্যা যাচাই করে নিন।</li>
+        </ul>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">Frequently asked questions</h2>
+        <h2 data-lang-block="bn">সচরাচর জিজ্ঞাসা</h2>
+        <div class="faq" data-lang-block="en">
+          <details><summary>Is this calculator free?</summary>
+            <p>Yes. It is free, needs no sign-up and adds no watermark.</p></details>
+          <details><summary>Are my numbers uploaded or saved?</summary>
+            <p>No. Everything is calculated in your browser and is not sent to our servers or saved. We use Google Analytics to count visits, but the numbers you enter are not part of that.</p></details>
+          <details><summary>What does the % key do in the standard calculator?</summary>
+            <p>It turns the current number into a percentage of the previous one. For example, 200 + 10% adds 10% of 200 (20) to get 220, and 200 − 10% subtracts 20 to get 180. On its own, 50% simply becomes 0.5.</p></details>
+          <details><summary>What do M+, M−, MR and MC do?</summary>
+            <p>M+ adds the number on the screen to memory, M− subtracts it, MR recalls the stored value onto the screen, and MC clears the memory. The memory indicator above the screen shows the stored value.</p></details>
+          <details><summary>Can I use my keyboard?</summary>
+            <p>Yes, when the "Calculator" mode is open: number keys, + − * /, Enter or = for the result, Backspace to delete the last character, and Escape to clear (AC).</p></details>
+        </div>
+        <div class="faq" data-lang-block="bn">
+          <details><summary>এই ক্যালকুলেটর কি ফ্রি?</summary>
+            <p>হ্যাঁ। এটা ফ্রি, সাইনআপ লাগে না, আর ওয়াটারমার্কও নেই।</p></details>
+          <details><summary>আমার সংখ্যা কি আপলোড বা সংরক্ষণ হয়?</summary>
+            <p>না। সবকিছু আপনার ব্রাউজারেই হিসাব হয়, আমাদের সার্ভারে পাঠানো বা সংরক্ষণ করা হয় না। কতজন সাইটে আসছেন তা গুনতে আমরা Google Analytics ব্যবহার করি, কিন্তু আপনার দেওয়া সংখ্যা তার অংশ নয়।</p></details>
+          <details><summary>স্ট্যান্ডার্ড ক্যালকুলেটরে % বাটন কী করে?</summary>
+            <p>এটা বর্তমান সংখ্যাকে আগের সংখ্যার শতাংশে বদলে দেয়। যেমন, 200 + 10% করলে 200-এর 10% (২০) যোগ হয়ে ২২০ হয়, আর 200 − 10% করলে ২০ বিয়োগ হয়ে ১৮০ হয়। একা লিখলে 50% সহজেই 0.5 হয়ে যায়।</p></details>
+          <details><summary>M+, M−, MR আর MC কী করে?</summary>
+            <p>M+ স্ক্রিনের সংখ্যা মেমরিতে যোগ করে, M− সেটা বিয়োগ করে, MR মেমরিতে জমা থাকা সংখ্যা স্ক্রিনে ফিরিয়ে আনে, আর MC মেমরি মুছে দেয়। স্ক্রিনের ওপরের মেমরি-ইন্ডিকেটরে জমা থাকা সংখ্যা দেখা যায়।</p></details>
+          <details><summary>কিবোর্ড কি ব্যবহার করা যায়?</summary>
+            <p>হ্যাঁ, "ক্যালকুলেটর" মোড খোলা থাকলে: সংখ্যার বাটন, + − * /, ফলের জন্য Enter বা =, শেষ অক্ষর মুছতে Backspace, আর মুছে ফেলতে (AC) Escape।</p></details>
+        </div>
+      </section>
+<section class="content-card">
+        <div class="faq" data-lang-block="en">
+          <details><summary>How accurate is the percentage % change?</summary>
+            <p>It uses the exact formula ((Y − X) ÷ X) × 100, so the result is precise, not rounded except for display.</p></details>
+          <details><summary>Why is my EMI different from my bank's figure?</summary>
+            <p>Banks may round the rate or the EMI slightly differently, and many add fees, insurance or taxes that this calculator does not include. Use this as a close estimate, and confirm the exact figure with your bank.</p></details>
+          <details><summary>Can I calculate a loan for any currency?</summary>
+            <p>Yes. The calculator does not use a currency symbol, so you can enter the loan amount in rupees, dollars, taka or any currency, and the result will be in the same currency.</p></details>
+          <details><summary>What is the longest loan term I can enter?</summary>
+            <p>The slider goes up to 30 years, but you can type a longer term, up to 40 years, directly into the box next to it.</p></details>
+        </div>
+        <div class="faq" data-lang-block="bn">
+          <details><summary>% পরিবর্তনের হিসাব কতটা নির্ভুল?</summary>
+            <p>এটা ঠিক ((Y − X) ÷ X) × ১০০ সূত্র ব্যবহার করে, তাই ফল নির্ভুল, শুধু দেখানোর সময় গোল করা হয়।</p></details>
+          <details><summary>আমার EMI ব্যাংকের হিসাবের থেকে আলাদা কেন?</summary>
+            <p>ব্যাংক হার বা EMI সামান্য আলাদাভাবে গোল করতে পারে, আর অনেক ব্যাংক ফি, ইনসিওরেন্স বা ট্যাক্স যোগ করে, যা এই ক্যালকুলেটরে ধরা হয়নি। এটাকে কাছাকাছি একটা অনুমান হিসেবে নিন, আসল সংখ্যা ব্যাংকের কাছে যাচাই করে নিন।</p></details>
+          <details><summary>যেকোনো মুদ্রার লোন হিসাব করা যায়?</summary>
+            <p>হ্যাঁ। ক্যালকুলেটরে কোনো মুদ্রার চিহ্ন নেই, তাই আপনি টাকা, রুপি, ডলার বা যেকোনো মুদ্রায় লোনের পরিমাণ লিখতে পারেন, ফলও একই মুদ্রায় আসবে।</p></details>
+          <details><summary>সর্বোচ্চ কত বছরের লোন দেওয়া যায়?</summary>
+            <p>স্লাইডার ৩০ বছর পর্যন্ত যায়, কিন্তু তার পাশের ঘরে সরাসরি লিখে ৪০ বছর পর্যন্ত দিতে পারেন।</p></details>
+        </div>
+      </section>
+
+      <section class="content-card">
+        <h2 data-lang-block="en">More free tools</h2>
+        <h2 data-lang-block="bn">আরও ফ্রি টুলস</h2>
+        <div class="related-grid">
+          <a class="related-link" href="qr-code-generator.html">📱 <span data-lang-block="en">QR Code Generator</span><span data-lang-block="bn">QR কোড জেনারেটর</span></a>
+          <a class="related-link" href="password-generator.html">🔐 <span data-lang-block="en">Password Generator</span><span data-lang-block="bn">পাসওয়ার্ড জেনারেটর</span></a>
+          <a class="related-link" href="word-counter.html">📝 <span data-lang-block="en">Word Counter</span><span data-lang-block="bn">শব্দ গণনা</span></a>
+          <a class="related-link" href="json-formatter.html">🧾 <span data-lang-block="en">JSON Formatter</span><span data-lang-block="bn">JSON ফরম্যাটার</span></a>
+          <a class="related-link" href="image-compressor.html">🖼️ <span data-lang-block="en">Image Compressor</span><span data-lang-block="bn">ইমেজ কম্প্রেসর</span></a>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-links">
+        <a href="./"><span data-lang-block="en">Home</span><span data-lang-block="bn">হোম</span></a>
+        <a href="privacy.html"><span data-lang-block="en">Privacy Policy</span><span data-lang-block="bn">গোপনীয়তা নীতি</span></a>
+        <a href="terms.html"><span data-lang-block="en">Terms of Use</span><span data-lang-block="bn">ব্যবহারের শর্তাবলী</span></a>
+        <a href="contact.html"><span data-lang-block="en">Contact</span><span data-lang-block="bn">যোগাযোগ</span></a>
+      </p>
+      <p>
+        <span data-lang-block="en">© 2026 AnisTools. All rights reserved.</span>
+        <span data-lang-block="bn">© ২০২৬ AnisTools। সর্বস্বত্ব সংরক্ষিত।</span>
+      </p>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+
+    const root = document.documentElement;
+    const $ = id => document.getElementById(id);
+    const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+    const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+
+    let lang = 'en';
+    const TXT = {
+      err: ['Error', 'ভুল'],
+      memSet: ['M', 'M']
+    };
+    const T = k => TXT[k][lang === 'bn' ? 1 : 0];
+
+    /* ================= Mode switching ================= */
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    modeBtns.forEach(btn => btn.addEventListener('click', () => {
+      const mode = btn.dataset.mode;
+      modeBtns.forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on);
+      });
+      document.querySelectorAll('.mode-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + mode));
+    }));
+
+    /* ================= Standard calculator ================= */
+    const scr = { mem: $('calcMem'), expr: $('calcExpr'), main: $('calcMain') };
+
+    // acc = accumulated value, op = pending operator, entry = current typed number (string)
+    let calc = { acc: null, op: null, entry: '0', memory: 0, justEq: false, hasError: false };
+
+    function fmtNum(n) {
+      if (!isFinite(n)) return T('err');
+      if (Math.abs(n) < 1e-12) n = 0;
+      const r = Math.round(n * 1e10) / 1e10;
+      let s = r.toString();
+      if (s.length > 15 && s.indexOf('e') === -1) s = r.toPrecision(12).replace(/\.?0+$/, '');
+      return s;
+    }
+    const opSym = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+
+    function renderCalc() {
+      scr.main.classList.toggle('err', calc.hasError);
+      scr.main.textContent = calc.hasError ? T('err') : calc.entry;
+      scr.expr.textContent = (calc.acc !== null && calc.op) ? (fmtNum(calc.acc) + ' ' + opSym[calc.op]) : '';
+      scr.mem.textContent = calc.memory !== 0 ? T('memSet') + ' ' + fmtNum(calc.memory) : '';
+    }
+
+    function resetEntryFlag() { calc.justEq = false; }
+
+    function inputDigit(d) {
+      if (calc.hasError) resetAll();
+      if (calc.justEq) { calc.entry = '0'; calc.acc = null; calc.op = null; resetEntryFlag(); }
+      if (calc.entry === '0') calc.entry = d === '00' ? '0' : d;
+      else if ((calc.entry + d).replace(/[.-]/g, '').length <= 15) calc.entry += d;
+      renderCalc();
+    }
+    function inputDot() {
+      if (calc.hasError) resetAll();
+      if (calc.justEq) { calc.entry = '0'; calc.acc = null; calc.op = null; resetEntryFlag(); }
+      if (calc.entry.indexOf('.') === -1) calc.entry += '.';
+      renderCalc();
+    }
+    function backspace() {
+      if (calc.hasError) { resetAll(); return; }
+      calc.entry = calc.entry.length > 1 ? calc.entry.slice(0, -1) : '0';
+      renderCalc();
+    }
+    function resetAll() {
+      calc = { acc: null, op: null, entry: '0', memory: calc.memory, justEq: false, hasError: false };
+      renderCalc();
+    }
+
+    function compute(a, b, op) {
+      if (op === '+') return a + b;
+      if (op === '-') return a - b;
+      if (op === '*') return a * b;
+      if (op === '/') return b === 0 ? NaN : a / b;
+      return b;
+    }
+
+    function chooseOp(nextOp) {
+      if (calc.hasError) return;
+      const val = parseFloat(calc.entry);
+      if (calc.acc === null) {
+        calc.acc = val;
+      } else if (!calc.justEq) {
+        const r = compute(calc.acc, val, calc.op);
+        if (!isFinite(r)) { calc.hasError = true; renderCalc(); return; }
+        calc.acc = r;
+      }
+      calc.op = nextOp;
+      calc.entry = fmtNum(calc.acc);
+      calc.justEq = false;
+      renderCalc();
+    }
+
+    function equals() {
+      if (calc.hasError) return;
+      if (calc.acc === null || !calc.op) { calc.justEq = true; renderCalc(); return; }
+      const val = parseFloat(calc.entry);
+      const r = compute(calc.acc, val, calc.op);
+      if (!isFinite(r)) { calc.hasError = true; renderCalc(); return; }
+      calc.entry = fmtNum(r);
+      calc.acc = null;
+      calc.op = null;
+      calc.justEq = true;
+      renderCalc();
+    }
+
+    function percent() {
+      if (calc.hasError) return;
+      const val = parseFloat(calc.entry);
+      let r;
+      if (calc.acc !== null && calc.op) r = calc.acc * (val / 100);   // e.g. 200 + 10% -> 20
+      else r = val / 100;
+      calc.entry = fmtNum(r);
+      renderCalc();
+    }
+
+    function memAdd(sign) {
+      const val = parseFloat(calc.entry) || 0;
+      calc.memory = Math.round((calc.memory + sign * val) * 1e10) / 1e10;
+      renderCalc();
+    }
+    function memRecall() { calc.entry = fmtNum(calc.memory); calc.justEq = false; renderCalc(); }
+    function memClear() { calc.memory = 0; renderCalc(); }
+
+    function pressKey(k) {
+      if (/^[0-9]$/.test(k) || k === '00') { inputDigit(k); return; }
+      if (k === '.') { inputDot(); return; }
+      if (k === '+' || k === '-' || k === '*' || k === '/') { chooseOp(k); return; }
+      if (k === '=') { equals(); return; }
+      if (k === 'pct') { percent(); return; }
+      if (k === 'ac') { resetAll(); return; }
+      if (k === 'del') { backspace(); return; }
+      if (k === 'm+') { memAdd(1); return; }
+      if (k === 'm-') { memAdd(-1); return; }
+      if (k === 'mr') { memRecall(); return; }
+      if (k === 'mc') { memClear(); return; }
+    }
+
+    $('calcPad').addEventListener('click', e => {
+      const b = e.target.closest('[data-k]');
+      if (b) pressKey(b.dataset.k);
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!$('panel-standard').classList.contains('active')) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+      const k = e.key;
+      if (/^[0-9]$/.test(k)) { pressKey(k); e.preventDefault(); }
+      else if (k === '.') { pressKey('.'); e.preventDefault(); }
+      else if (k === '+' || k === '-' || k === '*' || k === '/') { pressKey(k); e.preventDefault(); }
+      else if (k === '%') { pressKey('pct'); e.preventDefault(); }
+      else if (k === 'Enter' || k === '=') { pressKey('='); e.preventDefault(); }
+      else if (k === 'Backspace') { pressKey('del'); e.preventDefault(); }
+      else if (k === 'Escape') { pressKey('ac'); e.preventDefault(); }
+    });
+
+    renderCalc();
+/* ================= Percentage calculator ================= */
+    const pcTabs = document.querySelectorAll('.pc-tab');
+    pcTabs.forEach(tab => tab.addEventListener('click', () => {
+      const key = tab.dataset.pc;
+      pcTabs.forEach(t => t.classList.toggle('active', t === tab));
+      ['of', 'isWhat', 'change'].forEach(k => { $('pc-' + k).hidden = k !== key; });
+    }));
+
+    function numOr(id, fallback) {
+      const v = parseFloat($(id).value);
+      return isNaN(v) ? fallback : v;
+    }
+
+    const OF_TXT = {
+      en: (x, y, r) => x + '% of ' + y + ' = ' + r,
+      bn: (x, y, r) => y + '-এর ' + x + '% = ' + r
+    };
+    const IW_TXT = {
+      en: (x, y, r) => x + ' is ' + r + '% of ' + y,
+      bn: (x, y, r) => x + ' হলো ' + y + '-এর ' + r + '%'
+    };
+    const CH_TXT = {
+      en: (x, y, r, up) => x + ' to ' + y + ' is a ' + Math.abs(r) + '% ' + (up ? 'increase' : (r === 0 ? 'change' : 'decrease')),
+      bn: (x, y, r, up) => x + ' থেকে ' + y + ' হলে ' + Math.abs(r) + '% ' + (up ? 'বৃদ্ধি' : (r === 0 ? 'পরিবর্তন' : 'কমেছে'))
+    };
+    const rnd = n => Math.round(n * 100) / 100;
+
+    function updateOf() {
+      const x = numOr('ofX', 0), y = numOr('ofY', 0);
+      const r = rnd(x / 100 * y);
+      $('ofResult').textContent = OF_TXT[lang](x, y, r);
+    }
+    function updateIsWhat() {
+      const x = numOr('iwX', 0), y = numOr('iwY', 0);
+      const r = y === 0 ? 0 : rnd(x / y * 100);
+      $('iwResult').textContent = IW_TXT[lang](x, y, r);
+    }
+    function updateChange() {
+      const x = numOr('chX', 0), y = numOr('chY', 0);
+      const r = x === 0 ? 0 : rnd((y - x) / x * 100);
+      $('chResult').textContent = CH_TXT[lang](x, y, r, r > 0);
+    }
+
+    ['ofX', 'ofY'].forEach(id => $(id).addEventListener('input', updateOf));
+    ['iwX', 'iwY'].forEach(id => $(id).addEventListener('input', updateIsWhat));
+    ['chX', 'chY'].forEach(id => $(id).addEventListener('input', updateChange));
+
+    function updateAllPercent() { updateOf(); updateIsWhat(); updateChange(); }
+/* ================= EMI / loan calculator ================= */
+    const emiFmt = n => {
+      const r = Math.round(n);
+      try { return new Intl.NumberFormat(lang === 'bn' ? 'bn-BD' : 'en-IN').format(r); }
+      catch (e) { return String(r); }
+    };
+
+    function linkPair(numId, rangeId, onChange) {
+      const num = $(numId), range = $(rangeId);
+      num.addEventListener('input', () => {
+        const v = parseFloat(num.value);
+        if (!isNaN(v)) { const clamped = Math.min(+range.max, Math.max(+range.min, v)); range.value = clamped; }
+        onChange();
+      });
+      range.addEventListener('input', () => { num.value = range.value; onChange(); });
+    }
+
+    function calcEMI() {
+      const P = Math.max(0, numOr('emiPrincipal', 0));
+      const annual = Math.max(0, numOr('emiRate', 0));
+      const years = Math.max(0, numOr('emiYears', 0));
+      const n = Math.round(years * 12);
+      const r = annual / 12 / 100;
+
+      $('emiPrincipalOut').textContent = emiFmt(P);
+      $('emiRateOut').textContent = (Math.round(annual * 100) / 100) + '%';
+      $('emiYearsOut').textContent = years + (lang === 'bn' ? ' বছর' : (years === 1 ? ' yr' : ' yrs'));
+
+      if (n <= 0 || P <= 0) {
+        $('emiMonthly').textContent = '–';
+        $('emiInterest').textContent = '–';
+        $('emiTotal').textContent = '–';
+        $('emiBarP').style.width = '50%';
+        $('emiBarI').style.width = '50%';
+        return;
+      }
+
+      let emi;
+      if (r === 0) emi = P / n;
+      else { const f = Math.pow(1 + r, n); emi = P * r * f / (f - 1); }
+
+      const total = emi * n;
+      const interest = total - P;
+      $('emiMonthly').textContent = emiFmt(emi);
+      $('emiInterest').textContent = emiFmt(interest);
+      $('emiTotal').textContent = emiFmt(total);
+
+      const pPct = total > 0 ? Math.max(0, Math.min(100, P / total * 100)) : 50;
+      $('emiBarP').style.width = pPct + '%';
+      $('emiBarI').style.width = (100 - pPct) + '%';
+    }
+
+    linkPair('emiPrincipal', 'emiPrincipalR', calcEMI);
+    linkPair('emiRate', 'emiRateR', calcEMI);
+    linkPair('emiYears', 'emiYearsR', calcEMI);
+/* ================= Theme and language ================= */
+    const themeBtn = $('themeToggle');
+    const langSel = $('langSelect');
+
+    function applyTheme(t) {
+      root.dataset.theme = t;
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', t === 'dark' ? '#0a0b16' : '#f5f6fb');
+    }
+
+    function applyLang(l) {
+      lang = l;
+      root.lang = l;
+      langSel.value = l;
+      renderCalc();
+      updateAllPercent();
+      calcEMI();
+    }
+
+    themeBtn.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      store('theme', next);
+    });
+    langSel.addEventListener('change', e => { applyLang(e.target.value); store('lang', e.target.value); });
+
+    /* Hide related links whose page is not uploaded yet */
+    if (location.protocol.indexOf('http') === 0) {
+      document.querySelectorAll('.related-link').forEach(a => {
+        fetch(a.getAttribute('href'), { method: 'HEAD', cache: 'no-cache' })
+          .then(r => { if (!r.ok) a.hidden = true; })
+          .catch(() => {});
+      });
+    }
+
+    /* ---------- Init ---------- */
+    applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
+    applyLang(load('lang') === 'bn' ? 'bn' : 'en');
+  });
+  </script>
+</body>
+</html>
