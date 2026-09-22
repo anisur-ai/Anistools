@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://anisur-ai.github.io/Anistools/sitemap.xml
+Sitemap: https://anisur-ai.github.io/Anistools/sitemap.xml 
