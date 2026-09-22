@@ -902,3 +902,491 @@
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
+
+    const root = document.documentElement;
+    const $ = id => document.getElementById(id);
+    const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+    const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const fmtBytes = n => n < 1024 ? n + ' B' : (n < 1048576 ? (n / 1024).toFixed(1) + ' KB' : (n / 1048576).toFixed(2) + ' MB');
+
+    let lang = 'en';
+    const TXT = {
+      busy:       ['Compressing…', 'কম্প্রেস হচ্ছে…'],
+      error:      ['Failed', 'ব্যর্থ হয়েছে'],
+      errGeneric: ['This image could not be processed.', 'এই ছবিটি প্রসেস করা যায়নি।'],
+      kept:       ['Already optimized', 'আগে থেকেই অপটিমাইজড'],
+      warnBigger: ['Larger than original', 'আসলের চেয়ে বড়'],
+      compare:    ['Compare', 'তুলনা'],
+      download:   ['Download', 'ডাউনলোড'],
+      remove:     ['Remove', 'সরান'],
+      retry:      ['Retry', 'আবার চেষ্টা'],
+      before:     ['Original', 'আসল'],
+      after:      ['Compressed', 'কম্প্রেসড'],
+      noImages:   ['Add an image first.', 'আগে একটি ছবি যোগ করুন।'],
+      zipDone:    ['ZIP download started.', 'ZIP ডাউনলোড শুরু হয়েছে।'],
+      cleared:    ['All images were cleared.', 'সব ছবি মুছে ফেলা হয়েছে।']
+    };
+    const T = k => TXT[k][lang === 'bn' ? 1 : 0];
+
+    let toastTimer;
+    function toast(key) {
+      const el = $('toast');
+      el.textContent = T(key);
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    /* ---------- WebP support test ---------- */
+    let SUPPORTS_WEBP = false;
+    try {
+      const c = document.createElement('canvas');
+      c.width = c.height = 1;
+      SUPPORTS_WEBP = c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    } catch (e) {}
+
+    function extFor(mime) {
+      return { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/bmp': 'bmp', 'image/avif': 'avif' }[mime] || null;
+    }
+
+    function decideMime(origType) {
+      const f = $('fmtSel').value;
+      if (f === 'jpeg') return 'image/jpeg';
+      if (f === 'webp') return SUPPORTS_WEBP ? 'image/webp' : 'image/jpeg';
+      if (f === 'png') return 'image/png';
+      if (origType === 'image/png') return 'image/png';
+      if (origType === 'image/webp') return SUPPORTS_WEBP ? 'image/webp' : 'image/jpeg';
+      if (origType === 'image/jpeg') return 'image/jpeg';
+      return SUPPORTS_WEBP ? 'image/webp' : 'image/jpeg';
+    }
+
+    function getMaxWidth() {
+      const v = $('widthSel').value;
+      if (v === 'custom') { const n = parseInt($('widthInput').value, 10); return isNaN(n) ? 0 : n; }
+      return parseInt(v, 10) || 0;
+    }
+
+    function loadImageEl(url) {
+      return new Promise((resolve, reject) => {
+        const im = new Image();
+        im.onload = () => resolve(im);
+        im.onerror = reject;
+        im.src = url;
+      });
+    }
+/* ================= State ================= */
+    let images = [];
+    let nextId = 1;
+    let queue = Promise.resolve();
+    const enqueue = img => { queue = queue.then(() => processOne(img)).catch(() => {}); };
+
+    function addFiles(fileList) {
+      const files = Array.from(fileList || []).filter(f => f && f.type && f.type.startsWith('image/'));
+      if (!files.length) return;
+      files.forEach(file => {
+        const im = {
+          id: nextId++,
+          file,
+          name: file.name || ('image-' + Date.now() + '.jpg'),
+          origSize: file.size,
+          origType: file.type,
+          origExt: extFor(file.type) || ((file.name || '').split('.').pop() || 'jpg').toLowerCase(),
+          origURL: URL.createObjectURL(file),
+          w: 0, h: 0,
+          status: 'busy'
+        };
+        images.push(im);
+        createCard(im);
+        enqueue(im);
+      });
+      $('summary').hidden = images.length === 0;
+      updateSummary();
+    }
+
+    function compressToBlob(canvas, mime, quality) {
+      return new Promise(resolve => canvas.toBlob(b => resolve(b), mime, mime === 'image/png' ? undefined : quality / 100));
+    }
+
+    async function compressWithTarget(canvas, mime) {
+      if (mime === 'image/png') return { blob: await compressToBlob(canvas, mime, 100) };
+      let q = parseInt($('qualityRange').value, 10);
+      let blob = await compressToBlob(canvas, mime, q);
+      if ($('targetChk').checked) {
+        const target = (parseInt($('targetKb').value, 10) || 0) * 1024;
+        let tries = 0;
+        while (blob && target > 0 && blob.size > target && q > 10 && tries < 12) {
+          q = Math.max(10, q - 10);
+          blob = await compressToBlob(canvas, mime, q);
+          tries++;
+        }
+      }
+      return { blob };
+    }
+
+    async function processOne(img) {
+      img.status = 'busy';
+      renderCard(img);
+      try {
+        const el = await loadImageEl(img.origURL);
+        img.w = el.naturalWidth;
+        img.h = el.naturalHeight;
+
+        const maxW = getMaxWidth();
+        let tw = img.w, th = img.h;
+        if (maxW > 0 && img.w > maxW) { tw = maxW; th = Math.round(img.h * maxW / img.w); }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = tw;
+        canvas.height = th;
+        const ctx = canvas.getContext('2d');
+        const mime = decideMime(img.origType);
+        if (mime === 'image/jpeg') { ctx.fillStyle = $('bgColor').value || '#ffffff'; ctx.fillRect(0, 0, tw, th); }
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(el, 0, 0, tw, th);
+
+        const { blob } = await compressWithTarget(canvas, mime);
+        if (!blob) throw new Error('empty');
+
+        const sameFormat = $('fmtSel').value === 'original';
+        let kept = false, warn = false, finalBlob = blob, finalSize = blob.size, finalExt = extFor(mime) || 'jpg';
+
+        if (sameFormat && blob.size >= img.origSize) {
+          kept = true;
+          finalBlob = img.file;
+          finalSize = img.origSize;
+          finalExt = img.origExt;
+        } else if (blob.size >= img.origSize) {
+          warn = true;
+        }
+
+        if (img.outURL) URL.revokeObjectURL(img.outURL);
+        img.outBlob = finalBlob;
+        img.outSize = finalSize;
+        img.outExt = finalExt;
+        img.outW = tw;
+        img.outH = th;
+        img.outURL = URL.createObjectURL(finalBlob);
+        img.status = kept ? 'kept' : (warn ? 'warn' : 'done');
+      } catch (e) {
+        img.status = 'error';
+        img.errorMsg = T('errGeneric');
+      }
+      renderCard(img);
+      updateSummary();
+    }
+
+    function reprocessAll() {
+      images.forEach(im => { if (im.status !== 'busy') { im.status = 'busy'; renderCard(im); enqueue(im); } });
+    }
+    const debouncedReprocess = debounce(reprocessAll, 250);
+/* ================= Cards ================= */
+    function createCard(img) {
+      const card = document.createElement('div');
+      card.className = 'ic-card';
+      card.dataset.id = img.id;
+      card.innerHTML =
+        '<div class="ic-thumb"><img src="' + img.origURL + '" alt=""></div>' +
+        '<div class="ic-info"><div class="ic-name">' + esc(img.name) + '</div>' +
+        '<div class="ic-meta"></div><div class="ic-sizes"></div></div>' +
+        '<div class="ic-actions"></div><div class="ic-bar"></div>';
+      $('list').prepend(card);
+      img.el = {
+        root: card,
+        meta: card.querySelector('.ic-meta'),
+        sizes: card.querySelector('.ic-sizes'),
+        actions: card.querySelector('.ic-actions')
+      };
+      renderCard(img);
+    }
+
+    function renderCard(img) {
+      const el = img.el;
+      if (!el) return;
+      el.root.classList.toggle('busy', img.status === 'busy');
+      el.root.classList.toggle('err', img.status === 'error');
+      el.meta.textContent = img.w ? (img.w + '×' + img.h + ' · ' + (img.origExt || '').toUpperCase()) : (img.origExt || '').toUpperCase();
+
+      if (img.status === 'busy') {
+        el.sizes.innerHTML = '<span class="ic-badge busy">' + esc(T('busy')) + '</span>';
+        el.actions.innerHTML = '<button class="ic-mini" data-act="remove">' + esc(T('remove')) + '</button>';
+      } else if (img.status === 'error') {
+        el.sizes.innerHTML = '<span class="ic-err">' + esc(T('error')) + '</span>';
+        el.actions.innerHTML =
+          '<button class="ic-mini" data-act="retry">' + esc(T('retry')) + '</button>' +
+          '<button class="ic-mini" data-act="remove">' + esc(T('remove')) + '</button>';
+      } else {
+        const pct = img.origSize > 0 ? Math.round((1 - img.outSize / img.origSize) * 100) : 0;
+        let badge;
+        if (img.status === 'kept') badge = '<span class="ic-badge busy">' + esc(T('kept')) + '</span>';
+        else if (img.status === 'warn') badge = '<span class="ic-badge warn">' + esc(T('warnBigger')) + '</span>';
+        else badge = '<span class="ic-badge">' + (pct > 0 ? '-' + pct + '%' : '0%') + '</span>';
+        el.sizes.innerHTML =
+          '<span class="ic-old">' + esc(fmtBytes(img.origSize)) + '</span><span>→</span>' +
+          '<span>' + esc(fmtBytes(img.outSize)) + '</span>' + badge;
+        el.actions.innerHTML =
+          '<button class="ic-mini" data-act="compare">' + esc(T('compare')) + '</button>' +
+          '<button class="ic-mini ic-mini-primary" data-act="download">' + esc(T('download')) + '</button>' +
+          '<button class="ic-mini" data-act="remove">' + esc(T('remove')) + '</button>';
+      }
+    }
+
+    function updateSummary() {
+      const summary = $('summary');
+      summary.hidden = images.length === 0;
+      if (!images.length) return;
+      let origT = 0, newT = 0;
+      images.forEach(im => { if (im.status !== 'busy' && im.status !== 'error') { origT += im.origSize; newT += im.outSize; } });
+      $('sumCount').textContent = String(images.length);
+      $('sumOrig').textContent = fmtBytes(origT);
+      $('sumNew').textContent = fmtBytes(newT);
+      $('sumSaved').textContent = (origT > 0 ? Math.round((1 - newT / origT) * 100) : 0) + '%';
+    }
+
+    function removeImage(img) {
+      if (img.origURL) URL.revokeObjectURL(img.origURL);
+      if (img.outURL) URL.revokeObjectURL(img.outURL);
+      images = images.filter(x => x !== img);
+      if (img.el && img.el.root) img.el.root.remove();
+      updateSummary();
+    }
+
+    function clearAll() {
+      images.forEach(im => { if (im.origURL) URL.revokeObjectURL(im.origURL); if (im.outURL) URL.revokeObjectURL(im.outURL); });
+      images = [];
+      $('list').innerHTML = '';
+      updateSummary();
+      toast('cleared');
+    }
+
+    function retry(img) { img.status = 'busy'; renderCard(img); enqueue(img); }
+
+    function downloadOne(img) {
+      if (!img.outURL) return;
+      const base = (img.name || 'image').replace(/\.[^.]+$/, '') || 'image';
+      const a = document.createElement('a');
+      a.href = img.outURL;
+      a.download = base + '-compressed.' + (img.outExt || 'jpg');
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    /* ---------- Compare window ---------- */
+    function openCompare(img) {
+      if (img.status === 'busy' || img.status === 'error') return;
+      $('cmpBefore').src = img.origURL;
+      $('cmpAfter').src = img.outURL;
+      $('modalTitle').textContent = img.name;
+      $('cmpRange').value = 50;
+      $('cmp').style.setProperty('--pos', '50%');
+      const pct = img.origSize > 0 ? Math.round((1 - img.outSize / img.origSize) * 100) : 0;
+      $('cmpInfoA').textContent = T('before') + ': ' + fmtBytes(img.origSize) + ' · ' + img.w + '×' + img.h;
+      $('cmpInfoB').textContent = T('after') + ': ' + fmtBytes(img.outSize) + ' · ' + img.outW + '×' + img.outH + (pct > 0 ? ' · -' + pct + '%' : '');
+      $('modal').hidden = false;
+    }
+    function closeCompare() { $('modal').hidden = true; }
+
+    $('cmpRange').addEventListener('input', e => $('cmp').style.setProperty('--pos', e.target.value + '%'));
+    $('modalClose').addEventListener('click', closeCompare);
+    $('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeCompare(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('modal').hidden) closeCompare(); });
+
+    $('list').addEventListener('click', e => {
+      const btn = e.target.closest('[data-act]');
+      const card = e.target.closest('.ic-card');
+      if (!btn || !card) return;
+      const img = images.find(x => x.id === +card.dataset.id);
+      if (!img) return;
+      if (btn.dataset.act === 'compare') openCompare(img);
+      else if (btn.dataset.act === 'download') downloadOne(img);
+      else if (btn.dataset.act === 'remove') removeImage(img);
+      else if (btn.dataset.act === 'retry') retry(img);
+    });
+/* ================= ZIP (store method, no external library) ================= */
+    function crc32(buf) {
+      if (!crc32.table) {
+        const t = [];
+        for (let n = 0; n < 256; n++) {
+          let c = n;
+          for (let k = 0; k < 8; k++) c = c & 1 ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+          t[n] = c;
+        }
+        crc32.table = t;
+      }
+      let crc = -1;
+      for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ crc32.table[(crc ^ buf[i]) & 0xFF];
+      return (crc ^ -1) >>> 0;
+    }
+
+    function buildZip(entries) {
+      const enc = new TextEncoder();
+      const localParts = [], centralParts = [];
+      let offset = 0;
+      entries.forEach(e => {
+        const nameBytes = enc.encode(e.name);
+        const data = e.data;
+        const crc = crc32(data);
+        const size = data.length;
+
+        const lh = new Uint8Array(30 + nameBytes.length);
+        const ldv = new DataView(lh.buffer);
+        ldv.setUint32(0, 0x04034b50, true);
+        ldv.setUint16(4, 20, true);
+        ldv.setUint16(6, 0, true);
+        ldv.setUint16(8, 0, true);
+        ldv.setUint16(10, 0, true);
+        ldv.setUint16(12, 0x21, true);
+        ldv.setUint32(14, crc, true);
+        ldv.setUint32(18, size, true);
+        ldv.setUint32(22, size, true);
+        ldv.setUint16(26, nameBytes.length, true);
+        ldv.setUint16(28, 0, true);
+        lh.set(nameBytes, 30);
+        localParts.push(lh, data);
+
+        const ch = new Uint8Array(46 + nameBytes.length);
+        const cdv = new DataView(ch.buffer);
+        cdv.setUint32(0, 0x02014b50, true);
+        cdv.setUint16(4, 20, true);
+        cdv.setUint16(6, 20, true);
+        cdv.setUint32(16, crc, true);
+        cdv.setUint32(20, size, true);
+        cdv.setUint32(24, size, true);
+        cdv.setUint16(28, nameBytes.length, true);
+        cdv.setUint32(42, offset, true);
+        ch.set(nameBytes, 46);
+        centralParts.push(ch);
+
+        offset += lh.length + data.length;
+      });
+      const centralSize = centralParts.reduce((s, p) => s + p.length, 0);
+      const end = new Uint8Array(22);
+      const edv = new DataView(end.buffer);
+      edv.setUint32(0, 0x06054b50, true);
+      edv.setUint16(8, entries.length, true);
+      edv.setUint16(10, entries.length, true);
+      edv.setUint32(12, centralSize, true);
+      edv.setUint32(16, offset, true);
+      return new Blob([...localParts, ...centralParts, end], { type: 'application/zip' });
+    }
+
+    async function downloadZip() {
+      const ready = images.filter(im => (im.status === 'done' || im.status === 'kept' || im.status === 'warn') && im.outBlob);
+      if (!ready.length) { toast('noImages'); return; }
+      const used = new Set();
+      const entries = [];
+      for (const im of ready) {
+        const base = (im.name || 'image').replace(/\.[^.]+$/, '') || 'image';
+        const ext = im.outExt || 'jpg';
+        let name = base + '-compressed.' + ext, n = 1;
+        while (used.has(name)) name = base + '-compressed-' + (n++) + '.' + ext;
+        used.add(name);
+        entries.push({ name, data: new Uint8Array(await im.outBlob.arrayBuffer()) });
+      }
+      const url = URL.createObjectURL(buildZip(entries));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'anistools-images.zip';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      toast('zipDone');
+    }
+
+    /* ================= Getting files in ================= */
+    const dz = $('dropzone');
+    dz.addEventListener('click', () => $('fileInput').click());
+    dz.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('fileInput').click(); } });
+    ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
+    ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
+    dz.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+
+    $('fileInput').addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
+    $('btnAdd').addEventListener('click', () => $('fileInput').click());
+    $('btnClearAll').addEventListener('click', clearAll);
+    $('btnZip').addEventListener('click', downloadZip);
+
+    document.addEventListener('paste', e => {
+      if (!e.clipboardData) return;
+      const files = [];
+      for (const item of e.clipboardData.items) {
+        if (item.type && item.type.startsWith('image/')) { const f = item.getAsFile(); if (f) files.push(f); }
+      }
+      if (files.length) addFiles(files);
+    });
+
+    /* ================= Settings ================= */
+    $('fmtSel').addEventListener('change', () => { $('qualityRange').disabled = $('fmtSel').value === 'png'; debouncedReprocess(); });
+    $('qualityRange').addEventListener('input', e => { $('qualityOut').textContent = e.target.value + '%'; debouncedReprocess(); });
+    $('widthSel').addEventListener('change', () => { $('widthInput').hidden = $('widthSel').value !== 'custom'; debouncedReprocess(); });
+    $('widthInput').addEventListener('input', debouncedReprocess);
+    $('targetChk').addEventListener('change', () => { $('targetKb').disabled = !$('targetChk').checked; debouncedReprocess(); });
+    $('targetKb').addEventListener('input', debouncedReprocess);
+    $('bgColor').addEventListener('input', debouncedReprocess);
+/* ================= Theme, language, 3D parallax ================= */
+    const themeBtn = $('themeToggle');
+    const langSel = $('langSelect');
+
+    function applyTheme(t) {
+      root.dataset.theme = t;
+      themeBtn.textContent = t === 'dark' ? '🌙' : '☀️';
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', t === 'dark' ? '#0b0907' : '#fff8f1');
+    }
+
+    function applyLang(l) {
+      lang = l;
+      root.lang = l;
+      langSel.value = l;
+      document.querySelectorAll('option[data-en]').forEach(o => { o.textContent = l === 'bn' ? o.dataset.bn : o.dataset.en; });
+      images.forEach(renderCard);
+    }
+
+    themeBtn.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      store('theme', next);
+    });
+    langSel.addEventListener('change', e => { applyLang(e.target.value); store('lang', e.target.value); });
+
+    const scene = $('sceneInner');
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let rafId = 0;
+    if (!reduceMotion && scene) {
+      window.addEventListener('pointermove', e => {
+        if (rafId) return;
+        rafId = requestAnimationFrame(() => {
+          const x = (e.clientX / window.innerWidth) * 2 - 1;
+          const y = (e.clientY / window.innerHeight) * 2 - 1;
+          scene.style.setProperty('--px', x.toFixed(3));
+          scene.style.setProperty('--py', y.toFixed(3));
+          rafId = 0;
+        });
+      });
+    }
+
+    /* Hide related links whose page is not uploaded yet */
+    if (location.protocol.indexOf('http') === 0) {
+      document.querySelectorAll('.related-link').forEach(a => {
+        fetch(a.getAttribute('href'), { method: 'HEAD', cache: 'no-cache' })
+          .then(r => { if (!r.ok) a.hidden = true; })
+          .catch(() => {});
+      });
+    }
+
+    /* ---------- Init ---------- */
+    applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
+    applyLang(load('lang') === 'bn' ? 'bn' : 'en');
+    $('widthInput').hidden = true;
+    $('targetKb').disabled = true;
+  });
+  </script>
+</body>
+</html>
